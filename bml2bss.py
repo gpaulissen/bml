@@ -257,6 +257,6 @@ if __name__ == '__main__':
     if bml.args.outputfile == '-':
         systemdata_to_bss(sys.stdout)
     else:
-        with open(bml.args.outputfile, 'w') as f:
+        with open(bml.args.outputfile, mode='w', encoding="utf-8") as f:
             systemdata_to_bss(f)
 

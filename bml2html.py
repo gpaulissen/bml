@@ -169,5 +169,5 @@ if __name__ == '__main__':
     if bml.args.outputfile == '-':
         sys.stdout.write(h)
     else:
-        with open(bml.args.outputfile, 'w') as f:
+        with open(bml.args.outputfile, mode='w', encoding="utf-8") as f:
             f.write(h)

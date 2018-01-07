@@ -450,7 +450,7 @@ def get_content_type(text):
 def include_file(matchobj):
     filename = matchobj.group(1)
     text = ''
-    with open(filename, 'r') as f:
+    with open(filename, mode='r', encoding="utf-8") as f:
         text = f.read()
     return '\n' + text + '\n'
 
@@ -458,7 +458,7 @@ def content_from_file(filename):
     if filename == '-':
         content_from_string(sys.stdin.read())
     else:
-        with open(filename, 'r') as f:
+        with open(filename, mode='r', encoding="utf-8") as f:
             content_from_string(f.read())
 
 def content_from_string(text):

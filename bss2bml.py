@@ -383,11 +383,11 @@ if __name__ == '__main__':
     bml.args = bml.parse_arguments(description='Convert BSS to BML.', option_tree=False, option_include_external_files=False)
     if not bml.args.outputfile:
         bml.args.outputfile = '-' if bml.args.inputfile == '-' else bml.args.inputfile.split('.')[0] + '.bml'
-    with open(bml.args.inputfile, 'r') as input:
+    with open(bml.args.inputfile, mode='r', encoding="utf-8") as input:
         if bml.args.verbose > 1:
             print("Output file:", bml.args.outputfile)
         if bml.args.outputfile == '-':
             bss2bml(input, sys.stdout)
         else:
-            with open(bml.args.outputfile, 'w') as output:
+            with open(bml.args.outputfile, mode='w', encoding="utf-8") as output:
                 bss2bml(input, output)

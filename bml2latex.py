@@ -2,23 +2,22 @@ import sys
 import os
 import re
 import bml
+from io import StringIO
+
+SUIT2LATEX = { 'C': '\BC', 'D': '\BD', 'H': '\BH', 'S': '\BS' }
 
 def latex_replace_suits_bid(matchobj):
     text = matchobj.group(0)
-    text = text.replace('C', '\c')
-    text = text.replace('D', '\d')
-    text = text.replace('H', '\h')
-    text = text.replace('S', '\s')
+    for s in ['C', 'D', 'H', 'S']:
+        text = text.replace(s, SUIT2LATEX[s])
     text = text.replace('N', 'NT')
     text = text.replace('AP', 'All pass')
     return text
 
 def latex_replace_suits_desc(matchobj):
     text = matchobj.group(1)
-    text = text.replace('!c', '\c')
-    text = text.replace('!d', '\d')
-    text = text.replace('!h', '\h')
-    text = text.replace('!s', '\s')
+    for s in ['c', 'd', 'h', 's']:
+        text = text.replace('!' + s, SUIT2LATEX[s.upper()])
     if matchobj.group(2) == ' ':
         text += '\\ '
     elif matchobj.group(2) == '\n':
@@ -93,10 +92,10 @@ def latex_bidtable(children, file, first=False):
             
 def latex_diagram(diagram, file):
     header = []
-    suits = {'S':'\\s ',
-             'H':'\\h ',
-             'D':'\\d ',
-             'C':'\\c '}
+    suits = {'S':'\\BS ',
+             'H':'\\BH ',
+             'D':'\\BD ',
+             'C':'\\BC '}
     players = {'N':'North',
                'E':'East',
                'S':'South',
@@ -299,11 +298,6 @@ def to_latex(content, f):
             for i, r in enumerate(text):
                 r = ' \> '.join(r)
                 r = re.sub(r'\d([CDHS]|N(?!T))+', latex_replace_suits_bid, r)
-                # r = r.replace('C', '\c')
-                # r = r.replace('D', '\d')
-                # r = r.replace('H', '\h')
-                # r = r.replace('S', '\s')
-                # r = r.replace('N', 'NT')
                 r = r.replace('AP', 'All pass')
                 r = r.replace('D', 'Dbl')
                 r = r.replace('P', 'Pass')
@@ -326,5 +320,5 @@ if __name__ == '__main__':
     if bml.args.outputfile == '-':
         to_latex(bml.content, sys.stdout)
     else:
-        with open(bml.args.outputfile, 'w') as f:
+        with open(bml.args.outputfile, mode='w', encoding="utf-8") as f:
             to_latex(bml.content, f)

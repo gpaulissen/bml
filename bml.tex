@@ -7,25 +7,18 @@
 
 % suits
 
-%%% Black and white
-
-% \renewcommand{\c}{$\clubsuit$}
-% \renewcommand{\d}{$\diamondsuit$}
-% \newcommand{\h}{$\heartsuit$}
-% \newcommand{\s}{$\spadesuit32$}
-
 %%% Colors
 
-\renewcommand{\c}{\textcolor{OliveGreen}{$\clubsuit$}}
-\renewcommand{\d}{\textcolor{RedOrange}{$\vardiamondsuit$}}
-\newcommand{\h}{\textcolor{Red}{$\varheartsuit${}}}
-\newcommand{\s}{\textcolor{Blue}{$\spadesuit${}}}
+\newcommand{\BC}{\textcolor{OliveGreen}{$\clubsuit$}}
+\newcommand{\BD}{\textcolor{RedOrange}{$\vardiamondsuit$}}
+\newcommand{\BH}{\textcolor{Red}{$\varheartsuit${}}}
+\newcommand{\BS}{\textcolor{Blue}{$\spadesuit${}}}
 
 %suits for pdf-friendly titles
-\newcommand{\pdfc}{\texorpdfstring{\c{}}{C}}
-\newcommand{\pdfd}{\texorpdfstring{\d{}}{D}}
-\newcommand{\pdfh}{\texorpdfstring{\h{}}{H}}
-\newcommand{\pdfs}{\texorpdfstring{\s{}}{S}}
+\newcommand{\pdfc}{\texorpdfstring{\BC{}}{C}}
+\newcommand{\pdfd}{\texorpdfstring{\BD{}}{D}}
+\newcommand{\pdfh}{\texorpdfstring{\BH{}}{H}}
+\newcommand{\pdfs}{\texorpdfstring{\BS{}}{S}}
 
 \newenvironment{bidtable}
 {\begin{tabbing}
@@ -41,10 +34,10 @@ xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx \kill
 
 % writing hands
 \newcommand{\cards}[1]{\textsf{#1}}
-\newcommand{\spades}[1]{\s\cards{#1}}
-\newcommand{\hearts}[1]{\h\cards{#1}}
-\newcommand{\diamonds}[1]{\d\cards{#1}}
-\newcommand{\clubs}[1]{\c\cards{#1}}
+\newcommand{\spades}[1]{\BS\cards{#1}}
+\newcommand{\hearts}[1]{\BH\cards{#1}}
+\newcommand{\diamonds}[1]{\BD\cards{#1}}
+\newcommand{\clubs}[1]{\BC\cards{#1}}
 \newcommand{\void}{--}
 \newcommand{\hand}[4]{\spades{#1}\ \hearts{#2}\ \diamonds{#3} \clubs{#4}}
 \newcommand{\vhand}[4]{\spades{#1}\\\hearts{#2}\\\diamonds{#3}\\\clubs{#4}}
