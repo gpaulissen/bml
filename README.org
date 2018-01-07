@@ -1,6 +1,12 @@
-
 * BML - Bridge Bidding Markup Language
   
+  This GitHub repository (https://github.com/gpaulissen/bml) created by
+  Gert-Jan Paulissen is a fork of https://github.com/Kungsgeten/bml created by
+  Erik Sjöstrand. The BML format and its utilities in this repository are
+  supposed to be backwards compatible unless mentioned otherwise. For better
+  distinguishing both BML versions I may refer to BML 1 (Erik's version) and BML 2
+  (this version).
+
   The purpose of the /Bridge Bidding Markup Language/ (BML) is to
   offer an easy way of documenting contract bridge bidding
   systems. The file(s) created are supposed to be easy to read for
@@ -10,13 +16,10 @@
   Programs have been written in order to export BML-files to the
   following formats:
 
-  - HTML :: Outputs a .htm-file which can be used on the web. The CSS
-            in bml.css must be used. Use bml2html.py
+  - HTML :: Outputs a .htm-file which can be used on the web. Use bml2html.py.
 
   - LaTeX :: Outputs a .tex-file which can be converted to a pdf,
-             using LaTeX. The file bml.tex must be included in the
-             folder where the resulting .tex-files are created. Use
-             bml2latex.py
+             using LaTeX. Use bml2latex.py.
 
   - Full Discloure :: On the popular bridge website [[http://www.bridgebase.com][Bridge Base Online]]
                       (BBO) the players are able to submit their own
@@ -120,19 +123,20 @@
    - <digit>M :: Defines both <digit>H and <digit>S
    - <digit>X :: Defines <digit>C, <digit>D, <digit>H and <digit>S
    - <digit>red :: Defines <digit>D and <digit>H
+   - <digit>black :: Defines <digit>C and <digit>S. Since BML 2.
    - <digit>step[s] :: Defines the bid <digit> steps above the parent
                     bid (the previous bid made). In response to 1C,
                     1step would be 1D, 2steps would be 1H etc.
 
-   It is worth noticing that whitespaces before the *first bid* in the
-   bidding table is ignored. Other indentation whitespaces are part
+   It is worth noticing that whitespace before the *first bid* in the
+   bidding table is ignored. Other indentation whitespace is part
    of the syntax.
 
-   You probably won't want to add your entire system to a single
-   bidding table. The first bid in a bidding table is the start of a
+   You probably do not want to add your entire system to a single
+   bidding table. The first line in a bidding table is the start of a
    sequence, if the characters - and/or ; are included in the
    bid. Here's an example of adding the answers to Stayman to an
-   already exisiting sequence.
+   already existing sequence.
 
    #+BEGIN_SRC
    1N-2C;
@@ -156,11 +160,11 @@
       2N Ogust
     #+END_SRC
 
-*** Competetive auctions
+*** Competitive auctions
 
-    In order to describe competetive auctions, use parantheses around
+    In order to describe competitive auctions, use parantheses around
     the opponents' bids. All bids, even passes, needs to be described
-    in an competetive auction. P stands for Pass, D is for Double and
+    in an competitive auction. P stands for Pass, D is for Double and
     R is for Redouble. Here's an example of a defense to 1NT:
 
     #+BEGIN_SRC
@@ -310,12 +314,12 @@
                       (north/south), ~EW~ (east/west), ~None~ or ~All~
    - Board number :: If you write a digit, this will be interpreted as
                      the board number. 35 in the example above.
-   - Final contract :: To specify the final contract of the deal, you
-                       simply write the contract (capital letters) and
-                       the player which played the contract. In the
-                       example above this is ~4SXS~ (four spades
-                       doubled, played by south). If the board is
-                       passed out, write ~P~.
+   - Final contract and declarer :: To specify the final contract of the deal, you
+        simply write the contract (capital letters) and
+        the player which played the contract. In the
+        example above this is ~4SXS~ (four spades
+        doubled, played by south). If the board is
+        passed out, write ~P~.
    - Lead :: The deal is written with a lower-case suit (~s h d c~), followed by
              the card (a number or ~A K Q J T~).
 
@@ -367,7 +371,9 @@
 ** Comments
 
    If you want to write text which shouldn't be shown in the export,
-   use ~//comment here~.
+   use ~//comment here~. Since BML 2 a comment must start at the beginning of
+   a line. If this would not be enforced it is impossible to write internet
+   addresses in your text.
    
 ** Including other files
 
@@ -377,6 +383,7 @@
    for a multi opening, and placed it into a subfolder called
    "modules". You could now write #INCLUDE modules/multi.txt where
    you want the file to be inserted.
+
 ** Font styles
    By surrounding words/sentences with / * or = you can make them
    italic, bold or monospace.

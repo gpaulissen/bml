@@ -113,8 +113,7 @@ class Sequence:
 systemdata = []
 
 def systemdata_normal(child):
-    # Matches <digit>[CDHSN], P, D and R, all possibly surrounded by ()
-    return re.match(r'^((\(?\d[CDHSN]\)?)|(\(?P\)?)|(\(?D\)?)|(\(?R\)?))+\Z', child.bidrepr)
+    return child.bid_type()['normal'] == True
 
 def systemdata_bidtable(children):
     ## global rootsequence
@@ -129,10 +128,10 @@ def systemdata_bidtable(children):
 
         # special bids of the form <digit><kind>
         # for instance 1HS, 2M, 3m etc
-        bid = re.search(r'(\d+)(\w+)', i.bidrepr)
-        if bid:
-            denomination = bid.group(1)
-            kind = bid.group(2)
+        bid = i.bid_type()
+        if bid and bid['denomination']:
+            denomination = bid['denomination']
+            kind = bid['kind']
             if(re.match(r'[CDHS]+\Z', kind)):
                 for k in kind:
                     bids_to_add.append(denomination + k)
@@ -142,6 +141,9 @@ def systemdata_bidtable(children):
             elif(kind == 'm'):
                 bids_to_add.append(denomination + 'C')
                 bids_to_add.append(denomination + 'D')
+            elif(kind.upper() == 'BLACK'):
+                bids_to_add.append(denomination + 'C')
+                bids_to_add.append(denomination + 'S')
             elif(kind.upper() == 'RED'):
                 bids_to_add.append(denomination + 'D')
                 bids_to_add.append(denomination + 'H')
@@ -154,6 +156,11 @@ def systemdata_bidtable(children):
                 parentbid = Bid(i.parent.bidrepr[-2:])
                 parentbid += int(denomination)
                 bids_to_add.append(str(parentbid))
+            elif (kind in ['oM', 'om']):
+                # TO DO: oM and om
+                raise NotImplementedError(kind)
+            else:
+                raise Exception("Unknown kind (%s)" % (kind))
         else:
             assert i.bidrepr == bml.EMPTY, 'Bid (%s) must be empty' % (i.bidrepr)
             assert len(children_special) == 1

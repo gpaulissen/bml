@@ -116,6 +116,9 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
         if bid != ROOT and self.level() < 1:
             raise IndentationError("Level (%d) must be at least 1 for a non root Node" % (self.level()))
 
+        # bid sanity check
+        assert self.bid_type() != None
+
     def level(self):
         nr = 0
         p = self.parent
@@ -165,6 +168,29 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
     def __str__(self):
         str = 'bid: %s; bidrepr: %s; level: %d; desc: %s' % (self.bid, self.bidrepr, self.level(), self.desc)
         return str
+
+    def bid_type(self):
+        # Matches <digit>[CDHSN], P, D and R, all possibly surrounded by ()
+        dict = None
+        bid = self.bidrepr
+        m = re.search(r'\((.+)\)\Z', bid)
+        if m:
+            bid = m.group(1)
+            
+        if re.search(r'([1-7][CDHSN]|P|D|R)+\Z', bid):
+            dict = {'normal': True}
+        else:
+            # special bids of the form <digit><kind>
+            # for instance 1HS, 2M, 3m, 10steps, etc
+            m = re.search(r'(?P<denomination>\d+)(?P<kind>[a-zA-Z]+)\Z', bid)
+            if m:
+                kind = m.group('kind')
+                assert kind in ['M', 'm', 'oM', 'om'] or kind.upper() in ['BLACK', 'RED', 'X', 'STEP', 'STEPS'] or re.match(r'[CDHS]+\Z', kind), 'Last bid in "%s" incorrect; kind is "%s"' % (self.bidrepr, kind)
+                dict = {'normal': False, 'denomination': m.group('denomination'), 'kind': kind}
+            else:
+                assert bid in [EMPTY, ROOT], 'Last bid in "%s" must be "%s" or "%s"' % (self.bidrepr, EMPTY, ROOT)
+                dict = {'normal': False, 'denomination': None, 'kind': None}
+        return dict
 
 def create_bidtree(text):
     global clipboard, vulnerability, seat
@@ -441,7 +467,8 @@ def content_from_string(text):
     paragraphs = []
     text = re.sub(r'^\s*#\s*INCLUDE\s*(\S+)\s*\n?', include_file, text, flags=re.MULTILINE)
     text = re.sub(r'^//.*\n', '', text, flags=re.MULTILINE)
-    text = re.sub(r'//.*', '', text)
+    # GJP 2018-01-07 A comment must start at the beginning of a line
+    # text = re.sub(r'//.*', '', text)
     paragraphs = re.split(r'([ ]*\n){2,}', text)
 
     nr = 0
@@ -454,7 +481,7 @@ def content_from_string(text):
                     print("[%d] Content type: %s\n%s\n" % (nr, ContentTypeStr(content_type[0]), c))
                 content.append(content_type)
         except Exception as e:
-            print("\nERROR in paragraph %d: %s" % (nr+1, c))
+            print("\nERROR in paragraph %d:\n\n%s\n" % (nr+1, c))
             raise
             
 def parse_arguments(description, option_tree=True, option_include_external_files=True):
@@ -462,7 +489,7 @@ def parse_arguments(description, option_tree=True, option_include_external_files
     # default arguments
     parser.add_argument('-i', '--indentation', type=int, choices=range(1, 10), default=2, help='the indentation of a bidtable')
     parser.add_argument('-o', '--outputfile', help='the output file (- is stdout)')
-    parser.add_argument("-v", "--verbose", action="count", default=2,
+    parser.add_argument("-v", "--verbose", action="count", default=1,
                         help="increase output verbosity")
     parser.add_argument('inputfile', help='the input file (- is stdin)')
     if option_tree:
