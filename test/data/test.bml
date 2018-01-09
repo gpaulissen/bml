@@ -1,4 +1,4 @@
-[1] Content type: BIDTABLE
+// BEGIN_SRC #1 in README.org
 1C  Any hand with 16+ hcp
   1D  Artificial. 0--7 hcp
     1H  Any hand with 20+ hcp
@@ -13,14 +13,14 @@
 2D  4414. 4405, 4305 or 3405, 11--15 hcp
 2HS Weak
 2N  Weak with 5-5 minors
-
-[2] Content type: BIDTABLE
+ 
+// BEGIN_SRC #2 in README.org
 1C  Polish club, one of three:
-     a) 12--14 NT
-     b) 15+ hcp and 5+!c
-     c) 18+ hcp any distribution
+    a) 12--14 NT
+    b) 15+ hcp and 5+!c
+    c) 18+ hcp any distribution
 
-[3] Content type: BIDTABLE
+// BEGIN_SRC #3 in README.org
 1m = 3+ minor
 1M = 5+ major
 1N = 15--17
@@ -29,7 +29,7 @@
 2X = Weak
 2N = 20--21
 
-[4] Content type: BIDTABLE
+// BEGIN_SRC #4 in README.org
 1N-2C;
 2D No 4 card major
   2H 5+!h, 4!s, invitational
@@ -39,13 +39,13 @@
 2N  4-4 majors, minimum
 3C  4-4 majors, maximum
 
-[5] Content type: BIDTABLE
+// BEGIN_SRC #5 in README.org
 2C Strong, forcing
   2D Waiting
 2X Weak
   2N Ogust
 
-[6] Content type: BIDTABLE
+// BEGIN_SRC #6 in README.org
 (1NT)---
 D   Strength, ca 15+
 2C  At least 5-4 majors
@@ -60,56 +60,62 @@ D   Strength, ca 15+
 2N  5-5 minors
 3X  Preemptive
 
-[7] Content type: BIDTABLE
+// BEGIN_SRC #7 in README.org
+#CUT transfer
+2\R Transfer
+  2\M Transfer accept
+  3\M Super accept
+#ENDCUT
+
 1N---
 2C Stayman
 #PASTE transfer \R=D \M=H
 #PASTE transfer \R=H \M=S
 
-[8] Content type: H1
+// BEGIN_SRC #8 in README.org
 * The 1!c opening
 
-[9] Content type: PARAGRAPH
   Opening 1!c shows at least 16+ hcp, and is forcing. The
   continuation is fairly natural.
 
-[10] Content type: PARAGRAPH
   Some hands might be upgraded to 1!c due to distribution, but
   wildly distributional hands might also be downgraded to avoid
   problems if the opponents preempt.
 
-[11] Content type: H2
 ** The 1!d negative
 
-[12] Content type: PARAGRAPH
    Responding 1!d shows a hand which doesn't have enough values to
    establish a game force.
 
-[13] Content type: DIAGRAM
+// BEGIN_SRC #9 in README.org
+#+TITLE: Precision club
+#+AUTHOR: John Smith
+#+DESCRIPTION: Strong club system. Nebulous diamond and 5 card majors
+
+// BEGIN_SRC #10 in README.org
 N None 35 4SXS hK
 N Kxx T9 xxx Q987x
 E Jx AJxxx AJx KTx
 S A987xx - Q9xx Axx
 W QT KQxxxx KTx Jx
-
-[14] Content type: DIAGRAM
+ 
+// BEGIN_SRC #11 in README.org
 #35, Dealer N, None vul, played 4SXS with hK lead
 N: Kxx    T9     xxx  Q987x
 E: Jx     AJxxx  AJx  KTx
 S: A987xx -      Q9xx Axx
 W: QT     KQxxxx KTx  Jx
 
-[15] Content type: LIST
+// BEGIN_SRC #12 in README.org
 - The first item in an unordered list
 - The second item
 - Etc..
 
-[16] Content type: ENUM
 1. The first item in an ordered list
 2. The second item
 3. Etc..
 
-[17] Content type: PARAGRAPH
+#INCLUDE test_include.bml
+
+// BEGIN_SRC #13 in README.org
 /Here's/ *an* =example= (italic, bold, monospace)
-
-

@@ -1,7 +1,11 @@
 import sys
 import re
-import bml
 import xml.etree.ElementTree as ET
+import os.path
+
+import bml
+
+__all__ = ['bml2html'] # only thing to export
 
 def html_bidtable(et_element, children, root=False):
     if len(children) > 0:
@@ -83,7 +87,7 @@ def to_html(content):
     meta.attrib['content'] = "text/html; charset=utf-8"
 
     title = ET.SubElement(head, 'title')
-    title.text = bml.meta['TITLE']
+    title.text = content.meta['TITLE']
 
     if not bml.args.include_external_files:
         link = ET.SubElement(head, 'link')
@@ -93,12 +97,12 @@ def to_html(content):
     else:
         style = ET.SubElement(head, 'style')
         style.attrib['type'] = "text/css"
-        with open('bml.css', 'r') as bml_css:
+        with open(os.path.join(os.path.dirname(__file__), 'bml.css'), 'r') as bml_css:
             style.text = bml_css.read()
     
     body = ET.SubElement(html, 'body')
 
-    for c in content:
+    for c in content.nodes:
         content_type, text = c
         if content_type == bml.ContentType.PARAGRAPH:
             element = ET.SubElement(body, 'p')
@@ -158,16 +162,12 @@ def to_html(content):
 <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
 <html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'>""" + str(ET.tostring(head), 'UTF8') + bodystring + '</html>'
 
-if __name__ == '__main__':
-    bml.args = bml.parse_arguments(description='Convert BML to HTML.')
-    bml.content_from_file(bml.args.inputfile)
-    if not bml.args.outputfile:
-        bml.args.outputfile = '-' if bml.args.inputfile == '-' else bml.args.inputfile.split('.')[0] + '.htm'
-    if bml.args.verbose >= 1:
-        print("Output file:", bml.args.outputfile)
-    h = to_html(bml.content)
+def bml2html(input_filename, output_filename):
+    content = bml.content_from_file(input_filename)
+    h = to_html(content)
     if bml.args.outputfile == '-':
         sys.stdout.write(h)
     else:
         with open(bml.args.outputfile, mode='w', encoding="utf-8") as f:
             f.write(h)
+    return content

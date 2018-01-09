@@ -22,15 +22,15 @@
   of the current features in BML. Let's start with the basic opening
   structure of the system:
   
-  1C  2+!c. Natural or balanced
-  1D  4+ suit, unbalanced
-  1M  5+ suit
-  2C  20--21 bal / Any game force
-  2D  6+!h or 6+!s, 5--9 hcp
-  2HS 6+ suit, 10--13 hcp
-  2N  22--24
-  3X  Preemptive
-  3N  Gambling
+1C  2+!c. Natural or balanced
+1D  4+ suit, unbalanced
+1M  5+ suit
+2C  20--21 bal / Any game force
+2D  6+!h or 6+!s, 5--9 hcp
+2HS 6+ suit, 10--13 hcp
+2N  22--24
+3X  Preemptive
+3N  Gambling
   
   The above is an example of a bidding table; the reason why BML is
   more suited for bridge system notes than other markup languages. You
@@ -53,13 +53,13 @@
 
   In this example we use transfer responses to the 1!c opening:
 
-  1C---
-  1red Transfer. 4+ major, 0+ hcp
-  1S   INV+ with 5+!d / Negative NT
-  1N   Game forcing, 5+!c or balanced
-  2C   5+!c, 5--9 hcp
-  2X   6+ suit, 4--8 hcp
-  2N   Invitational
+1C---
+1red Transfer. 4+ major, 0+ hcp
+1S   INV+ with 5+!d / Negative NT
+1N   Game forcing, 5+!c or balanced
+2C   5+!c, 5--9 hcp
+2X   6+ suit, 4--8 hcp
+2N   Invitational
 
   By writing 1C--- we define that the following bids should be
   continuations to the sequence 1C. We could write 1C- or 1C-- too,
@@ -74,46 +74,46 @@
    blank line? This is important in BML, as the blankline are used to
    separate elements.
 
-   1C-1D;
-   1H Minimum with 2--3!h
-     1S 4+!h, 4!s, at most invitational
-     1N Sign off
-     2C Puppet to 2!d
-       2D Forced
-         2H Mildly invitational with 5!h
-         2S Invitational, 5+!h and 4!s
-         2N Strongly invitational with 5!h
-         3m Invitational with 4!h and 5+ minor
-         3H 6!h, about 11--12 hcp
-     2D Artificial game force
-     2H 6+!h, about 9--10 hcp
-   1S 5+!c, 4+!s, unlimited
-   1N 17--19 bal, 2--3!h
-   2C 5+!c, unbal, 0--2!h, 0--3!s
-   2D Reverse
-   2H Minimum, 4!h
-   2S 16+ hcp, 5+!c and 4+!h
-     3D Retransfer
-       3H
-         3S Cue bid, slam interest
-         4CD Cue bid, slam interest
-         4H To play
-     3H Invitational
-     3S Splinter
-     4CD Splinter
-     4H To play
-   2N 16+ hcp, 6+!c. 18+ if 3!h
-     3C Suggestion to play
-     3D Relay
-       3H 3!h, 18+ hcp
-     3H Game forcing with 6+!h
-   3C 15--17 hcp, 6+!c and 3!h
-     3D Retransfer
-     3H Invitational
-   3D 17--19 bal, 4!h
-     3H To play
-   3H 13--15 hcp, good hand, 5+!c and 4!h
-     3N Asking for singleton
+1C-1D;
+1H Minimum with 2--3!h
+  1S 4+!h, 4!s, at most invitational
+  1N Sign off
+  2C Puppet to 2!d
+    2D Forced
+      2H Mildly invitational with 5!h
+      2S Invitational, 5+!h and 4!s
+      2N Strongly invitational with 5!h
+      3m Invitational with 4!h and 5+ minor
+      3H 6!h, about 11--12 hcp
+  2D Artificial game force
+  2H 6+!h, about 9--10 hcp
+1S 5+!c, 4+!s, unlimited
+1N 17--19 bal, 2--3!h
+2C 5+!c, unbal, 0--2!h, 0--3!s
+2D Reverse
+2H Minimum, 4!h
+2S 16+ hcp, 5+!c and 4+!h
+  3D Retransfer
+    3H
+      3S Cue bid, slam interest
+      4CD Cue bid, slam interest
+      4H To play
+  3H Invitational
+  3S Splinter
+  4CD Splinter
+  4H To play
+2N 16+ hcp, 6+!c. 18+ if 3!h
+  3C Suggestion to play
+  3D Relay
+    3H 3!h, 18+ hcp
+  3H Game forcing with 6+!h
+3C 15--17 hcp, 6+!c and 3!h
+  3D Retransfer
+  3H Invitational
+3D 17--19 bal, 4!h
+  3H To play
+3H 13--15 hcp, good hand, 5+!c and 4!h
+  3N Asking for singleton
 
    This bidding table shows a couple of new features. The most
    prominent is the ability to add continuations directly in the
@@ -128,25 +128,25 @@
   bid are indicated by encapsulating them in parentheses. P is used
   for Pass, D for Double and R for Redouble.
 
-  (1N)---
-  #COPY nt_defense
-  D   Strength, ca 15+
-  2C  At least 5-4 majors
-    (D)
-      P  5+!c, suggestion to play
-      R  Asking for better/longer major
-      2D 5+!d, suggestion to play
-    (P)
-      2D Asking for better/longer major
-  2D  A weak major or a strong minor
-    (P)
-      2H Pass/correct
-      2S Pass/correct
-      2N Asking
-  2HS Constructive
-  2N  5-5 minors
-  3X  Preemptive
-  #ENDCOPY
+(1N)---
+#COPY nt_defense
+D   Strength, ca 15+
+2C  At least 5-4 majors
+  (D)
+    P  5+!c, suggestion to play
+    R  Asking for better/longer major
+    2D 5+!d, suggestion to play
+  (P)
+    2D Asking for better/longer major
+2D  A weak major or a strong minor
+  (P)
+    2H Pass/correct
+    2S Pass/correct
+    2N Asking
+2HS Constructive
+2N  5-5 minors
+3X  Preemptive
+#ENDCOPY
 
   Note that the above is only for a direct overcall over 1NT. To
   define the above also when balancing. We've used BML's
@@ -154,9 +154,9 @@
   have to write it all over again. Take a look below (only visible in
   the /example.txt/ file, not in HTML, LaTeX or .pdf):
 
-  #HIDE
-  (1N)-P-(P)---
-  #PASTE nt_defense
+#HIDE
+(1N)-P-(P)---
+#PASTE nt_defense
 
   First we used the =#COPY= command; the text between =#COPY= and =#ENDCOPY=
   got put into a sort of clipboard, with the tag nt_defense which we
@@ -174,14 +174,14 @@
   It is also possible to add continuations when the opponents
   interfere:
 
-  1C-(1D)---
-  D  4+!h
-  1H 4+!s
-  1S INV+ with 5+!d / Negative NT
-  1N Game forcing, 5+!c or balanced
-  2C 5+!c, 5--9 hcp
-  2X 6+ suit, 4--8 hcp
-  2N Invitational
+1C-(1D)---
+D  4+!h
+1H 4+!s
+1S INV+ with 5+!d / Negative NT
+1N Game forcing, 5+!c or balanced
+2C 5+!c, 5--9 hcp
+2X 6+ suit, 4--8 hcp
+2N Invitational
 
 * The 1NT opening
 
@@ -189,21 +189,21 @@
   showcase how to make sequences dependant on vulnerability and
   seat. This will be a bit messy, so hold tight!
 
-  #CUT nt_module
-  2C  Stayman
-    2D No major
-    2N 4-4 majors, minimum
-    3C 4-4 majors, maximum
-  2red Transfer
-  2S  Minor suit stayman
-  2N  Invitational
-  #ENDCUT
+#CUT nt_module
+2C  Stayman
+  2D No major
+  2N 4-4 majors, minimum
+  3C 4-4 majors, maximum
+2red Transfer
+2S  Minor suit stayman
+2N  Invitational
+#ENDCUT
 
   We start by cutting our NT-module, since this will be used on all
   NT-openings. =#CUT= is similar to the =#COPY= command, but using =#CUT=
   means that it isn't parsed as a bidding table until it is pasted.
   
-  #VUL N0
+#VUL N0
 
   The =#VUL= command is used to set the vulnerability. It takes an
   argument of two characters, each can be Y, N or 0. The first
@@ -211,37 +211,37 @@
   opponents are vulnerable. Y is for Yes, N is for No and 0 means that
   it doesn't matter.
   
-  #SEAT 12
+#SEAT 12
 
   The =#SEAT= command sets the seat in which the bid should be valid. 0
   means that the seat doesn't matter (all seats), 12 means first or
   second and 34 means third or fourth. 1--4 could also be used.
   
-  #HIDE
-  1N 12--14
-    #PASTE nt_module
+#HIDE
+1N 12--14
+  #PASTE nt_module
 
   So when we're not vulnerable we open 1NT 12--14 in 1st and 2nd seat.
   
-  #SEAT 34
+#SEAT 34
   
-  #HIDE
-  1N 14--16
-    #PASTE nt_module
+#HIDE
+1N 14--16
+  #PASTE nt_module
 
   But in third and fourth seat it is 14--16.
   
-  #VUL Y0
+#VUL Y0
   
-  #SEAT 0
+#SEAT 0
   
-  #HIDE
-  1N 14--16
+#HIDE
+1N 14--16
 
   When we're vulnerable we always open 1NT 14--16.
 
-  1N---
-  #PASTE nt_module
+1N---
+#PASTE nt_module
 
   We've been using the =#HIDE= command, so we don't have to see our
   NT-system over and over again. This time tough we paste it

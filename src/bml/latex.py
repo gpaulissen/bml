@@ -2,7 +2,8 @@ import sys
 import os
 import re
 import bml
-from io import StringIO
+
+__all__ = ['bml2latex'] # only thing to export
 
 SUIT2LATEX = { 'C': '\BC', 'D': '\BD', 'H': '\BH', 'S': '\BS' }
 
@@ -191,7 +192,7 @@ def to_latex(content, f):
     if not bml.args.include_external_files:
         bml_tex_str = "\include{bml}"
     else:
-        with open('bml.tex', 'r') as bml_tex:
+        with open(os.path.join(os.path.dirname(__file__), 'bml.tex'), 'r') as bml_tex:
             bml_tex_str = bml_tex.read()
         
     preamble = r"""\documentclass[a4paper]{article}
@@ -209,17 +210,16 @@ def to_latex(content, f):
 """ % (usepackage_dirtree, bml_tex_str)
 
     f.write(preamble)
-    if 'TITLE' in bml.meta:
-        f.write('\\title{%s}\n' % bml.meta['TITLE'])
-    if 'AUTHOR' in bml.meta:
-        f.write('\\author{%s}\n' % bml.meta['AUTHOR'])
+    for s in ['TITLE', 'AUTHOR']:
+        if s in content.meta:
+            f.write('\\%s{%s}\n' % (s.lower(), content.meta[s]))
 
     f.write('\\begin{document}\n')
     f.write('\\maketitle\n')
     f.write('\\tableofcontents\n\n')
         
     # then start the document
-    for c in content:
+    for c in content.nodes:
         content_type, text = c
         if content_type == bml.ContentType.PARAGRAPH:
             text = re.sub(r'(![cdhs])([^!]?)', latex_replace_suits_desc, text)
@@ -310,15 +310,11 @@ def to_latex(content, f):
             
     f.write('\\end{document}\n')
 
-if __name__ == '__main__':
-    bml.args = bml.parse_arguments(description='Convert BML to LaTeX.')
-    bml.content_from_file(bml.args.inputfile)
-    if not bml.args.outputfile:
-        bml.args.outputfile = '-' if bml.args.inputfile == '-' else bml.args.inputfile.split('.')[0] + '.tex'
-    if bml.args.verbose >= 1:
-        print("Output file:", bml.args.outputfile)
-    if bml.args.outputfile == '-':
-        to_latex(bml.content, sys.stdout)
+def bml2latex(input_filename, output_filename):
+    content = bml.content_from_file(input_filename)
+    if output_filename == '-':
+        to_latex(content, sys.stdout)
     else:
-        with open(bml.args.outputfile, mode='w', encoding="utf-8") as f:
-            to_latex(bml.content, f)
+        with open(output_filename, mode='w', encoding="utf-8") as f:
+            to_latex(content, f)
+    return content

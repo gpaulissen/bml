@@ -4,26 +4,46 @@ import re
 import copy
 from collections import defaultdict
 import argparse
+from contextlib import contextmanager
 
+__all__ = ['parse_arguments', 'content_from_file', 'Node', 'ContentType', 'args', 'EMPTY']
+
+# constants
 ROOT = 'root'
 EMPTY = '{}'
 
-args = None
+class Args:
+    """The default command line arguments"""
+    verbose = None
+    indentation = None
+    tree = None
+    include_external_files = None
+    inputfile = None
+    outputfile = None
 
-content = []
+    def __init__(self, verbose=1, indentation=2, tree=False, include_external_files=True, inputfile='-', outputfile='-'):
+        self.verbose = verbose
+        self.indentation = indentation
+        self.tree = tree
+        self.include_external_files = include_external_files
+        self.inputfile = inputfile
+        self.outputfile = outputfile
+    
+args = Args()
 
-# where we keep copies
-clipboard = {}
-
-vulnerability = '00'
-seat = '0'
-
-# meta information about the BML-file, supported:
-# TITLE = the name of the system
-# DESCRIPTION = a short summary of the system
-# AUTHOR = the system's author(s)
-# data in meta is only set once, and isn't overwritten
-meta = defaultdict(str)
+class Content:
+    """The content of a BML file"""
+    nodes = [] # A list of Nodes
+    # where we keep copies
+    clipboard = {}
+    vulnerability = '00'
+    seat = '0'
+    # meta information about the BML-file, supported:
+    # TITLE = the name of the system
+    # DESCRIPTION = a short summary of the system
+    # AUTHOR = the system's author(s)
+    # data in meta is only set once, and isn't overwritten
+    meta = defaultdict(str)
 
 class Diagram:
     """A structure for deal diagrams"""
@@ -49,6 +69,8 @@ class Diagram:
                 self.south = h[1:]
             elif hand == 'W':
                 self.west = h[1:]
+            else:
+                assert hand in ['N', 'E', 'S', 'W'], "Hand (%s) must be N, E, S or W" % (hand)
 
         dealer = re.search(r'(?:\A|\s)([NESW]),?(?:\Z|\s)', firstrow)
         if dealer:
@@ -70,9 +92,23 @@ class Diagram:
         if contract:
             self.contract = ('P', None, None, None)
         else:
-            contract = re.search(r'(?:\A|\s)(\d)([SHDCN])(XX?)?([NESW]),?(?:\Z|\s)', firstrow)
+            contract = re.search(r'(?:\A|\s)([1-7])([SHDCN])(XX?)?([NESW]),?(?:\Z|\s)', firstrow)
             if contract:
-                self.contract = contract.groups()
+                self.contract = contract.groups() # level, suit, (re)double, declarer
+        self.check()
+
+    def check(self):
+        assert self.north != None, 'North hand not defined'
+        assert self.east != None, 'East hand not defined'
+        assert self.south != None, 'South hand not defined'
+        assert self.west != None, 'West hand not defined'
+        assert self.dealer == None or self.dealer in ['N', 'E', 'S', 'W'], 'Dealer must be N, E, S or W'
+        assert self.vul == None or self.vul in ['All', 'None', 'EW', 'NS'], 'Vulnerability must be All, None, EW or NS'
+        assert self.board == None or re.match(r'\d+\Z', self.board), 'Board (%s) must match \d+\Z' % (self.board)
+        assert self.lead == None or len(self.lead) == 2 and re.match(r'[shdc][2-9AKQJT]\Z', self.lead[0] + self.lead[1]), 'Lead (%s) must match [shdc][2-9AKQJT]\Z' % (str(self.lead))
+        assert self.contract == None or len(self.contract) == 4, 'Contract (%s) must be a list of 4 elements' % (str(self.contract))
+        assert self.contract == None or re.match(r'(P|[1-7])', self.contract[0]) # level: P or 1-7
+        assert self.contract == None or self.contract[0] == 'P' or re.match(r'\d[SHDCN](XX?)?[NESW]\Z', self.contract[0]+self.contract[1]+self.contract[2]+self.contract[3])
                 
 class Node:
     """
@@ -88,9 +124,6 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
 """
     def __init__(self, bid, desc, indentation, parent=None, desc_indentation=-1):
         # precondition
-        if args.verbose > 1:
-            print("bid: %s; indentation: %s" % (bid, indentation))
-
         # checks for non root
         if parent != None and indentation:
             if indentation % args.indentation != 0:
@@ -192,11 +225,10 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
                 dict = {'normal': False, 'denomination': None, 'kind': None}
         return dict
 
-def create_bidtree(text):
-    global clipboard, vulnerability, seat
+def create_bidtree(text, content):
     root = Node(ROOT, ROOT, -1)
-    root.vul = vulnerability
-    root.seat = seat
+    root.vul = content.vulnerability
+    root.seat = content.seat
     lastnode = root
 
     # breaks when no more CUT in bidtable
@@ -209,7 +241,7 @@ def create_bidtree(text):
         for i in range(len(value)):
             value[i] = value[i][len(cut.group(1)):]
         value = '\n'.join(value)
-        clipboard[cut.group(2)] = value # group2=key
+        content.clipboard[cut.group(2)] = value # group2=key
         text = text[:cut.start()]+text[cut.end():]
 
     # breaks when no more COPY in bidtable
@@ -222,7 +254,7 @@ def create_bidtree(text):
         for i in range(len(value)):
             value[i] = value[i][len(copy.group(1)):]
         value = '\n'.join(value)
-        clipboard[copy.group(2)] = value # group2=key
+        content.clipboard[copy.group(2)] = value # group2=key
         text = text[:copy.end(3)]+text[copy.end():]
         text = text[:copy.start()]+text[copy.start(3):]
         
@@ -232,7 +264,7 @@ def create_bidtree(text):
         if not paste:
             break
         indentation = paste.group(1)
-        lines = clipboard[paste.group(2)]
+        lines = content.clipboard[paste.group(2)]
         for r in paste.group(3).split():
             target, replacement = r.split('=')
             lines = lines.replace(target, replacement)
@@ -363,10 +395,7 @@ def ContentTypeStr(self):
     }
     return switcher.get(self, "nothing")
 
-
-def get_content_type(text):
-    global meta, vulnerability, seat
-    
+def get_content_type(text, content):
     if text.startswith('****'):
         return (ContentType.H4, text[4:].lstrip())
     if text.startswith('***'):
@@ -383,11 +412,11 @@ def get_content_type(text):
         return (ContentType.LIST, re.split(r'^\s*-\s*', text, flags=re.MULTILINE)[1:])
 
     if(re.match(r'^\s*#VUL', text)):
-        vulnerability = text.split()[1]
+        content.vulnerability = text.split()[1]
         return None
         
     if(re.match(r'^\s*#SEAT', text)):
-        seat = text.split()[1]
+        content.seat = text.split()[1]
         return None
         
     if(re.match(r'^\s*1\.', text)):
@@ -401,7 +430,7 @@ def get_content_type(text):
         return (ContentType.BIDDING, table)
         
     if(re.match(r'^\s*\(?\d[A-Za-z]+', text)):
-        bidtree = create_bidtree(text)
+        bidtree = create_bidtree(text, content)
         if bidtree:
             return (ContentType.BIDTABLE, bidtree)
         return None
@@ -429,14 +458,14 @@ def get_content_type(text):
     
     if(metamatch):
         keyword = metamatch.group(1)
-        if keyword in meta:
+        if keyword in content.meta:
             return None
         value = metamatch.group(2)
-        meta[keyword] = value
+        content.meta[keyword] = value
         return None
                 
     if(re.match(r'^\s*#', text)):
-        bidtree = create_bidtree(text)
+        bidtree = create_bidtree(text, content)
         if bidtree:
             return (ContentType.BIDTABLE, bidtree)
         return None
@@ -447,6 +476,15 @@ def get_content_type(text):
     
     return None
 
+@contextmanager
+def cd(newdir):
+    prevdir = os.getcwd()
+    os.chdir(os.path.expanduser(newdir))
+    try:
+        yield
+    finally:
+        os.chdir(prevdir)
+
 def include_file(matchobj):
     filename = matchobj.group(1)
     text = ''
@@ -455,14 +493,20 @@ def include_file(matchobj):
     return '\n' + text + '\n'
 
 def content_from_file(filename):
+    content = None
     if filename == '-':
-        content_from_string(sys.stdin.read())
+        content = content_from_string(sys.stdin.read())
     else:
-        with open(filename, mode='r', encoding="utf-8") as f:
-            content_from_string(f.read())
+        # move to the directory of the filename so INCLUDEs will work correctly
+        with cd(os.path.dirname(os.path.abspath(filename))):
+            with open(os.path.basename(os.path.abspath(filename)), mode='r', encoding="utf-8") as f:
+                content = content_from_string(f.read())
+    return content
 
 def content_from_string(text):
-    global content, args
+    global args
+
+    content = Content()
     
     paragraphs = []
     text = re.sub(r'^\s*#\s*INCLUDE\s*(\S+)\s*\n?', include_file, text, flags=re.MULTILINE)
@@ -475,34 +519,37 @@ def content_from_string(text):
     for c in paragraphs:
         try:
             nr = nr + 1
-            content_type = get_content_type(c)
+            content_type = get_content_type(c, content)
             if content_type:
                 if args.verbose > 1:
                     print("[%d] Content type: %s\n%s\n" % (nr, ContentTypeStr(content_type[0]), c))
-                content.append(content_type)
+                content.nodes.append(content_type)
         except Exception as e:
             print("\nERROR in paragraph %d:\n\n%s\n" % (nr+1, c))
             raise
+    return content
             
 def parse_arguments(description, option_tree=True, option_include_external_files=True):
+    global args
+    
     parser = argparse.ArgumentParser(description)
     # default arguments
-    parser.add_argument('-i', '--indentation', type=int, choices=range(1, 10), default=2, help='the indentation of a bidtable')
+    parser.add_argument('-i', '--indentation', type=int, choices=range(1, 10), default=args.indentation, help='the indentation of a bidtable')
     parser.add_argument('-o', '--outputfile', help='the output file (- is stdout)')
-    parser.add_argument("-v", "--verbose", action="count", default=1,
+    parser.add_argument("-v", "--verbose", action="count", default=args.verbose,
                         help="increase output verbosity")
     parser.add_argument('inputfile', help='the input file (- is stdin)')
     if option_tree:
         tree_parser = parser.add_mutually_exclusive_group(required=False)
         tree_parser.add_argument('--tree', dest='tree', action='store_true')
         tree_parser.add_argument('--no-tree', dest='tree', action='store_false')
-        parser.set_defaults(tree=False) # BML 1.0
+        parser.set_defaults(tree=args.tree) # BML 1.0
         
     if option_include_external_files:
         include_external_files_parser = parser.add_mutually_exclusive_group(required=False)
         include_external_files_parser.add_argument('--include-external-files', dest='include_external_files', action='store_true')
         include_external_files_parser.add_argument('--no-include-external-files', dest='include_external_files', action='store_false')
-        parser.set_defaults(include_external_files=False) # BML 1.0
+        parser.set_defaults(include_external_files=args.include_external_files) # BML 1.0
 
     args = parser.parse_args()
 
@@ -515,6 +562,5 @@ def parse_arguments(description, option_tree=True, option_include_external_files
     return args
             
 if __name__ == '__main__':    
-    parser = create_argument_parser(description='Parse BML.')
-    args = parser.parse_args()
+    args = parse_arguments(description='Parse BML.')
     content_from_file(args.inputfile)

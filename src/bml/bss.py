@@ -2,6 +2,8 @@ import re
 import bml
 import sys
 
+__all__ = ['bml2bss'] # only thing to export
+
 VUL_DICT = {
     # key: bml representation
     # value: bss representation
@@ -212,19 +214,19 @@ def systemdata_bidtable(children):
                 
         systemdata_bidtable(r.children)
 
-def to_systemdata(contents):
+def to_systemdata(content):
     ## global rootsequence
-    for c in contents:
+    for c in content.nodes:
         ## rootsequence = ''
         contested = False # unused?
         content_type, content = c
         if content_type == bml.ContentType.BIDTABLE:
             systemdata_bidtable(content.children)
 
-def systemdata_to_bss(f):
+def systemdata_to_bss(content, f):
     global systemdata
 
-    f.write('*00{'+ bml.meta['TITLE'] +'}=NYYYYYY' + bml.meta['DESCRIPTION'] + '\n')
+    f.write('*00{'+ content.meta['TITLE'] +'}=NYYYYYY' + content.meta['DESCRIPTION'] + '\n')
     for i in systemdata:
         kind = str(i)[-2:]
         if not i.we_open:
@@ -245,18 +247,14 @@ def systemdata_to_bss(f):
             # least/most amount of cards in suit
             f.write('08')
         f.write(i.desc+'\n')
+    return
 
-if __name__ == '__main__':
-    bml.args = bml.parse_arguments(description='Convert BML to BSS.', option_tree=False, option_include_external_files=False)
-    bml.content_from_file(bml.args.inputfile)
-    if not bml.args.outputfile:
-        bml.args.outputfile = '-' if bml.args.inputfile == '-' else bml.args.inputfile.split('.')[0] + '.bss'
-    if bml.args.verbose >= 1:
-        print("Output file:", bml.args.outputfile)
-    to_systemdata(bml.content)
-    if bml.args.outputfile == '-':
-        systemdata_to_bss(sys.stdout)
+def bml2bss(input_filename, output_filename):
+    content = bml.content_from_file(input_filename)
+    to_systemdata(content)
+    if output_filename == '-':
+        systemdata_to_bss(content, sys.stdout)
     else:
-        with open(bml.args.outputfile, mode='w', encoding="utf-8") as f:
-            systemdata_to_bss(f)
-
+        with open(output_filename, mode='w', encoding="utf-8") as f:
+            systemdata_to_bss(content, f)
+    return content
