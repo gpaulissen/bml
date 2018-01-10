@@ -1,9 +1,11 @@
 
 *.pdf
-*.htm
-example.tex
-example.bss
 *.pyc
-auto/bml.el
+auto/*
 .cache/v/cache/lastfailed
 test/.cache/v/cache/lastfailed
+*.aux
+*.log
+*.out
+*.toc
+test/tmp/*

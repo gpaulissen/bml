@@ -165,9 +165,9 @@ def to_html(content):
 def bml2html(input_filename, output_filename):
     content = bml.content_from_file(input_filename)
     h = to_html(content)
-    if bml.args.outputfile == '-':
+    if output_filename == '-':
         sys.stdout.write(h)
     else:
-        with open(bml.args.outputfile, mode='w', encoding="utf-8") as f:
+        with open(output_filename, mode='w', encoding="utf-8") as f:
             f.write(h)
     return content

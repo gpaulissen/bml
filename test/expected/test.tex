@@ -1,0 +1,1605 @@
+\documentclass[a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{newcent}
+\usepackage{helvet}
+\usepackage{graphicx}
+
+\usepackage[pdftex, pdfborder={0 0 0}]{hyperref}
+\frenchspacing
+
+\usepackage{txfonts} % For \varheartsuit and \vardiamondsuit
+\usepackage[usenames,dvipsnames]{color} % dvipsnames necessary to made PDFLaTeX work.
+\usepackage{enumerate}
+\usepackage{listliketab}
+\usepackage{latexsym} % \Box
+\usepackage{pbox} % \Box
+
+% suits
+
+%%% Colors
+
+\newcommand{\BC}{\textcolor{OliveGreen}{$\clubsuit$}}
+\newcommand{\BD}{\textcolor{RedOrange}{$\vardiamondsuit$}}
+\newcommand{\BH}{\textcolor{Red}{$\varheartsuit${}}}
+\newcommand{\BS}{\textcolor{Blue}{$\spadesuit${}}}
+
+%suits for pdf-friendly titles
+\newcommand{\pdfc}{\texorpdfstring{\BC{}}{C}}
+\newcommand{\pdfd}{\texorpdfstring{\BD{}}{D}}
+\newcommand{\pdfh}{\texorpdfstring{\BH{}}{H}}
+\newcommand{\pdfs}{\texorpdfstring{\BS{}}{S}}
+
+\newenvironment{bidtable}
+{\begin{tabbing}
+
+xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=\kill}
+{\end{tabbing} }%
+
+\newenvironment{bidding}%
+{\begin{tabbing}
+xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx \kill
+}{\end{tabbing} }%end bidding
+
+
+% writing hands
+\newcommand{\cards}[1]{\textsf{#1}}
+\newcommand{\spades}[1]{\BS\cards{#1}}
+\newcommand{\hearts}[1]{\BH\cards{#1}}
+\newcommand{\diamonds}[1]{\BD\cards{#1}}
+\newcommand{\clubs}[1]{\BC\cards{#1}}
+\newcommand{\void}{--}
+\newcommand{\hand}[4]{\spades{#1}\ \hearts{#2}\ \diamonds{#3} \clubs{#4}}
+\newcommand{\vhand}[4]{\spades{#1}\\\hearts{#2}\\\diamonds{#3}\\\clubs{#4}}
+
+% The \Box should always appear the same distance from the left margin
+\newcommand\onesuit[4]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+                & \cards{#2} \\%
+      \cards{#1}& $\Box$    & \cards{#3} \\%
+                & \cards{#4} %
+    \end{tabular}
+  \end{center}%
+}
+
+% A special command if the south hand is not shown to avoid whitespace
+\newcommand\onesuitenw[3]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}%
+                & \cards{#2} \\%
+      \cards{#1}& $\Box$    & \cards{#3}%
+    \end{tabular}%
+  \end{center}%
+}
+
+\newcommand\dealdiagram[5]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+      \pbox{20cm}{\small #5}& \pbox{20cm}{#2} \\%
+      \pbox{20cm}{#1}& $\Box$    & \pbox{20cm}{#3} \\%
+                & \pbox{20cm}{#4} %
+    \end{tabular}
+  \end{center}%
+}
+
+\newcommand\dealdiagramenw[4]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+      \pbox{20cm}{\small #4}& \pbox{20cm}{#2} \\%
+      \pbox{20cm}{#1}& $\Box$    & \pbox{20cm}{#3} \\%
+    \end{tabular}
+  \end{center}%
+}
+
+\newcommand\dealdiagramew[2]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+      \pbox{20cm}{#1}& $\Box$    & \pbox{20cm}{#2} \\%
+    \end{tabular}
+  \end{center}%
+}
+
+\title{BML 5542}
+\author{Erik Sjostrand}
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+
+Welcome to BML! This is a normal paragraph, and above we can see
+the \texttt{\#+TITLE}, the \texttt{\#+AUTHOR} and the \texttt{\#+DESCRIPTION} of the file. \texttt{\#+TITLE} is
+the name of the system and \texttt{\#+DESCRIPTION} is a \emph{short summary of} how
+the system works. \texttt{\#+AUTHOR} is self explanatory. \texttt{Introduction} above,
+``headed by an asterisk'', sets a section at the first level (the second
+level would have two asterisks etc).
+
+In the paragraph above I encapsulated some words between equal
+signs. This means that they will show up as a monospaced font when
+exported to HTML or LaTeX. It is also possible to make words (or
+sentences) \textbf{strong or bold} or \emph{in italics}.
+
+The system presented in this example file is meant to showcase many
+of the current features in BML. Let's start with the basic opening
+structure of the system:
+
+\begin{bidtable}
+
+\end{bidtable}
+
+The above is an example of a bidding table; the reason why BML is
+more suited for bridge system notes than other markup languages. You
+start by writing the bid, then a number of whitespaces, and then the
+description of the bid. Simple! C is for clubs, D for diamonds, H
+for hearts, S for spades and N for no trump. There's also some
+special cases which you could use, above we use 1M (1H and 1S), 2HS
+(2H and 2S) and 3X (3C, 3D, 3H and 3S). We'll see more of these
+later.
+
+The reason why the 1NT opening is left out above is a secret for
+now!
+
+\section{The 1\pdfc\ opening}
+
+You might have noticed the \BC\ in the title of this section? This
+will be replaced by a club suit symbol when exported. The same is
+true for \BD , \BH\ and \BS\ (but these will be converted to diamonds,
+hearts and spades, ofcourse).
+
+In this example we use transfer responses to the 1\BC\ opening:
+
+\begin{bidtable}
+1\BC--\+\\
+1\BS \> INV+ with 5+\BD\ / Negative NT\\
+1NT \> Game forcing, 5+\BC\ or balanced\\
+2\BC \> 5+\BC , 5--9 hcp\\
+2NT \> Invitational\\
+1\BD \> Transfer. 4+ major, 0+ hcp\\
+1\BH \> Transfer. 4+ major, 0+ hcp\\
+2\BC \> 6+ suit, 4--8 hcp\\
+2\BD \> 6+ suit, 4--8 hcp\\
+2\BH \> 6+ suit, 4--8 hcp\\
+2\BS \> 6+ suit, 4--8 hcp\-
+\end{bidtable}
+
+By writing 1C--- we define that the following bids should be
+continuations to the sequence 1C. We could write 1C- or 1C-- too,
+the number of dashes only matters to the way the output looks. Also
+note the 1red response, this defines both 1D and 1H.
+
+\subsection{After a transfer}
+
+This section has two asterisks, meaning it will be at level two
+(so its a subsection). You might also have noticed that the
+paragraphs, the sections and the bidtables are separated by a
+blank line? This is important in BML, as the blankline are used to
+separate elements.
+
+\begin{bidtable}
+1\BC-1\BD\+\\
+1\BH \> Minimum with 2--3\BH \+\\
+1\BS \> 4+\BH , 4\BS , at most invitational\\
+1NT \> Sign off\\
+2\BC \> Puppet to 2\BD \+\\
+2\BD \> Forced\+\\
+2\BH \> Mildly invitational with 5\BH \\
+2\BS \> Invitational, 5+\BH\ and 4\BS \\
+2NT \> Strongly invitational with 5\BH \\
+3\BH \> 6\BH , about 11--12 hcp\\
+3\BC \> Invitational with 4\BH\ and 5+ minor\\
+3\BD \> Invitational with 4\BH\ and 5+ minor\-\-\\
+2\BD \> Artificial game force\\
+2\BH \> 6+\BH , about 9--10 hcp\-\\
+1\BS \> 5+\BC , 4+\BS , unlimited\\
+1NT \> 17--19 bal, 2--3\BH \\
+2\BC \> 5+\BC , unbal, 0--2\BH , 0--3\BS \\
+2\BD \> Reverse\\
+2\BH \> Minimum, 4\BH \\
+2\BS \> 16+ hcp, 5+\BC\ and 4+\BH \+\\
+3\BD \> Retransfer\+\\
+3\BH\+\\
+3\BS \> Cue bid, slam interest\\
+4\BC\BD \> Cue bid, slam interest\\
+4\BH \> To play\-\-\\
+3\BH \> Invitational\\
+3\BS \> Splinter\\
+4\BC\BD \> Splinter\\
+4\BH \> To play\-\\
+2NT \> 16+ hcp, 6+\BC . 18+ if 3\BH \+\\
+3\BC \> Suggestion to play\\
+3\BD \> Relay\+\\
+3\BH \> 3\BH , 18+ hcp\-\\
+3\BH \> Game forcing with 6+\BH \-\\
+3\BC \> 15--17 hcp, 6+\BC\ and 3\BH \+\\
+3\BD \> Retransfer\\
+3\BH \> Invitational\-\\
+3\BD \> 17--19 bal, 4\BH \+\\
+3\BH \> To play\-\\
+3\BH \> 13--15 hcp, good hand, 5+\BC\ and 4\BH \+\\
+3NT \> Asking for singleton\-\-
+\end{bidtable}
+
+This bidding table shows a couple of new features. The most
+prominent is the ability to add continuations directly in the
+table, by using whitespaces. We also see another example of
+appending bids to an existing sequence, by using 1C-1D; in the
+beginning. There's also the use of 3m, meaning both 3C and 3D.
+
+\section{Defense to 1NT}
+
+Defining bidding when both sides bid is a little bit more tricky,
+since you have to write all the bids (even passes). The opponents'
+bid are indicated by encapsulating them in parentheses. P is used
+for Pass, D for Double and R for Redouble.
+
+\begin{bidtable}
+(1NT)--\+\\
+Dbl \> Strength, ca 15+\\
+2\BC \> At least 5-4 majors\+\\
+(D)\+\\
+Pass \> 5+\BC , suggestion to play\\
+Rdbl \> Asking for better/longer major\\
+2\BD \> 5+\BD , suggestion to play\-\\
+(P)\+\\
+2\BD \> Asking for better/longer major\-\-\\
+2\BD \> A weak major or a strong minor\+\\
+(P)\+\\
+2\BH \> Pass/correct\\
+2\BS \> Pass/correct\\
+2NT \> Asking\-\-\\
+2NT \> 5-5 minors\\
+2\BH \> Constructive\\
+2\BS \> Constructive\\
+3\BC \> Preemptive\\
+3\BD \> Preemptive\\
+3\BH \> Preemptive\\
+3\BS \> Preemptive\-
+\end{bidtable}
+
+Note that the above is only for a direct overcall over 1NT. To
+define the above also when balancing. We've used BML's
+copy/cut/paste functionality in order to showcase that you do not
+have to write it all over again. Take a look below (only visible in
+the \emph{example.txt} file, not in HTML, LaTeX or .pdf):
+
+First we used the \texttt{\#COPY} command; the text between \texttt{\#COPY} and \texttt{\#ENDCOPY}
+got put into a sort of clipboard, with the tag nt\_defense which we
+specified. To paste it into the bidding table above we used
+the \texttt{\#PASTE} command. We also used the \texttt{\#HIDE} option. When this is
+present in a bidding table the table will be exported to Full
+Disclosure, but not to HTML or LaTeX.
+
+You could also include other BML-files into your main file by using
+the \texttt{\#INCLUDE} command. Just type \texttt{\#INCLUDE <filename>} and the entire
+file will be inserted at the point where you wrote the command. This
+is a useful way to separate your system into modules, or perhaps
+just to make it more manageable.
+
+It is also possible to add continuations when the opponents
+interfere:
+
+\begin{bidtable}
+1\BC-(1\BD)--\+\\
+Dbl \> 4+\BH \\
+1\BH \> 4+\BS \\
+1\BS \> INV+ with 5+\BD\ / Negative NT\\
+1NT \> Game forcing, 5+\BC\ or balanced\\
+2\BC \> 5+\BC , 5--9 hcp\\
+2NT \> Invitational\\
+2\BC \> 6+ suit, 4--8 hcp\\
+2\BD \> 6+ suit, 4--8 hcp\\
+2\BH \> 6+ suit, 4--8 hcp\\
+2\BS \> 6+ suit, 4--8 hcp\-
+\end{bidtable}
+
+\section{The 1NT opening}
+
+Here's the reason why I left out the 1NT opening earlier: I will
+showcase how to make sequences dependant on vulnerability and
+seat. This will be a bit messy, so hold tight!
+
+We start by cutting our NT-module, since this will be used on all
+NT-openings. \texttt{\#CUT} is similar to the \texttt{\#COPY} command, but using \texttt{\#CUT}
+means that it isn't parsed as a bidding table until it is pasted.
+
+The \texttt{\#VUL} command is used to set the vulnerability. It takes an
+argument of two characters, each can be Y, N or 0. The first
+character asks if we are vulnerable and the second asks if our
+opponents are vulnerable. Y is for Yes, N is for No and 0 means that
+it doesn't matter.
+
+The \texttt{\#SEAT} command sets the seat in which the bid should be valid. 0
+means that the seat doesn't matter (all seats), 12 means first or
+second and 34 means third or fourth. 1--4 could also be used.
+
+So when we're not vulnerable we open 1NT 12--14 in 1st and 2nd seat.
+
+But in third and fourth seat it is 14--16.
+
+When we're vulnerable we always open 1NT 14--16.
+
+\begin{bidtable}
+1NT--\+\\
+2\BC \> Stayman\+\\
+2\BD \> No major\\
+2NT \> 4-4 majors, minimum\\
+3\BC \> 4-4 majors, maximum\-\\
+2\BS \> Minor suit stayman\\
+2NT \> Invitational\\
+2\BD \> Transfer\\
+2\BH \> Transfer\-
+\end{bidtable}
+
+We've been using the \texttt{\#HIDE} command, so we don't have to see our
+NT-system over and over again. This time tough we paste it
+normally, so that we see it at least once.
+
+\section{Lists}
+
+I'd like to show you how to make lists in BML. It is pretty
+simple:
+
+\begin{itemize}
+\item Here's a list!
+
+\item With a couple of
+
+\item Items in it
+
+\end{itemize}
+
+You could also make ordered lists:
+
+\begin{enumerate}
+\item This is ordered
+
+\item Just add numbers
+
+\item To each item
+
+\end{enumerate}
+
+\begin{bidtable}
+
+\end{bidtable}
+
+\begin{bidtable}
+1\BC \> Polish club, one of three:\\
+\>a) 12--14 NT\\
+\>b) 15+ hcp and 5+\BC \\
+\>c) 18+ hcp any distribution
+\end{bidtable}
+
+\begin{bidtable}
+
+\end{bidtable}
+
+\begin{bidtable}
+1NT-2\BC\+\\
+2\BD \> No 4 card major\+\\
+2\BH \> 5+\BH , 4\BS , invitational\\
+2\BS \> 5+\BS , invitational\\
+3\BH \> Smolen (5+ cards in other major)\\
+3\BS \> Smolen (5+ cards in other major)\-\\
+2NT \> 4-4 majors, minimum\\
+3\BC \> 4-4 majors, maximum\\
+2\BH \> 4+ suit\\
+2\BS \> 4+ suit\-
+\end{bidtable}
+
+\begin{bidtable}
+
+\end{bidtable}
+
+\begin{bidtable}
+(1NT)--\+\\
+Dbl \> Strength, ca 15+\\
+2\BC \> At least 5-4 majors\+\\
+(D)\+\\
+Pass \> 5+\BC , suggestion to play\\
+Rdbl \> Asking for better/longer major\\
+2\BD \> 5+\BD , suggestion to play\-\\
+(P)\+\\
+2\BD \> Asking for better/longer major\-\-\\
+2\BD \> A weak major or a strong minor\\
+2NT \> 5-5 minors\\
+2\BH \> Constructive\\
+2\BS \> Constructive\\
+3\BC \> Preemptive\\
+3\BD \> Preemptive\\
+3\BH \> Preemptive\\
+3\BS \> Preemptive\-
+\end{bidtable}
+
+\begin{bidtable}
+1NT--\+\\
+2\BC \> Stayman\\
+2\BD \> Transfer\+\\
+2\BH \> Transfer accept\\
+3\BH \> Super accept\-\\
+2\BH \> Transfer\+\\
+2\BS \> Transfer accept\\
+3\BS \> Super accept\-\-
+\end{bidtable}
+
+\section{The 1\pdfc\ opening}
+
+Opening 1\BC\ shows at least 16+ hcp, and is forcing. The
+continuation is fairly natural.
+
+Some hands might be upgraded to 1\BC\ due to distribution, but
+wildly distributional hands might also be downgraded to avoid
+problems if the opponents preempt.
+
+\subsection{The 1\pdfd\ negative}
+
+Responding 1\BD\ shows a hand which doesn't have enough values to
+establish a game force.
+
+\dealdiagram
+{\vhand{QT}{KQxxxx}{KTx}{Jx}}
+{\vhand{Kxx}{T9}{xxx}{Q987x}}
+{\vhand{Jx}{AJxxx}{AJx}{KTx}}
+{\vhand{A987xx}{\void}{Q9xx}{Axx}}
+{Board 35\\North / None\\4\BS X by South\\Lead \BH K}
+
+\dealdiagram
+{\vhand{QT}{KQxxxx}{KTx}{Jx}}
+{\vhand{Kxx}{T9}{xxx}{Q987x}}
+{\vhand{Jx}{AJxxx}{AJx}{KTx}}
+{\vhand{A987xx}{\void}{Q9xx}{Axx}}
+{Board 35\\North / None\\4\BS X by South\\Lead \BH K}
+
+\begin{itemize}
+\item The first item in an unordered list
+
+\item The second item
+
+\item Etc..
+
+\end{itemize}
+
+\begin{enumerate}
+\item The first item in an ordered list
+
+\item The second item
+
+\item Etc..
+
+\end{enumerate}
+
+/Here's/ \textbf{an} \texttt{example} (italic, bold, monospace)
+
+\section{Introduction}
+
+Welcome to BML! This is a normal paragraph, and above we can see
+the \texttt{\#+TITLE}, the \texttt{\#+AUTHOR} and the \texttt{\#+DESCRIPTION} of the file. \texttt{\#+TITLE} is
+the name of the system and \texttt{\#+DESCRIPTION} is a \emph{short summary of} how
+the system works. \texttt{\#+AUTHOR} is self explanatory. \texttt{Introduction} above,
+``headed by an asterisk'', sets a section at the first level (the second
+level would have two asterisks etc).
+
+In the paragraph above I encapsulated some words between equal
+signs. This means that they will show up as a monospaced font when
+exported to HTML or LaTeX. It is also possible to make words (or
+sentences) \textbf{strong or bold} or \emph{in italics}.
+
+The system presented in this example file is meant to showcase many
+of the current features in BML. Let's start with the basic opening
+structure of the system:
+
+\begin{bidtable}
+
+\end{bidtable}
+
+The above is an example of a bidding table; the reason why BML is
+more suited for bridge system notes than other markup languages. You
+start by writing the bid, then a number of whitespaces, and then the
+description of the bid. Simple! C is for clubs, D for diamonds, H
+for hearts, S for spades and N for no trump. There's also some
+special cases which you could use, above we use 1M (1H and 1S), 2HS
+(2H and 2S) and 3X (3C, 3D, 3H and 3S). We'll see more of these
+later.
+
+The reason why the 1NT opening is left out above is a secret for
+now!
+
+\section{The 1\pdfc\ opening}
+
+You might have noticed the \BC\ in the title of this section? This
+will be replaced by a club suit symbol when exported. The same is
+true for \BD , \BH\ and \BS\ (but these will be converted to diamonds,
+hearts and spades, ofcourse).
+
+In this example we use transfer responses to the 1\BC\ opening:
+
+\begin{bidtable}
+1\BC--\+\\
+1\BS \> INV+ with 5+\BD\ / Negative NT\\
+1NT \> Game forcing, 5+\BC\ or balanced\\
+2\BC \> 5+\BC , 5--9 hcp\\
+2NT \> Invitational\\
+1\BD \> Transfer. 4+ major, 0+ hcp\\
+1\BH \> Transfer. 4+ major, 0+ hcp\\
+2\BC \> 6+ suit, 4--8 hcp\\
+2\BD \> 6+ suit, 4--8 hcp\\
+2\BH \> 6+ suit, 4--8 hcp\\
+2\BS \> 6+ suit, 4--8 hcp\-
+\end{bidtable}
+
+By writing 1C--- we define that the following bids should be
+continuations to the sequence 1C. We could write 1C- or 1C-- too,
+the number of dashes only matters to the way the output looks. Also
+note the 1red response, this defines both 1D and 1H.
+
+\subsection{After a transfer}
+
+This section has two asterisks, meaning it will be at level two
+(so its a subsection). You might also have noticed that the
+paragraphs, the sections and the bidtables are separated by a
+blank line? This is important in BML, as the blankline are used to
+separate elements.
+
+\begin{bidtable}
+1\BC-1\BD\+\\
+1\BH \> Minimum with 2--3\BH \+\\
+1\BS \> 4+\BH , 4\BS , at most invitational\\
+1NT \> Sign off\\
+2\BC \> Puppet to 2\BD \+\\
+2\BD \> Forced\+\\
+2\BH \> Mildly invitational with 5\BH \\
+2\BS \> Invitational, 5+\BH\ and 4\BS \\
+2NT \> Strongly invitational with 5\BH \\
+3\BH \> 6\BH , about 11--12 hcp\\
+3\BC \> Invitational with 4\BH\ and 5+ minor\\
+3\BD \> Invitational with 4\BH\ and 5+ minor\-\-\\
+2\BD \> Artificial game force\\
+2\BH \> 6+\BH , about 9--10 hcp\-\\
+1\BS \> 5+\BC , 4+\BS , unlimited\\
+1NT \> 17--19 bal, 2--3\BH \\
+2\BC \> 5+\BC , unbal, 0--2\BH , 0--3\BS \\
+2\BD \> Reverse\\
+2\BH \> Minimum, 4\BH \\
+2\BS \> 16+ hcp, 5+\BC\ and 4+\BH \+\\
+3\BD \> Retransfer\+\\
+3\BH\+\\
+3\BS \> Cue bid, slam interest\\
+4\BC\BD \> Cue bid, slam interest\\
+4\BH \> To play\-\-\\
+3\BH \> Invitational\\
+3\BS \> Splinter\\
+4\BC\BD \> Splinter\\
+4\BH \> To play\-\\
+2NT \> 16+ hcp, 6+\BC . 18+ if 3\BH \+\\
+3\BC \> Suggestion to play\\
+3\BD \> Relay\+\\
+3\BH \> 3\BH , 18+ hcp\-\\
+3\BH \> Game forcing with 6+\BH \-\\
+3\BC \> 15--17 hcp, 6+\BC\ and 3\BH \+\\
+3\BD \> Retransfer\\
+3\BH \> Invitational\-\\
+3\BD \> 17--19 bal, 4\BH \+\\
+3\BH \> To play\-\\
+3\BH \> 13--15 hcp, good hand, 5+\BC\ and 4\BH \+\\
+3NT \> Asking for singleton\-\-
+\end{bidtable}
+
+This bidding table shows a couple of new features. The most
+prominent is the ability to add continuations directly in the
+table, by using whitespaces. We also see another example of
+appending bids to an existing sequence, by using 1C-1D; in the
+beginning. There's also the use of 3m, meaning both 3C and 3D.
+
+\section{Defense to 1NT}
+
+Defining bidding when both sides bid is a little bit more tricky,
+since you have to write all the bids (even passes). The opponents'
+bid are indicated by encapsulating them in parentheses. P is used
+for Pass, D for Double and R for Redouble.
+
+\begin{bidtable}
+(1NT)--\+\\
+Dbl \> Strength, ca 15+\\
+2\BC \> At least 5-4 majors\+\\
+(D)\+\\
+Pass \> 5+\BC , suggestion to play\\
+Rdbl \> Asking for better/longer major\\
+2\BD \> 5+\BD , suggestion to play\-\\
+(P)\+\\
+2\BD \> Asking for better/longer major\-\-\\
+2\BD \> A weak major or a strong minor\+\\
+(P)\+\\
+2\BH \> Pass/correct\\
+2\BS \> Pass/correct\\
+2NT \> Asking\-\-\\
+2NT \> 5-5 minors\\
+2\BH \> Constructive\\
+2\BS \> Constructive\\
+3\BC \> Preemptive\\
+3\BD \> Preemptive\\
+3\BH \> Preemptive\\
+3\BS \> Preemptive\-
+\end{bidtable}
+
+Note that the above is only for a direct overcall over 1NT. To
+define the above also when balancing. We've used BML's
+copy/cut/paste functionality in order to showcase that you do not
+have to write it all over again. Take a look below (only visible in
+the \emph{example.txt} file, not in HTML, LaTeX or .pdf):
+
+First we used the \texttt{\#COPY} command; the text between \texttt{\#COPY} and \texttt{\#ENDCOPY}
+got put into a sort of clipboard, with the tag nt\_defense which we
+specified. To paste it into the bidding table above we used
+the \texttt{\#PASTE} command. We also used the \texttt{\#HIDE} option. When this is
+present in a bidding table the table will be exported to Full
+Disclosure, but not to HTML or LaTeX.
+
+You could also include other BML-files into your main file by using
+the \texttt{\#INCLUDE} command. Just type \texttt{\#INCLUDE <filename>} and the entire
+file will be inserted at the point where you wrote the command. This
+is a useful way to separate your system into modules, or perhaps
+just to make it more manageable.
+
+It is also possible to add continuations when the opponents
+interfere:
+
+\begin{bidtable}
+1\BC-(1\BD)--\+\\
+Dbl \> 4+\BH \\
+1\BH \> 4+\BS \\
+1\BS \> INV+ with 5+\BD\ / Negative NT\\
+1NT \> Game forcing, 5+\BC\ or balanced\\
+2\BC \> 5+\BC , 5--9 hcp\\
+2NT \> Invitational\\
+2\BC \> 6+ suit, 4--8 hcp\\
+2\BD \> 6+ suit, 4--8 hcp\\
+2\BH \> 6+ suit, 4--8 hcp\\
+2\BS \> 6+ suit, 4--8 hcp\-
+\end{bidtable}
+
+\section{The 1NT opening}
+
+Here's the reason why I left out the 1NT opening earlier: I will
+showcase how to make sequences dependant on vulnerability and
+seat. This will be a bit messy, so hold tight!
+
+We start by cutting our NT-module, since this will be used on all
+NT-openings. \texttt{\#CUT} is similar to the \texttt{\#COPY} command, but using \texttt{\#CUT}
+means that it isn't parsed as a bidding table until it is pasted.
+
+The \texttt{\#VUL} command is used to set the vulnerability. It takes an
+argument of two characters, each can be Y, N or 0. The first
+character asks if we are vulnerable and the second asks if our
+opponents are vulnerable. Y is for Yes, N is for No and 0 means that
+it doesn't matter.
+
+The \texttt{\#SEAT} command sets the seat in which the bid should be valid. 0
+means that the seat doesn't matter (all seats), 12 means first or
+second and 34 means third or fourth. 1--4 could also be used.
+
+So when we're not vulnerable we open 1NT 12--14 in 1st and 2nd seat.
+
+But in third and fourth seat it is 14--16.
+
+When we're vulnerable we always open 1NT 14--16.
+
+\begin{bidtable}
+1NT--\+\\
+2\BC \> Stayman\+\\
+2\BD \> No major\\
+2NT \> 4-4 majors, minimum\\
+3\BC \> 4-4 majors, maximum\-\\
+2\BS \> Minor suit stayman\\
+2NT \> Invitational\\
+2\BD \> Transfer\\
+2\BH \> Transfer\-
+\end{bidtable}
+
+We've been using the \texttt{\#HIDE} command, so we don't have to see our
+NT-system over and over again. This time tough we paste it
+normally, so that we see it at least once.
+
+\section{Lists}
+
+I'd like to show you how to make lists in BML. It is pretty
+simple:
+
+\begin{itemize}
+\item Here's a list!
+
+\item With a couple of
+
+\item Items in it
+
+\end{itemize}
+
+You could also make ordered lists:
+
+\begin{enumerate}
+\item This is ordered
+
+\item Just add numbers
+
+\item To each item
+
+\end{enumerate}
+
+\begin{bidtable}
+
+\end{bidtable}
+
+\begin{bidtable}
+1\BC \> Polish club, one of three:\\
+\>a) 12--14 NT\\
+\>b) 15+ hcp and 5+\BC \\
+\>c) 18+ hcp any distribution
+\end{bidtable}
+
+\begin{bidtable}
+
+\end{bidtable}
+
+\begin{bidtable}
+1NT-2\BC\+\\
+2\BD \> No 4 card major\+\\
+2\BH \> 5+\BH , 4\BS , invitational\\
+2\BS \> 5+\BS , invitational\\
+3\BH \> Smolen (5+ cards in other major)\\
+3\BS \> Smolen (5+ cards in other major)\-\\
+2NT \> 4-4 majors, minimum\\
+3\BC \> 4-4 majors, maximum\\
+2\BH \> 4+ suit\\
+2\BS \> 4+ suit\-
+\end{bidtable}
+
+\begin{bidtable}
+
+\end{bidtable}
+
+\begin{bidtable}
+(1NT)--\+\\
+Dbl \> Strength, ca 15+\\
+2\BC \> At least 5-4 majors\+\\
+(D)\+\\
+Pass \> 5+\BC , suggestion to play\\
+Rdbl \> Asking for better/longer major\\
+2\BD \> 5+\BD , suggestion to play\-\\
+(P)\+\\
+2\BD \> Asking for better/longer major\-\-\\
+2\BD \> A weak major or a strong minor\\
+2NT \> 5-5 minors\\
+2\BH \> Constructive\\
+2\BS \> Constructive\\
+3\BC \> Preemptive\\
+3\BD \> Preemptive\\
+3\BH \> Preemptive\\
+3\BS \> Preemptive\-
+\end{bidtable}
+
+\begin{bidtable}
+1NT--\+\\
+2\BC \> Stayman\\
+2\BD \> Transfer\+\\
+2\BH \> Transfer accept\\
+3\BH \> Super accept\-\\
+2\BH \> Transfer\+\\
+2\BS \> Transfer accept\\
+3\BS \> Super accept\-\-
+\end{bidtable}
+
+\section{The 1\pdfc\ opening}
+
+Opening 1\BC\ shows at least 16+ hcp, and is forcing. The
+continuation is fairly natural.
+
+Some hands might be upgraded to 1\BC\ due to distribution, but
+wildly distributional hands might also be downgraded to avoid
+problems if the opponents preempt.
+
+\subsection{The 1\pdfd\ negative}
+
+Responding 1\BD\ shows a hand which doesn't have enough values to
+establish a game force.
+
+\dealdiagram
+{\vhand{QT}{KQxxxx}{KTx}{Jx}}
+{\vhand{Kxx}{T9}{xxx}{Q987x}}
+{\vhand{Jx}{AJxxx}{AJx}{KTx}}
+{\vhand{A987xx}{\void}{Q9xx}{Axx}}
+{Board 35\\North / None\\4\BS X by South\\Lead \BH K}
+
+\dealdiagram
+{\vhand{QT}{KQxxxx}{KTx}{Jx}}
+{\vhand{Kxx}{T9}{xxx}{Q987x}}
+{\vhand{Jx}{AJxxx}{AJx}{KTx}}
+{\vhand{A987xx}{\void}{Q9xx}{Axx}}
+{Board 35\\North / None\\4\BS X by South\\Lead \BH K}
+
+\begin{itemize}
+\item The first item in an unordered list
+
+\item The second item
+
+\item Etc..
+
+\end{itemize}
+
+\begin{enumerate}
+\item The first item in an ordered list
+
+\item The second item
+
+\item Etc..
+
+\end{enumerate}
+
+/Here's/ \textbf{an} \texttt{example} (italic, bold, monospace)
+
+\section{Introduction}
+
+Welcome to BML! This is a normal paragraph, and above we can see
+the \texttt{\#+TITLE}, the \texttt{\#+AUTHOR} and the \texttt{\#+DESCRIPTION} of the file. \texttt{\#+TITLE} is
+the name of the system and \texttt{\#+DESCRIPTION} is a \emph{short summary of} how
+the system works. \texttt{\#+AUTHOR} is self explanatory. \texttt{Introduction} above,
+``headed by an asterisk'', sets a section at the first level (the second
+level would have two asterisks etc).
+
+In the paragraph above I encapsulated some words between equal
+signs. This means that they will show up as a monospaced font when
+exported to HTML or LaTeX. It is also possible to make words (or
+sentences) \textbf{strong or bold} or \emph{in italics}.
+
+The system presented in this example file is meant to showcase many
+of the current features in BML. Let's start with the basic opening
+structure of the system:
+
+\begin{bidtable}
+\O\+\\
+1\BC \> 2+\BC . Natural or balanced\\
+1\BD \> 4+ suit, unbalanced\\
+1M \> 5+ suit\\
+2\BC \> 20--21 bal / Any game force\\
+2\BD \> 6+\BH\ or 6+\BS , 5--9 hcp\\
+2\BH\BS \> 6+ suit, 10--13 hcp\\
+2NT \> 22--24\\
+3X \> Preemptive\\
+3NT \> Gambling\-
+\end{bidtable}
+
+The above is an example of a bidding table; the reason why BML is
+more suited for bridge system notes than other markup languages. You
+start by writing the bid, then a number of whitespaces, and then the
+description of the bid. Simple! C is for clubs, D for diamonds, H
+for hearts, S for spades and N for no trump. There's also some
+special cases which you could use, above we use 1M (1H and 1S), 2HS
+(2H and 2S) and 3X (3C, 3D, 3H and 3S). We'll see more of these
+later.
+
+The reason why the 1NT opening is left out above is a secret for
+now!
+
+\section{The 1\pdfc\ opening}
+
+You might have noticed the \BC\ in the title of this section? This
+will be replaced by a club suit symbol when exported. The same is
+true for \BD , \BH\ and \BS\ (but these will be converted to diamonds,
+hearts and spades, ofcourse).
+
+In this example we use transfer responses to the 1\BC\ opening:
+
+\begin{bidtable}
+1\BC--\+\\
+1red \> Transfer. 4+ major, 0+ hcp\\
+1\BS \> INV+ with 5+\BD\ / Negative NT\\
+1NT \> Game forcing, 5+\BC\ or balanced\\
+2\BC \> 5+\BC , 5--9 hcp\\
+2X \> 6+ suit, 4--8 hcp\\
+2NT \> Invitational\-
+\end{bidtable}
+
+By writing 1C--- we define that the following bids should be
+continuations to the sequence 1C. We could write 1C- or 1C-- too,
+the number of dashes only matters to the way the output looks. Also
+note the 1red response, this defines both 1D and 1H.
+
+\subsection{After a transfer}
+
+This section has two asterisks, meaning it will be at level two
+(so its a subsection). You might also have noticed that the
+paragraphs, the sections and the bidtables are separated by a
+blank line? This is important in BML, as the blankline are used to
+separate elements.
+
+\begin{bidtable}
+1\BC-1\BD\+\\
+1\BH \> Minimum with 2--3\BH \+\\
+1\BS \> 4+\BH , 4\BS , at most invitational\\
+1NT \> Sign off\\
+2\BC \> Puppet to 2\BD \+\\
+2\BD \> Forced\+\\
+2\BH \> Mildly invitational with 5\BH \\
+2\BS \> Invitational, 5+\BH\ and 4\BS \\
+2NT \> Strongly invitational with 5\BH \\
+3m \> Invitational with 4\BH\ and 5+ minor\\
+3\BH \> 6\BH , about 11--12 hcp\-\-\\
+2\BD \> Artificial game force\\
+2\BH \> 6+\BH , about 9--10 hcp\-\\
+1\BS \> 5+\BC , 4+\BS , unlimited\\
+1NT \> 17--19 bal, 2--3\BH \\
+2\BC \> 5+\BC , unbal, 0--2\BH , 0--3\BS \\
+2\BD \> Reverse\\
+2\BH \> Minimum, 4\BH \\
+2\BS \> 16+ hcp, 5+\BC\ and 4+\BH \+\\
+3\BD \> Retransfer\+\\
+3\BH\+\\
+3\BS \> Cue bid, slam interest\\
+4\BC\BD \> Cue bid, slam interest\\
+4\BH \> To play\-\-\\
+3\BH \> Invitational\\
+3\BS \> Splinter\\
+4\BC\BD \> Splinter\\
+4\BH \> To play\-\\
+2NT \> 16+ hcp, 6+\BC . 18+ if 3\BH \+\\
+3\BC \> Suggestion to play\\
+3\BD \> Relay\+\\
+3\BH \> 3\BH , 18+ hcp\-\\
+3\BH \> Game forcing with 6+\BH \-\\
+3\BC \> 15--17 hcp, 6+\BC\ and 3\BH \+\\
+3\BD \> Retransfer\\
+3\BH \> Invitational\-\\
+3\BD \> 17--19 bal, 4\BH \+\\
+3\BH \> To play\-\\
+3\BH \> 13--15 hcp, good hand, 5+\BC\ and 4\BH \+\\
+3NT \> Asking for singleton\-\-
+\end{bidtable}
+
+This bidding table shows a couple of new features. The most
+prominent is the ability to add continuations directly in the
+table, by using whitespaces. We also see another example of
+appending bids to an existing sequence, by using 1C-1D; in the
+beginning. There's also the use of 3m, meaning both 3C and 3D.
+
+\section{Defense to 1NT}
+
+Defining bidding when both sides bid is a little bit more tricky,
+since you have to write all the bids (even passes). The opponents'
+bid are indicated by encapsulating them in parentheses. P is used
+for Pass, D for Double and R for Redouble.
+
+\begin{bidtable}
+(1NT)--\+\\
+Dbl \> Strength, ca 15+\\
+2\BC \> At least 5-4 majors\+\\
+(D)\+\\
+Pass \> 5+\BC , suggestion to play\\
+Rdbl \> Asking for better/longer major\\
+2\BD \> 5+\BD , suggestion to play\-\\
+(P)\+\\
+2\BD \> Asking for better/longer major\-\-\\
+2\BD \> A weak major or a strong minor\+\\
+(P)\+\\
+2\BH \> Pass/correct\\
+2\BS \> Pass/correct\\
+2NT \> Asking\-\-\\
+2\BH\BS \> Constructive\\
+2NT \> 5-5 minors\\
+3X \> Preemptive\-
+\end{bidtable}
+
+Note that the above is only for a direct overcall over 1NT. To
+define the above also when balancing. We've used BML's
+copy/cut/paste functionality in order to showcase that you do not
+have to write it all over again. Take a look below (only visible in
+the \emph{example.txt} file, not in HTML, LaTeX or .pdf):
+
+First we used the \texttt{\#COPY} command; the text between \texttt{\#COPY} and \texttt{\#ENDCOPY}
+got put into a sort of clipboard, with the tag nt\_defense which we
+specified. To paste it into the bidding table above we used
+the \texttt{\#PASTE} command. We also used the \texttt{\#HIDE} option. When this is
+present in a bidding table the table will be exported to Full
+Disclosure, but not to HTML or LaTeX.
+
+You could also include other BML-files into your main file by using
+the \texttt{\#INCLUDE} command. Just type \texttt{\#INCLUDE <filename>} and the entire
+file will be inserted at the point where you wrote the command. This
+is a useful way to separate your system into modules, or perhaps
+just to make it more manageable.
+
+It is also possible to add continuations when the opponents
+interfere:
+
+\begin{bidtable}
+1\BC-(1\BD)--\+\\
+Dbl \> 4+\BH \\
+1\BH \> 4+\BS \\
+1\BS \> INV+ with 5+\BD\ / Negative NT\\
+1NT \> Game forcing, 5+\BC\ or balanced\\
+2\BC \> 5+\BC , 5--9 hcp\\
+2X \> 6+ suit, 4--8 hcp\\
+2NT \> Invitational\-
+\end{bidtable}
+
+\section{The 1NT opening}
+
+Here's the reason why I left out the 1NT opening earlier: I will
+showcase how to make sequences dependant on vulnerability and
+seat. This will be a bit messy, so hold tight!
+
+We start by cutting our NT-module, since this will be used on all
+NT-openings. \texttt{\#CUT} is similar to the \texttt{\#COPY} command, but using \texttt{\#CUT}
+means that it isn't parsed as a bidding table until it is pasted.
+
+The \texttt{\#VUL} command is used to set the vulnerability. It takes an
+argument of two characters, each can be Y, N or 0. The first
+character asks if we are vulnerable and the second asks if our
+opponents are vulnerable. Y is for Yes, N is for No and 0 means that
+it doesn't matter.
+
+The \texttt{\#SEAT} command sets the seat in which the bid should be valid. 0
+means that the seat doesn't matter (all seats), 12 means first or
+second and 34 means third or fourth. 1--4 could also be used.
+
+So when we're not vulnerable we open 1NT 12--14 in 1st and 2nd seat.
+
+But in third and fourth seat it is 14--16.
+
+When we're vulnerable we always open 1NT 14--16.
+
+\begin{bidtable}
+1NT--\+\\
+2\BC \> Stayman\+\\
+2\BD \> No major\\
+2NT \> 4-4 majors, minimum\\
+3\BC \> 4-4 majors, maximum\-\\
+2red \> Transfer\\
+2\BS \> Minor suit stayman\\
+2NT \> Invitational\-
+\end{bidtable}
+
+We've been using the \texttt{\#HIDE} command, so we don't have to see our
+NT-system over and over again. This time tough we paste it
+normally, so that we see it at least once.
+
+\section{Lists}
+
+I'd like to show you how to make lists in BML. It is pretty
+simple:
+
+\begin{itemize}
+\item Here's a list!
+
+\item With a couple of
+
+\item Items in it
+
+\end{itemize}
+
+You could also make ordered lists:
+
+\begin{enumerate}
+\item This is ordered
+
+\item Just add numbers
+
+\item To each item
+
+\end{enumerate}
+
+\begin{bidtable}
+\O\+\\
+1\BC \> Any hand with 16+ hcp\+\\
+1\BD \> Artificial. 0--7 hcp\+\\
+1\BH \> Any hand with 20+ hcp\-\\
+1\BH\BS \> 5+ suit, forcing to game (8+ hcp)\\
+1NT \> Natural game force, 8+ hcp\\
+2m \> 5+ suit, forcing to game (8+ hcp)\\
+2M \> 6+ suit, 5--7 hcp\-\\
+1\BD \> Nebulous with 2+\BD , 11--15 hcp\\
+1\BH\BS \> 5+ suit, 11--15 hcp\\
+1NT \> 14--16 hcp\\
+2\BC \> 6+\BC\ or 5\BC\ and 4\BH /\BS , 11--15 hcp\\
+2\BD \> 4414. 4405, 4305 or 3405, 11--15 hcp\\
+2\BH\BS \> Weak\\
+2NT \> Weak with 5-5 minors\-
+\end{bidtable}
+
+\begin{bidtable}
+1\BC \> Polish club, one of three:\\
+\>a) 12--14 NT\\
+\>b) 15+ hcp and 5+\BC \\
+\>c) 18+ hcp any distribution
+\end{bidtable}
+
+\begin{bidtable}
+\O\+\\
+1m \> 3+ minor\\
+1M \> 5+ major\\
+1NT \> 15--17\\
+\>May have 5M, 6m or 5-4 minors\\
+2\BC \> Strong and forcing\\
+2X \> Weak\\
+2NT \> 20--21\-
+\end{bidtable}
+
+\begin{bidtable}
+1NT-2\BC\+\\
+2\BD \> No 4 card major\+\\
+2\BH \> 5+\BH , 4\BS , invitational\\
+2\BS \> 5+\BS , invitational\\
+3\BH\BS \> Smolen (5+ cards in other major)\-\\
+2\BH\BS \> 4+ suit\\
+2NT \> 4-4 majors, minimum\\
+3\BC \> 4-4 majors, maximum\-
+\end{bidtable}
+
+\begin{bidtable}
+\O\+\\
+2\BC \> Strong, forcing\+\\
+2\BD \> Waiting\-\\
+2X \> Weak\+\\
+2NT \> Ogust\-\-
+\end{bidtable}
+
+\begin{bidtable}
+(1NT)--\+\\
+Dbl \> Strength, ca 15+\\
+2\BC \> At least 5-4 majors\+\\
+(D)\+\\
+Pass \> 5+\BC , suggestion to play\\
+Rdbl \> Asking for better/longer major\\
+2\BD \> 5+\BD , suggestion to play\-\\
+(P)\+\\
+2\BD \> Asking for better/longer major\-\-\\
+2\BD \> A weak major or a strong minor\\
+2\BH\BS \> Constructive\\
+2NT \> 5-5 minors\\
+3X \> Preemptive\-
+\end{bidtable}
+
+\begin{bidtable}
+1NT--\+\\
+2\BC \> Stayman\\
+2\BD \> Transfer\+\\
+2\BH \> Transfer accept\\
+3\BH \> Super accept\-\\
+2\BH \> Transfer\+\\
+2\BS \> Transfer accept\\
+3\BS \> Super accept\-\-
+\end{bidtable}
+
+\section{The 1\pdfc\ opening}
+
+Opening 1\BC\ shows at least 16+ hcp, and is forcing. The
+continuation is fairly natural.
+
+Some hands might be upgraded to 1\BC\ due to distribution, but
+wildly distributional hands might also be downgraded to avoid
+problems if the opponents preempt.
+
+\subsection{The 1\pdfd\ negative}
+
+Responding 1\BD\ shows a hand which doesn't have enough values to
+establish a game force.
+
+\dealdiagram
+{\vhand{QT}{KQxxxx}{KTx}{Jx}}
+{\vhand{Kxx}{T9}{xxx}{Q987x}}
+{\vhand{Jx}{AJxxx}{AJx}{KTx}}
+{\vhand{A987xx}{\void}{Q9xx}{Axx}}
+{Board 35\\North / None\\4\BS X by South\\Lead \BH K}
+
+\dealdiagram
+{\vhand{QT}{KQxxxx}{KTx}{Jx}}
+{\vhand{Kxx}{T9}{xxx}{Q987x}}
+{\vhand{Jx}{AJxxx}{AJx}{KTx}}
+{\vhand{A987xx}{\void}{Q9xx}{Axx}}
+{Board 35\\North / None\\4\BS X by South\\Lead \BH K}
+
+\begin{itemize}
+\item The first item in an unordered list
+
+\item The second item
+
+\item Etc..
+
+\end{itemize}
+
+\begin{enumerate}
+\item The first item in an ordered list
+
+\item The second item
+
+\item Etc..
+
+\end{enumerate}
+
+/Here's/ \textbf{an} \texttt{example} (italic, bold, monospace)
+
+\section{Introduction}
+
+Welcome to BML! This is a normal paragraph, and above we can see
+the \texttt{\#+TITLE}, the \texttt{\#+AUTHOR} and the \texttt{\#+DESCRIPTION} of the file. \texttt{\#+TITLE} is
+the name of the system and \texttt{\#+DESCRIPTION} is a \emph{short summary of} how
+the system works. \texttt{\#+AUTHOR} is self explanatory. \texttt{Introduction} above,
+``headed by an asterisk'', sets a section at the first level (the second
+level would have two asterisks etc).
+
+In the paragraph above I encapsulated some words between equal
+signs. This means that they will show up as a monospaced font when
+exported to HTML or LaTeX. It is also possible to make words (or
+sentences) \textbf{strong or bold} or \emph{in italics}.
+
+The system presented in this example file is meant to showcase many
+of the current features in BML. Let's start with the basic opening
+structure of the system:
+
+\begin{bidtable}
+\O\+\\
+1\BC \> 2+\BC . Natural or balanced\\
+1\BD \> 4+ suit, unbalanced\\
+1M \> 5+ suit\\
+2\BC \> 20--21 bal / Any game force\\
+2\BD \> 6+\BH\ or 6+\BS , 5--9 hcp\\
+2\BH\BS \> 6+ suit, 10--13 hcp\\
+2NT \> 22--24\\
+3X \> Preemptive\\
+3NT \> Gambling\-
+\end{bidtable}
+
+The above is an example of a bidding table; the reason why BML is
+more suited for bridge system notes than other markup languages. You
+start by writing the bid, then a number of whitespaces, and then the
+description of the bid. Simple! C is for clubs, D for diamonds, H
+for hearts, S for spades and N for no trump. There's also some
+special cases which you could use, above we use 1M (1H and 1S), 2HS
+(2H and 2S) and 3X (3C, 3D, 3H and 3S). We'll see more of these
+later.
+
+The reason why the 1NT opening is left out above is a secret for
+now!
+
+\section{The 1\pdfc\ opening}
+
+You might have noticed the \BC\ in the title of this section? This
+will be replaced by a club suit symbol when exported. The same is
+true for \BD , \BH\ and \BS\ (but these will be converted to diamonds,
+hearts and spades, ofcourse).
+
+In this example we use transfer responses to the 1\BC\ opening:
+
+\begin{bidtable}
+1\BC--\+\\
+1red \> Transfer. 4+ major, 0+ hcp\\
+1\BS \> INV+ with 5+\BD\ / Negative NT\\
+1NT \> Game forcing, 5+\BC\ or balanced\\
+2\BC \> 5+\BC , 5--9 hcp\\
+2X \> 6+ suit, 4--8 hcp\\
+2NT \> Invitational\-
+\end{bidtable}
+
+By writing 1C--- we define that the following bids should be
+continuations to the sequence 1C. We could write 1C- or 1C-- too,
+the number of dashes only matters to the way the output looks. Also
+note the 1red response, this defines both 1D and 1H.
+
+\subsection{After a transfer}
+
+This section has two asterisks, meaning it will be at level two
+(so its a subsection). You might also have noticed that the
+paragraphs, the sections and the bidtables are separated by a
+blank line? This is important in BML, as the blankline are used to
+separate elements.
+
+\begin{bidtable}
+1\BC-1\BD\+\\
+1\BH \> Minimum with 2--3\BH \+\\
+1\BS \> 4+\BH , 4\BS , at most invitational\\
+1NT \> Sign off\\
+2\BC \> Puppet to 2\BD \+\\
+2\BD \> Forced\+\\
+2\BH \> Mildly invitational with 5\BH \\
+2\BS \> Invitational, 5+\BH\ and 4\BS \\
+2NT \> Strongly invitational with 5\BH \\
+3m \> Invitational with 4\BH\ and 5+ minor\\
+3\BH \> 6\BH , about 11--12 hcp\-\-\\
+2\BD \> Artificial game force\\
+2\BH \> 6+\BH , about 9--10 hcp\-\\
+1\BS \> 5+\BC , 4+\BS , unlimited\\
+1NT \> 17--19 bal, 2--3\BH \\
+2\BC \> 5+\BC , unbal, 0--2\BH , 0--3\BS \\
+2\BD \> Reverse\\
+2\BH \> Minimum, 4\BH \\
+2\BS \> 16+ hcp, 5+\BC\ and 4+\BH \+\\
+3\BD \> Retransfer\+\\
+3\BH\+\\
+3\BS \> Cue bid, slam interest\\
+4\BC\BD \> Cue bid, slam interest\\
+4\BH \> To play\-\-\\
+3\BH \> Invitational\\
+3\BS \> Splinter\\
+4\BC\BD \> Splinter\\
+4\BH \> To play\-\\
+2NT \> 16+ hcp, 6+\BC . 18+ if 3\BH \+\\
+3\BC \> Suggestion to play\\
+3\BD \> Relay\+\\
+3\BH \> 3\BH , 18+ hcp\-\\
+3\BH \> Game forcing with 6+\BH \-\\
+3\BC \> 15--17 hcp, 6+\BC\ and 3\BH \+\\
+3\BD \> Retransfer\\
+3\BH \> Invitational\-\\
+3\BD \> 17--19 bal, 4\BH \+\\
+3\BH \> To play\-\\
+3\BH \> 13--15 hcp, good hand, 5+\BC\ and 4\BH \+\\
+3NT \> Asking for singleton\-\-
+\end{bidtable}
+
+This bidding table shows a couple of new features. The most
+prominent is the ability to add continuations directly in the
+table, by using whitespaces. We also see another example of
+appending bids to an existing sequence, by using 1C-1D; in the
+beginning. There's also the use of 3m, meaning both 3C and 3D.
+
+\section{Defense to 1NT}
+
+Defining bidding when both sides bid is a little bit more tricky,
+since you have to write all the bids (even passes). The opponents'
+bid are indicated by encapsulating them in parentheses. P is used
+for Pass, D for Double and R for Redouble.
+
+\begin{bidtable}
+(1NT)--\+\\
+Dbl \> Strength, ca 15+\\
+2\BC \> At least 5-4 majors\+\\
+(D)\+\\
+Pass \> 5+\BC , suggestion to play\\
+Rdbl \> Asking for better/longer major\\
+2\BD \> 5+\BD , suggestion to play\-\\
+(P)\+\\
+2\BD \> Asking for better/longer major\-\-\\
+2\BD \> A weak major or a strong minor\+\\
+(P)\+\\
+2\BH \> Pass/correct\\
+2\BS \> Pass/correct\\
+2NT \> Asking\-\-\\
+2\BH\BS \> Constructive\\
+2NT \> 5-5 minors\\
+3X \> Preemptive\-
+\end{bidtable}
+
+Note that the above is only for a direct overcall over 1NT. To
+define the above also when balancing. We've used BML's
+copy/cut/paste functionality in order to showcase that you do not
+have to write it all over again. Take a look below (only visible in
+the \emph{example.txt} file, not in HTML, LaTeX or .pdf):
+
+First we used the \texttt{\#COPY} command; the text between \texttt{\#COPY} and \texttt{\#ENDCOPY}
+got put into a sort of clipboard, with the tag nt\_defense which we
+specified. To paste it into the bidding table above we used
+the \texttt{\#PASTE} command. We also used the \texttt{\#HIDE} option. When this is
+present in a bidding table the table will be exported to Full
+Disclosure, but not to HTML or LaTeX.
+
+You could also include other BML-files into your main file by using
+the \texttt{\#INCLUDE} command. Just type \texttt{\#INCLUDE <filename>} and the entire
+file will be inserted at the point where you wrote the command. This
+is a useful way to separate your system into modules, or perhaps
+just to make it more manageable.
+
+It is also possible to add continuations when the opponents
+interfere:
+
+\begin{bidtable}
+1\BC-(1\BD)--\+\\
+Dbl \> 4+\BH \\
+1\BH \> 4+\BS \\
+1\BS \> INV+ with 5+\BD\ / Negative NT\\
+1NT \> Game forcing, 5+\BC\ or balanced\\
+2\BC \> 5+\BC , 5--9 hcp\\
+2X \> 6+ suit, 4--8 hcp\\
+2NT \> Invitational\-
+\end{bidtable}
+
+\section{The 1NT opening}
+
+Here's the reason why I left out the 1NT opening earlier: I will
+showcase how to make sequences dependant on vulnerability and
+seat. This will be a bit messy, so hold tight!
+
+We start by cutting our NT-module, since this will be used on all
+NT-openings. \texttt{\#CUT} is similar to the \texttt{\#COPY} command, but using \texttt{\#CUT}
+means that it isn't parsed as a bidding table until it is pasted.
+
+The \texttt{\#VUL} command is used to set the vulnerability. It takes an
+argument of two characters, each can be Y, N or 0. The first
+character asks if we are vulnerable and the second asks if our
+opponents are vulnerable. Y is for Yes, N is for No and 0 means that
+it doesn't matter.
+
+The \texttt{\#SEAT} command sets the seat in which the bid should be valid. 0
+means that the seat doesn't matter (all seats), 12 means first or
+second and 34 means third or fourth. 1--4 could also be used.
+
+So when we're not vulnerable we open 1NT 12--14 in 1st and 2nd seat.
+
+But in third and fourth seat it is 14--16.
+
+When we're vulnerable we always open 1NT 14--16.
+
+\begin{bidtable}
+1NT--\+\\
+2\BC \> Stayman\+\\
+2\BD \> No major\\
+2NT \> 4-4 majors, minimum\\
+3\BC \> 4-4 majors, maximum\-\\
+2red \> Transfer\\
+2\BS \> Minor suit stayman\\
+2NT \> Invitational\-
+\end{bidtable}
+
+We've been using the \texttt{\#HIDE} command, so we don't have to see our
+NT-system over and over again. This time tough we paste it
+normally, so that we see it at least once.
+
+\section{Lists}
+
+I'd like to show you how to make lists in BML. It is pretty
+simple:
+
+\begin{itemize}
+\item Here's a list!
+
+\item With a couple of
+
+\item Items in it
+
+\end{itemize}
+
+You could also make ordered lists:
+
+\begin{enumerate}
+\item This is ordered
+
+\item Just add numbers
+
+\item To each item
+
+\end{enumerate}
+
+\begin{bidtable}
+\O\+\\
+1\BC \> Any hand with 16+ hcp\+\\
+1\BD \> Artificial. 0--7 hcp\+\\
+1\BH \> Any hand with 20+ hcp\-\\
+1\BH\BS \> 5+ suit, forcing to game (8+ hcp)\\
+1NT \> Natural game force, 8+ hcp\\
+2m \> 5+ suit, forcing to game (8+ hcp)\\
+2M \> 6+ suit, 5--7 hcp\-\\
+1\BD \> Nebulous with 2+\BD , 11--15 hcp\\
+1\BH\BS \> 5+ suit, 11--15 hcp\\
+1NT \> 14--16 hcp\\
+2\BC \> 6+\BC\ or 5\BC\ and 4\BH /\BS , 11--15 hcp\\
+2\BD \> 4414. 4405, 4305 or 3405, 11--15 hcp\\
+2\BH\BS \> Weak\\
+2NT \> Weak with 5-5 minors\-
+\end{bidtable}
+
+\begin{bidtable}
+1\BC \> Polish club, one of three:\\
+\>a) 12--14 NT\\
+\>b) 15+ hcp and 5+\BC \\
+\>c) 18+ hcp any distribution
+\end{bidtable}
+
+\begin{bidtable}
+\O\+\\
+1m \> 3+ minor\\
+1M \> 5+ major\\
+1NT \> 15--17\\
+\>May have 5M, 6m or 5-4 minors\\
+2\BC \> Strong and forcing\\
+2X \> Weak\\
+2NT \> 20--21\-
+\end{bidtable}
+
+\begin{bidtable}
+1NT-2\BC\+\\
+2\BD \> No 4 card major\+\\
+2\BH \> 5+\BH , 4\BS , invitational\\
+2\BS \> 5+\BS , invitational\\
+3\BH\BS \> Smolen (5+ cards in other major)\-\\
+2\BH\BS \> 4+ suit\\
+2NT \> 4-4 majors, minimum\\
+3\BC \> 4-4 majors, maximum\-
+\end{bidtable}
+
+\begin{bidtable}
+\O\+\\
+2\BC \> Strong, forcing\+\\
+2\BD \> Waiting\-\\
+2X \> Weak\+\\
+2NT \> Ogust\-\-
+\end{bidtable}
+
+\begin{bidtable}
+(1NT)--\+\\
+Dbl \> Strength, ca 15+\\
+2\BC \> At least 5-4 majors\+\\
+(D)\+\\
+Pass \> 5+\BC , suggestion to play\\
+Rdbl \> Asking for better/longer major\\
+2\BD \> 5+\BD , suggestion to play\-\\
+(P)\+\\
+2\BD \> Asking for better/longer major\-\-\\
+2\BD \> A weak major or a strong minor\\
+2\BH\BS \> Constructive\\
+2NT \> 5-5 minors\\
+3X \> Preemptive\-
+\end{bidtable}
+
+\begin{bidtable}
+1NT--\+\\
+2\BC \> Stayman\\
+2\BD \> Transfer\+\\
+2\BH \> Transfer accept\\
+3\BH \> Super accept\-\\
+2\BH \> Transfer\+\\
+2\BS \> Transfer accept\\
+3\BS \> Super accept\-\-
+\end{bidtable}
+
+\section{The 1\pdfc\ opening}
+
+Opening 1\BC\ shows at least 16+ hcp, and is forcing. The
+continuation is fairly natural.
+
+Some hands might be upgraded to 1\BC\ due to distribution, but
+wildly distributional hands might also be downgraded to avoid
+problems if the opponents preempt.
+
+\subsection{The 1\pdfd\ negative}
+
+Responding 1\BD\ shows a hand which doesn't have enough values to
+establish a game force.
+
+\dealdiagram
+{\vhand{QT}{KQxxxx}{KTx}{Jx}}
+{\vhand{Kxx}{T9}{xxx}{Q987x}}
+{\vhand{Jx}{AJxxx}{AJx}{KTx}}
+{\vhand{A987xx}{\void}{Q9xx}{Axx}}
+{Board 35\\North / None\\4\BS X by South\\Lead \BH K}
+
+\dealdiagram
+{\vhand{QT}{KQxxxx}{KTx}{Jx}}
+{\vhand{Kxx}{T9}{xxx}{Q987x}}
+{\vhand{Jx}{AJxxx}{AJx}{KTx}}
+{\vhand{A987xx}{\void}{Q9xx}{Axx}}
+{Board 35\\North / None\\4\BS X by South\\Lead \BH K}
+
+\begin{itemize}
+\item The first item in an unordered list
+
+\item The second item
+
+\item Etc..
+
+\end{itemize}
+
+\begin{enumerate}
+\item The first item in an ordered list
+
+\item The second item
+
+\item Etc..
+
+\end{enumerate}
+
+/Here's/ \textbf{an} \texttt{example} (italic, bold, monospace)
+
+\end{document}
