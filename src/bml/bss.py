@@ -85,11 +85,15 @@ class Sequence:
     #art
     #type
 
-    def __init__(self, sequence, desc=''):
+    def __init__(self, sequence, node):
         self.sequence = sequence
-        self.desc = desc
+        self.desc = node.desc
         # if the first letter of the sequence is (, then they make the first bid
-        self.we_open = sequence[0][0] != '('
+        self.we_open = self.sequence[0][0] != '('
+        self.vul = VUL_DICT[node.vul]
+        self.seat = SEAT_DICT[node.seat]
+        self.contested = '(' in ''.join(self.sequence)
+
     def __str__(self):
         seq=''
         if not self.contested:
@@ -100,9 +104,8 @@ class Sequence:
         return seq.replace(')', '')
 
     def __repr__(self):
-        if not self.contested:
-            return self.vul + self.seat + 'P'.join(self.sequence)
-        return self.vul + self.seat + ''.join(self.sequence)
+        # do not use desc in __repr__ because we do not want to add the same sequence with another description (e.g. 1C is defined and later on 1X)
+        return self.vul + self.seat + ('P' if not self.contested else '').join(self.sequence)
 
     def __eq__(self, other):
         return repr(self) == repr(other)
@@ -178,19 +181,9 @@ def systemdata_bidtable(children, systemdata):
 
         bid = re.sub(r'[-;]', '', r.bid)
         sequence = r.get_sequence()
-        ##if len(bid) < len(r.bid):
-        ##    rootsequence = ''
-        ##if bml.args.verbose > 1:
-        ##    print("Sequence: %s; root sequence: %s" % (sequence, rootsequence))
-        ##if rootsequence:
-        ##    sequence.reverse()
-        ##    sequence.append(rootsequence)
-        ##    sequence.reverse()
-        contested = '(' in ''.join(sequence)
-        seq = Sequence(sequence, r.desc)
-        seq.vul = VUL_DICT[r.vul]
-        seq.seat = SEAT_DICT[r.seat]
-        seq.contested = contested
+        if bml.args.verbose > 1:
+            print("Sequence: %s" % (sequence))
+        seq = Sequence(sequence, r)
         if not seq in systemdata:
             systemdata.append(seq)
         else:
@@ -200,12 +193,7 @@ def systemdata_bidtable(children, systemdata):
                 systemdata[si].desc = r.desc
 
         if bml.args.verbose > 1:
-            print("Sequence: %s; desc: %s" % (seq, seq.desc))
-
-        ##if len(bid) < len(r.bid):
-        ##    rootsequence = r.bidrepr
-
-        ## assert rootsequence == '', 'Root sequence (%s) should be empty; bid (%s); bidrepr (%s)' % (rootsequence, bid, r.bid)
+            print("Seq: %s" % (seq))
 
         systemdata_bidtable(r.children, systemdata)
 
@@ -213,7 +201,6 @@ def to_systemdata(content):
     systemdata = []
 
     for c in content.nodes:
-        contested = False # unused?
         content_type, content = c
         if content_type == bml.ContentType.BIDTABLE:
             systemdata_bidtable(content.children, systemdata)

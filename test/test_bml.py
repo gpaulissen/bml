@@ -10,7 +10,7 @@ import _pythonpath # necessary to find package bml in development
 import bml
 
 DATA_DIR = join(dirname(__file__), 'data')
-DATA_FILES = [f for f in listdir(DATA_DIR) if isfile(join(DATA_DIR, f)) and re.search(r'\.bml\Z', f) and f != 'test_include.bml']
+DATA_FILES = [f for f in listdir(DATA_DIR) if isfile(join(DATA_DIR, f)) and re.search(r'example\d+\.bml\Z', f) and f != 'test_include.bml']
 
 TMP_DIR = join(dirname(__file__), 'tmp')
 EXPECTED_DIR = join(dirname(__file__), 'expected')
@@ -66,6 +66,8 @@ def test_bml2latex():
     return
 
 if __name__ == '__main__':
+    from bml import args
+    args.verbose = 1
     test_content_from_file()
     test_bml2bss()
     test_bml2html()

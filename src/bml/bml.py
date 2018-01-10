@@ -33,17 +33,24 @@ args = Args()
 
 class Content:
     """The content of a BML file"""
-    nodes = [] # A list of Nodes
-    # where we keep copies
-    clipboard = {}
-    vulnerability = '00'
-    seat = '0'
-    # meta information about the BML-file, supported:
-    # TITLE = the name of the system
-    # DESCRIPTION = a short summary of the system
-    # AUTHOR = the system's author(s)
-    # data in meta is only set once, and isn't overwritten
-    meta = defaultdict(str)
+    nodes = None
+    clipboard = None
+    vulnerability = None
+    seat = None
+    meta = None
+
+    def __init__(self):
+        self.nodes = [] # A list of Nodes
+        # where we keep copies
+        self.clipboard = {}
+        self.vulnerability = '00'
+        self.seat = '0'
+        # meta information about the BML-file, supported:
+        # TITLE = the name of the system
+        # DESCRIPTION = a short summary of the system
+        # AUTHOR = the system's author(s)
+        # data in meta is only set once, and isn't overwritten
+        self.meta = defaultdict(str)
 
 class Diagram:
     """A structure for deal diagrams"""
@@ -507,7 +514,10 @@ def content_from_string(text):
     global args
 
     content = Content()
-    
+
+    if args.verbose > 1:
+        print("# nodes: %s" % (len(content.nodes)))
+
     paragraphs = []
     text = re.sub(r'^\s*#\s*INCLUDE\s*(\S+)\s*\n?', include_file, text, flags=re.MULTILINE)
     text = re.sub(r'^//.*\n', '', text, flags=re.MULTILINE)
@@ -521,9 +531,9 @@ def content_from_string(text):
             nr = nr + 1
             content_type = get_content_type(c, content)
             if content_type:
-                if args.verbose > 1:
-                    print("[%d] Content type: %s\n%s\n" % (nr, ContentTypeStr(content_type[0]), c))
                 content.nodes.append(content_type)
+                if args.verbose > 1:
+                    print("[%d] Content type: %s; # nodes: %s\n%s\n" % (nr, ContentTypeStr(content_type[0]), len(content.nodes), c))
         except Exception as e:
             print("\nERROR in paragraph %d:\n\n%s\n" % (nr+1, c))
             raise

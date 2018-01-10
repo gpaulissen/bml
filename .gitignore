@@ -1,4 +1,3 @@
-
 *.pdf
 *.pyc
 auto/*
@@ -9,3 +8,4 @@ test/.cache/v/cache/lastfailed
 *.out
 *.toc
 test/tmp/*
+*~

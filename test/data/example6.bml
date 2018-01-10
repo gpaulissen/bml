@@ -1,0 +1,37 @@
+#CUT nt_module
+2C  Stayman
+  2D No major
+  2N 4-4 majors, minimum
+  3C 4-4 majors, maximum
+2red Transfer
+2S  Minor suit stayman
+2N  Invitational
+#ENDCUT
+
+#VUL N0
+
+#SEAT 12
+
+#HIDE
+1N 12--14
+  #PASTE nt_module
+
+  So when we're not vulnerable we open 1NT 12--14 in 1st and 2nd seat.
+  
+#SEAT 34
+  
+#HIDE
+1N 14--16
+  #PASTE nt_module
+
+  But in third and fourth seat it is 14--16.
+  
+#VUL Y0
+  
+#SEAT 0
+  
+#HIDE
+1N 14--16
+  #PASTE nt_module
+
+  When we're vulnerable we always open 1NT 14--16.
