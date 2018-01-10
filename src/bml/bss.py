@@ -2,7 +2,7 @@ import re
 import bml
 import sys
 
-__all__ = ['bml2bss'] # only thing to export
+__all__ = ['bml2bss', 'VUL_DICT', 'SEAT_DICT'] # only thing to export
 
 VUL_DICT = {
     # key: bml representation
@@ -69,13 +69,13 @@ class Bid:
         elif other < 0:
             self.value += other*5
         return self
-    
+
     def value(self, kind, denomination):
         bids = ['C', 'D', 'H', 'S', 'N']
         val = bids.index(kind)
         return val + (denomination-1)* 5
 
-class Sequence:    
+class Sequence:
     sequence = []
     desc = ''
     vul = '0'
@@ -110,18 +110,13 @@ class Sequence:
     def __ne__(self, other):
         return repr(self) != repr(other)
 
-## in module bml the bidding history is solved in a different way    
-## rootsequence = ''
-systemdata = []
-
 def systemdata_normal(child):
     return child.bid_type()['normal'] == True
 
-def systemdata_bidtable(children):
-    ## global rootsequence
+def systemdata_bidtable(children, systemdata):
     children_special = [x for x in children if not systemdata_normal(x)]
     children[:] = [x for x in children if systemdata_normal(x)]
-    
+
     for i in children_special:
         if bml.args.verbose > 1:
             print("Special child: %s" % (i))
@@ -168,8 +163,8 @@ def systemdata_bidtable(children):
             assert len(children_special) == 1
             assert len(bids_to_add) == 0
             assert len(children) == 0
-            systemdata_bidtable(i.children) # the function will stop after this call since bids_to_add and children are empty
-                
+            systemdata_bidtable(i.children, systemdata) # the function will stop after this call since bids_to_add and children are empty
+
         for add in bids_to_add:
             h = bml.Node(add, i.desc, i.indentation(), i.parent)
             h.vul = i.vul
@@ -202,43 +197,43 @@ def systemdata_bidtable(children):
             si = systemdata.index(seq)
             seq = systemdata[si]
             if not systemdata[si].desc:
-                systemdata[si].desc = r.desc                
+                systemdata[si].desc = r.desc
 
         if bml.args.verbose > 1:
             print("Sequence: %s; desc: %s" % (seq, seq.desc))
-                
+
         ##if len(bid) < len(r.bid):
         ##    rootsequence = r.bidrepr
 
         ## assert rootsequence == '', 'Root sequence (%s) should be empty; bid (%s); bidrepr (%s)' % (rootsequence, bid, r.bid)
-                
-        systemdata_bidtable(r.children)
+
+        systemdata_bidtable(r.children, systemdata)
 
 def to_systemdata(content):
-    ## global rootsequence
+    systemdata = []
+
     for c in content.nodes:
-        ## rootsequence = ''
         contested = False # unused?
         content_type, content = c
         if content_type == bml.ContentType.BIDTABLE:
-            systemdata_bidtable(content.children)
+            systemdata_bidtable(content.children, systemdata)
 
-def systemdata_to_bss(content, f):
-    global systemdata
+    return systemdata
 
+def systemdata_to_bss(content, systemdata, f):
     f.write('*00{'+ content.meta['TITLE'] +'}=NYYYYYY' + content.meta['DESCRIPTION'] + '\n')
     for i in systemdata:
         kind = str(i)[-2:]
         if not i.we_open:
             f.write('*')
         f.write(i.seat)
-        f.write(i.vul)            
+        f.write(i.vul)
         f.write(str(i)+'=')
         # artificial?
         f.write('N')
         # result: clubs, diamonds, hearts, spades, NT, opponents undoubled
         f.write('YYYYYY')
-        
+
         # GJP 2017-12-24 This seems to be a mandatory field
         ## if re.match(r'\d[CDHSN]', kind):
         # characteristics (signoff, control bid etc)
@@ -251,10 +246,10 @@ def systemdata_to_bss(content, f):
 
 def bml2bss(input_filename, output_filename):
     content = bml.content_from_file(input_filename)
-    to_systemdata(content)
+    systemdata = to_systemdata(content)
     if output_filename == '-':
-        systemdata_to_bss(content, sys.stdout)
+        systemdata_to_bss(content, systemdata, sys.stdout)
     else:
         with open(output_filename, mode='w', encoding="utf-8") as f:
-            systemdata_to_bss(content, f)
+            systemdata_to_bss(content, systemdata, f)
     return content

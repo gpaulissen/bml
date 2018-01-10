@@ -1,24 +1,24 @@
 // BEGIN_SRC #1 in README.org
-1C  Any hand with 16+ hcp
-  1D  Artificial. 0--7 hcp
-    1H  Any hand with 20+ hcp
-  1HS 5+ suit, forcing to game (8+ hcp)
-  1N  Natural game force, 8+ hcp
-  2m  5+ suit, forcing to game (8+ hcp)
-  2M  6+ suit, 5--7 hcp
-1D  Nebulous with 2+!d, 11--15 hcp
-1HS 5+ suit, 11--15 hcp
-1N  14--16 hcp
-2C  6+!c or 5!c and 4!h/!s, 11--15 hcp
-2D  4414. 4405, 4305 or 3405, 11--15 hcp
-2HS Weak
-2N  Weak with 5-5 minors
+// 1C  Any hand with 16+ hcp
+//   1D  Artificial. 0--7 hcp
+//     1H  Any hand with 20+ hcp
+//   1HS 5+ suit, forcing to game (8+ hcp)
+//   1N  Natural game force, 8+ hcp
+//   2m  5+ suit, forcing to game (8+ hcp)
+//   2M  6+ suit, 5--7 hcp
+// 1D  Nebulous with 2+!d, 11--15 hcp
+// 1HS 5+ suit, 11--15 hcp
+// 1N  14--16 hcp
+// 2C  6+!c or 5!c and 4!h/!s, 11--15 hcp
+// 2D  4414. 4405, 4305 or 3405, 11--15 hcp
+// 2HS Weak
+// 2N  Weak with 5-5 minors
  
 // BEGIN_SRC #2 in README.org
-1C  Polish club, one of three:
-    a) 12--14 NT
-    b) 15+ hcp and 5+!c
-    c) 18+ hcp any distribution
+// 1C  Polish club, one of three:
+//     a) 12--14 NT
+//     b) 15+ hcp and 5+!c
+//     c) 18+ hcp any distribution
 
 // BEGIN_SRC #3 in README.org
 1m = 3+ minor

@@ -33,8 +33,8 @@ def test_bml2bss():
         content = bml.bml2bss(join(DATA_DIR, file), output_filename)
         assert len(content.nodes) > 0, 'Something must have been parsed'
         assert not(isfile(join(TMP_DIR, file)))
-        assert isfile(output_filename)
-        assert not(isfile(output_filename_expected)) or filecmp.cmp(output_filename, output_filename_expected)
+        assert isfile(output_filename), 'File %s must exist' % (output_filename)
+        assert not(isfile(output_filename_expected)) or filecmp.cmp(output_filename, output_filename_expected), 'Files %s and %s must be the same' % (output_filename, output_filename_expected)
     return
 
 def test_bml2html():
@@ -47,8 +47,8 @@ def test_bml2html():
         content = bml.bml2html(join(DATA_DIR, file), output_filename)
         assert len(content.nodes) > 0, 'Something must have been parsed'
         assert not(isfile(join(TMP_DIR, file)))
-        assert isfile(output_filename)
-        assert not(isfile(output_filename_expected)) or filecmp.cmp(output_filename, output_filename_expected)
+        assert isfile(output_filename), 'File %s must exist' % (output_filename)
+        assert not(isfile(output_filename_expected)) or filecmp.cmp(output_filename, output_filename_expected), 'Files %s and %s must be the same' % (output_filename, output_filename_expected)
     return
 
 def test_bml2latex():
@@ -61,8 +61,8 @@ def test_bml2latex():
         content = bml.bml2latex(join(DATA_DIR, file), output_filename)
         assert len(content.nodes) > 0, 'Something must have been parsed'
         assert not(isfile(join(TMP_DIR, file)))
-        assert isfile(output_filename)
-        assert not(isfile(output_filename_expected)) or filecmp.cmp(output_filename, output_filename_expected)
+        assert isfile(output_filename), 'File %s must exist' % (output_filename)
+        assert not(isfile(output_filename_expected)) or filecmp.cmp(output_filename, output_filename_expected), 'Files %s and %s must be the same' % (output_filename, output_filename_expected)
     return
 
 if __name__ == '__main__':
