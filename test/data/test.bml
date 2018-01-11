@@ -46,7 +46,7 @@
   2N Ogust
 
 // BEGIN_SRC #6 in README.org
-(1NT)---
+(1N)---
 D   Strength, ca 15+
 2C  At least 5-4 majors
   (D)
@@ -89,7 +89,9 @@ D   Strength, ca 15+
 
 // BEGIN_SRC #9 in README.org
 #+TITLE: Precision club
+
 #+AUTHOR: John Smith
+
 #+DESCRIPTION: Strong club system. Nebulous diamond and 5 card majors
 
 // BEGIN_SRC #10 in README.org

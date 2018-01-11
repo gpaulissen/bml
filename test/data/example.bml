@@ -18,7 +18,7 @@
   exported to HTML or LaTeX. It is also possible to make words (or
   sentences) *strong or bold* or /in italics/.
 
-  The system presented in this example file is meant to showcase many
+  The system presented in this example file is meant to show many
   of the current features in BML. Let's start with the basic opening
   structure of the system:
   
@@ -36,7 +36,7 @@
   more suited for bridge system notes than other markup languages. You
   start by writing the bid, then a number of whitespaces, and then the
   description of the bid. Simple! C is for clubs, D for diamonds, H
-  for hearts, S for spades and N for no trump. There's also some
+  for hearts, S for spades and N for no trump. There are also some
   special cases which you could use, above we use 1M (1H and 1S), 2HS
   (2H and 2S) and 3X (3C, 3D, 3H and 3S). We'll see more of these
   later.
@@ -49,7 +49,7 @@
   You might have noticed the !c in the title of this section? This
   will be replaced by a club suit symbol when exported. The same is
   true for !d, !h and !s (but these will be converted to diamonds,
-  hearts and spades, ofcourse).
+  hearts and spades, of course).
 
   In this example we use transfer responses to the 1!c opening:
 
@@ -71,7 +71,7 @@
    This section has two asterisks, meaning it will be at level two
    (so its a subsection). You might also have noticed that the
    paragraphs, the sections and the bidtables are separated by a
-   blank line? This is important in BML, as the blankline are used to
+   blank line. This is important in BML, as the blank line is used to
    separate elements.
 
 1C-1D;
@@ -149,10 +149,10 @@ D   Strength, ca 15+
 #ENDCOPY
 
   Note that the above is only for a direct overcall over 1NT. To
-  define the above also when balancing. We've used BML's
-  copy/cut/paste functionality in order to showcase that you do not
+  define the above also when balancing we will use BML's
+  copy/cut/paste functionality in order to show that you do not
   have to write it all over again. Take a look below (only visible in
-  the /example.txt/ file, not in HTML, LaTeX or .pdf):
+  the /example.txt/ or generated Full Disclosure file, not in HTML or LaTeX):
 
 #HIDE
 (1N)-P-(P)---
@@ -186,7 +186,7 @@ D  4+!h
 * The 1NT opening
 
   Here's the reason why I left out the 1NT opening earlier: I will
-  showcase how to make sequences dependant on vulnerability and
+  show how to make sequences dependant on vulnerability and
   seat. This will be a bit messy, so hold tight!
 
 #CUT nt_module

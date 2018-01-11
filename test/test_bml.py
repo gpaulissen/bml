@@ -10,7 +10,7 @@ import _pythonpath # necessary to find package bml in development
 import bml
 
 DATA_DIR = join(dirname(__file__), 'data')
-DATA_FILES = [f for f in listdir(DATA_DIR) if isfile(join(DATA_DIR, f)) and re.search(r'example\d+\.bml\Z', f) and f != 'test_include.bml']
+DATA_FILES = [f for f in listdir(DATA_DIR) if isfile(join(DATA_DIR, f)) and f != 'test_include.bml']
 
 TMP_DIR = join(dirname(__file__), 'tmp')
 EXPECTED_DIR = join(dirname(__file__), 'expected')

@@ -12,6 +12,7 @@
 
 #SEAT 12
 
+#HIDE
 1N 12--14
   #PASTE nt_module
 
@@ -34,3 +35,6 @@
   #PASTE nt_module
 
   When we're vulnerable we always open 1NT 14--16.
+
+1N-
+#PASTE nt_module
