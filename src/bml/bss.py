@@ -1,6 +1,7 @@
 import re
 import bml
 import sys
+import copy
 
 __all__ = ['bml2bss', 'VUL_DICT', 'SEAT_DICT'] # only thing to export
 
@@ -85,8 +86,8 @@ class Sequence:
     #art
     #type
 
-    def __init__(self, sequence, node):
-        self.sequence = sequence
+    def __init__(self, node):
+        self.sequence = node.get_sequence()
         self.desc = node.desc
         # if the first letter of the sequence is (, then they make the first bid
         self.we_open = self.sequence[0][0] != '('
@@ -169,21 +170,17 @@ def systemdata_bidtable(children, systemdata):
             systemdata_bidtable(i.children, systemdata) # the function will stop after this call since bids_to_add and children are empty
 
         for add in bids_to_add:
-            h = bml.Node(add, i.desc, i.indentation(), i.parent)
-            h.vul = i.vul
-            h.seat = i.seat
-            h.set_children(i.children)
-            children.append(h)
+            # We must not add such a new bid if that bid already existed as a normal bid
+            if add not in [c.all_bids()[-1] for c in children]:
+                h = copy.deepcopy(i)
+                h.bid = add
+                children.append(h)
 
     for r in children:
         if bml.args.verbose > 1:
             print("Normal child: %s" % (r))
 
-        bid = re.sub(r'[-;]', '', r.bid)
-        sequence = r.get_sequence()
-        if bml.args.verbose > 1:
-            print("Sequence: %s" % (sequence))
-        seq = Sequence(sequence, r)
+        seq = Sequence(r)
         if not seq in systemdata:
             systemdata.append(seq)
         else:
