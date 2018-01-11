@@ -129,6 +129,17 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
 
 
 """
+    vul = None # Vulnerability
+    seat = None
+    export = None
+    bid = None # Either:
+               # 1) a single bid
+               # 2) a history (sequence) of bids (the first line in a bidding table) separated by a dash (-)
+    desc = None
+    desc_indentation = None
+    children = None # A list of child bids
+    parent = None # The parent bid
+
     def __init__(self, bid, desc, indentation, parent=None, desc_indentation=-1):
         # precondition
         # checks for non root
@@ -148,10 +159,6 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
         self.parent = parent
         bid = re.sub(r'[-;]', '', bid)
         bid = bid.replace('NT', 'N')
-        self.bidrepr = bid
-        bids = re.findall(r'\d[A-Za-z]+', self.bidrepr)
-        if bids and not '(' in self.bidrepr:
-            self.bidrepr = 'P'.join(bids)
 
         if bid != ROOT and self.level() < 1:
             raise IndentationError("Level (%d) must be at least 1 for a non root Node" % (self.level()))
@@ -180,19 +187,43 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
             raise IndentationError("Child node level (%d) must be equal to the parent node level (%d) + 1" % (child.level(), self.level()))
         return self.children[-1]
 
+    # A bid can be either:
+    # 1) a single bid
+    # 2) a history (sequence) of bids (the first line in a bidding table) separated by a dash (-)
+    def all_bids(self):
+        bids = self.bid.rstrip(';-').split('-')
+        return bids
+    
     def get_sequence(self):
-        """List with all the parent, and the current, bids"""
+        """List with all the parent and the current bids including generated passes in between"""
 
-        ps = []
+        # Get a list of nodes in the right order
+        nodes = []
         p = self
         while p and p.bid != ROOT and p.bid != EMPTY:
-            ps.append(p.bidrepr)
+            nodes.append(p)
             p = p.parent
 
-        ps.reverse()
+        nodes.reverse()
+
+        bids = []
+        for p in nodes:
+            # A bid can be either:
+            # 1) a single bid
+            # 2) a history (sequence) of bids (the first line in a bidding table) separated by a dash (-)
+            for bid in p.all_bids():
+                # When the previous bid belongs to the same party we must add a pass
+                if len(bids) > 0:
+                    if bid[0:1] == '(' and bids[-1][0:1] == '(':
+                        bids.append('P')                    
+                    elif bid[0:1] != '(' and bids[-1][0:1] != '(':
+                        bids.append('(P)')                   
+                bids.append(bid)                
+            p = p.parent
+            
         if args.verbose > 1:
-            print("get_sequence (%s): %s" % (self, ps))
-        return ps
+            print("get_sequence (%s): %s" % (self, bids))
+        return bids
 
     def set_children(self, children):
         """Used when copying from another Node"""
@@ -206,18 +237,18 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
         return self.children[arg]
 
     def __str__(self):
-        str = 'bid: %s; bidrepr: %s; level: %d; desc: %s' % (self.bid, self.bidrepr, self.level(), self.desc)
+        str = 'bid: %s; level: %d; desc: %s' % (self.bid, self.level(), self.desc)
         return str
 
     def bid_type(self):
         # Matches <digit>[CDHSN], P, D and R, all possibly surrounded by ()
         dict = None
-        bid = self.bidrepr
+        bid = self.all_bids()[-1]
         m = re.search(r'\((.+)\)\Z', bid)
         if m:
             bid = m.group(1)
             
-        if re.search(r'([1-7][CDHSN]|P|D|R)+\Z', bid):
+        if bid in ['P', 'D', 'R'] or re.match(r'[1-7][CDHSN]\Z', bid):
             dict = {'normal': True}
         else:
             # special bids of the form <digit><kind>
@@ -225,11 +256,13 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
             m = re.search(r'(?P<denomination>\d+)(?P<kind>[a-zA-Z]+)\Z', bid)
             if m:
                 kind = m.group('kind')
-                assert kind in ['M', 'm', 'oM', 'om'] or kind.upper() in ['BLACK', 'RED', 'X', 'STEP', 'STEPS'] or re.match(r'[CDHS]+\Z', kind), 'Last bid in "%s" incorrect; kind is "%s"' % (self.bidrepr, kind)
+                assert kind in ['M', 'm', 'oM', 'om'] or kind.upper() in ['BLACK', 'RED', 'X', 'STEP', 'STEPS'] or re.match(r'[CDHS]+\Z', kind), 'Last bid in "%s" incorrect; kind is "%s"' % (bid, kind)
                 dict = {'normal': False, 'denomination': m.group('denomination'), 'kind': kind}
             else:
-                assert bid in [EMPTY, ROOT], 'Last bid in "%s" must be "%s" or "%s"' % (self.bidrepr, EMPTY, ROOT)
+                assert bid in [EMPTY, ROOT], 'Last bid in "%s" must be "%s" or "%s"' % (bid, EMPTY, ROOT)
                 dict = {'normal': False, 'denomination': None, 'kind': None}
+        if args.verbose > 1:
+            print("bid_type; bid: %s; dict: %s" % (self.bid, str(dict)))
         return dict
 
 def create_bidtree(text, content):

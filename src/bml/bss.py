@@ -153,7 +153,7 @@ def systemdata_bidtable(children, systemdata):
                 bids_to_add.append(denomination + 'H')
                 bids_to_add.append(denomination + 'S')
             elif(kind.upper() in ['STEP', 'STEPS']):
-                parentbid = Bid(i.parent.bidrepr[-2:])
+                parentbid = Bid(i.parent.all_bids()[-1])
                 parentbid += int(denomination)
                 bids_to_add.append(str(parentbid))
             elif (kind in ['oM', 'om']):
@@ -162,7 +162,7 @@ def systemdata_bidtable(children, systemdata):
             else:
                 raise Exception("Unknown kind (%s)" % (kind))
         else:
-            assert i.bidrepr == bml.EMPTY, 'Bid (%s) must be empty' % (i.bidrepr)
+            assert i.all_bids()[-1] == bml.EMPTY, 'Bid (%s) must be empty' % (i.bid)
             assert len(children_special) == 1
             assert len(bids_to_add) == 0
             assert len(children) == 0
