@@ -211,8 +211,7 @@ def to_latex(content, f):
 
     f.write(preamble)
     for s in ['TITLE', 'AUTHOR']:
-        if s in content.meta:
-            f.write('\\%s{%s}\n' % (s.lower(), content.meta[s]))
+        f.write('\\%s{%s}\n' % (s.lower(), content.meta[s] if s in content.meta else 'No ' + s.lower() + ' defined'))
 
     f.write('\\begin{document}\n')
     f.write('\\maketitle\n')

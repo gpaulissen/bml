@@ -87,7 +87,7 @@ def to_html(content):
     meta.attrib['content'] = "text/html; charset=utf-8"
 
     title = ET.SubElement(head, 'title')
-    title.text = content.meta['TITLE']
+    title.text = content.meta['TITLE'] if content.meta['TITLE'] else 'No title supplied'
 
     if not bml.args.include_external_files:
         link = ET.SubElement(head, 'link')
@@ -159,8 +159,8 @@ def to_html(content):
     bodystring = re.sub(r'\d([CDHS]|N(?!T))+', html_replace_suits, bodystring)
 
     return """<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
-<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'>""" + str(ET.tostring(head), 'UTF8') + bodystring + '</html>'
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>""" + str(ET.tostring(head), 'UTF8') + bodystring + '</html>'
 
 def bml2html(input_filename, output_filename):
     content = bml.content_from_file(input_filename)

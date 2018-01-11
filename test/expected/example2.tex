@@ -1,0 +1,125 @@
+\documentclass[a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{newcent}
+\usepackage{helvet}
+\usepackage{graphicx}
+
+\usepackage[pdftex, pdfborder={0 0 0}]{hyperref}
+\frenchspacing
+
+\usepackage{txfonts} % For \varheartsuit and \vardiamondsuit
+\usepackage[usenames,dvipsnames]{color} % dvipsnames necessary to made PDFLaTeX work.
+\usepackage{enumerate}
+\usepackage{listliketab}
+\usepackage{latexsym} % \Box
+\usepackage{pbox} % \Box
+
+% suits
+
+%%% Colors
+
+\newcommand{\BC}{\textcolor{OliveGreen}{$\clubsuit$}}
+\newcommand{\BD}{\textcolor{RedOrange}{$\vardiamondsuit$}}
+\newcommand{\BH}{\textcolor{Red}{$\varheartsuit${}}}
+\newcommand{\BS}{\textcolor{Blue}{$\spadesuit${}}}
+
+%suits for pdf-friendly titles
+\newcommand{\pdfc}{\texorpdfstring{\BC{}}{C}}
+\newcommand{\pdfd}{\texorpdfstring{\BD{}}{D}}
+\newcommand{\pdfh}{\texorpdfstring{\BH{}}{H}}
+\newcommand{\pdfs}{\texorpdfstring{\BS{}}{S}}
+
+\newenvironment{bidtable}
+{\begin{tabbing}
+
+xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=\kill}
+{\end{tabbing} }%
+
+\newenvironment{bidding}%
+{\begin{tabbing}
+xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx \kill
+}{\end{tabbing} }%end bidding
+
+
+% writing hands
+\newcommand{\cards}[1]{\textsf{#1}}
+\newcommand{\spades}[1]{\BS\cards{#1}}
+\newcommand{\hearts}[1]{\BH\cards{#1}}
+\newcommand{\diamonds}[1]{\BD\cards{#1}}
+\newcommand{\clubs}[1]{\BC\cards{#1}}
+\newcommand{\void}{--}
+\newcommand{\hand}[4]{\spades{#1}\ \hearts{#2}\ \diamonds{#3} \clubs{#4}}
+\newcommand{\vhand}[4]{\spades{#1}\\\hearts{#2}\\\diamonds{#3}\\\clubs{#4}}
+
+% The \Box should always appear the same distance from the left margin
+\newcommand\onesuit[4]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+                & \cards{#2} \\%
+      \cards{#1}& $\Box$    & \cards{#3} \\%
+                & \cards{#4} %
+    \end{tabular}
+  \end{center}%
+}
+
+% A special command if the south hand is not shown to avoid whitespace
+\newcommand\onesuitenw[3]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}%
+                & \cards{#2} \\%
+      \cards{#1}& $\Box$    & \cards{#3}%
+    \end{tabular}%
+  \end{center}%
+}
+
+\newcommand\dealdiagram[5]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+      \pbox{20cm}{\small #5}& \pbox{20cm}{#2} \\%
+      \pbox{20cm}{#1}& $\Box$    & \pbox{20cm}{#3} \\%
+                & \pbox{20cm}{#4} %
+    \end{tabular}
+  \end{center}%
+}
+
+\newcommand\dealdiagramenw[4]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+      \pbox{20cm}{\small #4}& \pbox{20cm}{#2} \\%
+      \pbox{20cm}{#1}& $\Box$    & \pbox{20cm}{#3} \\%
+    \end{tabular}
+  \end{center}%
+}
+
+\newcommand\dealdiagramew[2]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+      \pbox{20cm}{#1}& $\Box$    & \pbox{20cm}{#2} \\%
+    \end{tabular}
+  \end{center}%
+}
+
+\title{No title defined}
+\author{No author defined}
+\begin{document}
+\maketitle
+\tableofcontents
+
+\begin{bidtable}
+1\BC\+\\
+1red \> Transfer. 4+ major, 0+ hcp\\
+1\BS \> INV+ with 5+\BD\ / Negative NT\\
+1NT \> Game forcing, 5+\BC\ or balanced\\
+2\BC \> 5+\BC , 5--9 hcp\\
+2X \> 6+ suit, 4--8 hcp\\
+2NT \> Invitational\-
+\end{bidtable}
+
+\end{document}

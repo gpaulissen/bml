@@ -6,7 +6,7 @@ from collections import defaultdict
 import argparse
 from contextlib import contextmanager
 
-__all__ = ['parse_arguments', 'content_from_file', 'Node', 'ContentType', 'args', 'EMPTY']
+__all__ = ['parse_arguments', 'content_from_file', 'Node', 'ContentType', 'args', 'EMPTY', 'ROOT']
 
 # constants
 ROOT = 'root'
@@ -131,7 +131,7 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
 """
     vul = None # Vulnerability
     seat = None
-    export = None
+    export = None # Export HTML or Latex? Export to BSS will take place anyway
     bid = None # Either:
                # 1) a single bid
                # 2) a history (sequence) of bids (the first line in a bidding table) separated by a dash (-)
@@ -191,8 +191,7 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
     # 1) a single bid
     # 2) a history (sequence) of bids (the first line in a bidding table) separated by a dash (-)
     def all_bids(self):
-        bids = self.bid.rstrip(';-').split('-')
-        return bids
+        return self.bid.rstrip(';-').split('-')
     
     def get_sequence(self):
         """List with all the parent and the current bids including generated passes in between"""
@@ -274,7 +273,7 @@ def create_bidtree(text, content):
     # breaks when no more CUT in bidtable
     while True:
         cut = re.search(r'^(\s*)#\s*CUT\s+(\S+)\s*\n(.*)#ENDCUT[ ]*\n?',
-                         text, flags=re.DOTALL|re.MULTILINE)
+                        text, flags=re.DOTALL|re.MULTILINE)
         if not cut:
             break
         value = cut.group(3).split('\n')
@@ -405,18 +404,18 @@ def create_bidtree(text, content):
     return root
 
 class ContentType:
-    BIDTABLE = 1
-    PARAGRAPH = 2
-    H1 = 3
-    H2 = 4
-    H3 = 5
-    H4 = 6
-    LIST = 7
-    ENUM = 8
-    DIAGRAM = 9
-    TABLE = 10
-    DESCRIPTION = 11
-    BIDDING = 12
+    BIDTABLE = 1     # HTML, BSS
+    PARAGRAPH = 2    # HTML, Latex
+    H1 = 3           # HTML, Latex
+    H2 = 4           # HTML, Latex
+    H3 = 5           # HTML, Latex
+    H4 = 6           # HTML, Latex
+    LIST = 7         # HTML, Latex
+    ENUM = 8         # HTML, Latex
+    DIAGRAM = 9      # Latex
+    TABLE = 10       # Latex
+    DESCRIPTION = 11 # Latex
+    BIDDING = 12     # Latex
     
 def ContentTypeStr(self):
     switcher = {
@@ -447,9 +446,8 @@ def get_content_type(text, content):
     
     # The first element is empty, therefore [1:]
     if(re.match(r'^\s*-', text)):
-        if text.find(' :: ') >= 0:
-            return (ContentType.DESCRIPTION, re.split(r'^\s*-\s*', text, flags=re.MULTILINE)[1:])
-        return (ContentType.LIST, re.split(r'^\s*-\s*', text, flags=re.MULTILINE)[1:])
+        return (ContentType.DESCRIPTION if text.find(' :: ') >= 0 else ContentType.LIST,
+                re.split(r'^\s*-\s*', text, flags=re.MULTILINE)[1:])
 
     if(re.match(r'^\s*#VUL', text)):
         content.vulnerability = text.split()[1]

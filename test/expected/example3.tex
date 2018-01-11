@@ -1,0 +1,158 @@
+\documentclass[a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{newcent}
+\usepackage{helvet}
+\usepackage{graphicx}
+
+\usepackage[pdftex, pdfborder={0 0 0}]{hyperref}
+\frenchspacing
+
+\usepackage{txfonts} % For \varheartsuit and \vardiamondsuit
+\usepackage[usenames,dvipsnames]{color} % dvipsnames necessary to made PDFLaTeX work.
+\usepackage{enumerate}
+\usepackage{listliketab}
+\usepackage{latexsym} % \Box
+\usepackage{pbox} % \Box
+
+% suits
+
+%%% Colors
+
+\newcommand{\BC}{\textcolor{OliveGreen}{$\clubsuit$}}
+\newcommand{\BD}{\textcolor{RedOrange}{$\vardiamondsuit$}}
+\newcommand{\BH}{\textcolor{Red}{$\varheartsuit${}}}
+\newcommand{\BS}{\textcolor{Blue}{$\spadesuit${}}}
+
+%suits for pdf-friendly titles
+\newcommand{\pdfc}{\texorpdfstring{\BC{}}{C}}
+\newcommand{\pdfd}{\texorpdfstring{\BD{}}{D}}
+\newcommand{\pdfh}{\texorpdfstring{\BH{}}{H}}
+\newcommand{\pdfs}{\texorpdfstring{\BS{}}{S}}
+
+\newenvironment{bidtable}
+{\begin{tabbing}
+
+xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=\kill}
+{\end{tabbing} }%
+
+\newenvironment{bidding}%
+{\begin{tabbing}
+xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx \kill
+}{\end{tabbing} }%end bidding
+
+
+% writing hands
+\newcommand{\cards}[1]{\textsf{#1}}
+\newcommand{\spades}[1]{\BS\cards{#1}}
+\newcommand{\hearts}[1]{\BH\cards{#1}}
+\newcommand{\diamonds}[1]{\BD\cards{#1}}
+\newcommand{\clubs}[1]{\BC\cards{#1}}
+\newcommand{\void}{--}
+\newcommand{\hand}[4]{\spades{#1}\ \hearts{#2}\ \diamonds{#3} \clubs{#4}}
+\newcommand{\vhand}[4]{\spades{#1}\\\hearts{#2}\\\diamonds{#3}\\\clubs{#4}}
+
+% The \Box should always appear the same distance from the left margin
+\newcommand\onesuit[4]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+                & \cards{#2} \\%
+      \cards{#1}& $\Box$    & \cards{#3} \\%
+                & \cards{#4} %
+    \end{tabular}
+  \end{center}%
+}
+
+% A special command if the south hand is not shown to avoid whitespace
+\newcommand\onesuitenw[3]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}%
+                & \cards{#2} \\%
+      \cards{#1}& $\Box$    & \cards{#3}%
+    \end{tabular}%
+  \end{center}%
+}
+
+\newcommand\dealdiagram[5]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+      \pbox{20cm}{\small #5}& \pbox{20cm}{#2} \\%
+      \pbox{20cm}{#1}& $\Box$    & \pbox{20cm}{#3} \\%
+                & \pbox{20cm}{#4} %
+    \end{tabular}
+  \end{center}%
+}
+
+\newcommand\dealdiagramenw[4]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+      \pbox{20cm}{\small #4}& \pbox{20cm}{#2} \\%
+      \pbox{20cm}{#1}& $\Box$    & \pbox{20cm}{#3} \\%
+    \end{tabular}
+  \end{center}%
+}
+
+\newcommand\dealdiagramew[2]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+      \pbox{20cm}{#1}& $\Box$    & \pbox{20cm}{#2} \\%
+    \end{tabular}
+  \end{center}%
+}
+
+\title{No title defined}
+\author{No author defined}
+\begin{document}
+\maketitle
+\tableofcontents
+
+\begin{bidtable}
+1\BC-1\BD\+\\
+1\BH \> Minimum with 2--3\BH \+\\
+1\BS \> 4+\BH , 4\BS , at most invitational\\
+1NT \> Sign off\\
+2\BC \> Puppet to 2\BD \+\\
+2\BD \> Forced\+\\
+2\BH \> Mildly invitational with 5\BH \\
+2\BS \> Invitational, 5+\BH\ and 4\BS \\
+2NT \> Strongly invitational with 5\BH \\
+3m \> Invitational with 4\BH\ and 5+ minor\\
+3\BH \> 6\BH , about 11--12 hcp\-\-\\
+2\BD \> Artificial game force\\
+2\BH \> 6+\BH , about 9--10 hcp\-\\
+1\BS \> 5+\BC , 4+\BS , unlimited\\
+1NT \> 17--19 bal, 2--3\BH \\
+2\BC \> 5+\BC , unbal, 0--2\BH , 0--3\BS \\
+2\BD \> Reverse\\
+2\BH \> Minimum, 4\BH \\
+2\BS \> 16+ hcp, 5+\BC\ and 4+\BH \+\\
+3\BD \> Retransfer\+\\
+3\BH\+\\
+3\BS \> Cue bid, slam interest\\
+4\BC\BD \> Cue bid, slam interest\\
+4\BH \> To play\-\-\\
+3\BH \> Invitational\\
+3\BS \> Splinter\\
+4\BC\BD \> Splinter\\
+4\BH \> To play\-\\
+2NT \> 16+ hcp, 6+\BC . 18+ if 3\BH \+\\
+3\BC \> Suggestion to play\\
+3\BD \> Relay\+\\
+3\BH \> 3\BH , 18+ hcp\-\\
+3\BH \> Game forcing with 6+\BH \-\\
+3\BC \> 15--17 hcp, 6+\BC\ and 3\BH \+\\
+3\BD \> Retransfer\\
+3\BH \> Invitational\-\\
+3\BD \> 17--19 bal, 4\BH \+\\
+3\BH \> To play\-\\
+3\BH \> 13--15 hcp, good hand, 5+\BC\ and 4\BH \+\\
+3NT \> Asking for singleton\-\-
+\end{bidtable}
+
+\end{document}

@@ -18,7 +18,7 @@
   CLOSED: [2013-04-01 Mon 00:42]
 * DONE Correct export of "" in LaTeX
   CLOSED: [2013-04-01 Mon 15:15]
-
+	
 * DONE Add license-file
   CLOSED: [2013-04-01 Mon 15:16]
 
@@ -28,7 +28,7 @@
 ** Bidding/hand diagrams
 ** Play problems
 ** Tables
-
+	 
 * org-mode config
 #+SEQ_TODO: TODO(t) STARTED(s) | DONE(d) CANCELLED(c)
 
