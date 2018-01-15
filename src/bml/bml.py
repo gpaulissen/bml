@@ -250,16 +250,16 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
         if bid in ['P', 'D', 'R'] or re.match(r'[1-7][CDHSN]\Z', bid):
             dict = {'normal': True}
         else:
-            # special bids of the form <digit><kind>
+            # special bids of the form <level><strain>
             # for instance 1HS, 2M, 3m, 10steps, etc
-            m = re.search(r'(?P<denomination>\d+)(?P<kind>[a-zA-Z]+)\Z', bid)
+            m = re.search(r'(?P<level>\d+)(?P<strain>[a-zA-Z]+)\Z', bid)
             if m:
-                kind = m.group('kind')
-                assert kind in ['M', 'm', 'oM', 'om'] or kind.upper() in ['BLACK', 'RED', 'X', 'STEP', 'STEPS'] or re.match(r'[CDHS]+\Z', kind), 'Last bid in "%s" incorrect; kind is "%s"' % (bid, kind)
-                dict = {'normal': False, 'denomination': m.group('denomination'), 'kind': kind}
+                strain = m.group('strain')
+                assert strain in ['M', 'm', 'oM', 'om'] or strain.upper() in ['BLACK', 'RED', 'X', 'STEP', 'STEPS'] or re.match(r'[CDHS]+\Z', strain), 'Last bid in "%s" incorrect; strain is "%s"' % (bid, strain)
+                dict = {'normal': False, 'level': m.group('level'), 'strain': strain}
             else:
                 assert bid in [EMPTY, ROOT], 'Last bid in "%s" must be "%s" or "%s"' % (bid, EMPTY, ROOT)
-                dict = {'normal': False, 'denomination': None, 'kind': None}
+                dict = {'normal': False, 'level': None, 'strain': None}
         if args.verbose > 1:
             print("bid_type; bid: %s; dict: %s" % (self.bid, str(dict)))
         return dict

@@ -34,20 +34,20 @@ SEAT_DICT = {
 class Bid:
     """Numeric representation of a bid"""
     def __init__(self, stringrep):
-        """Stringrep should be <denomination><kind>"""
+        """Stringrep should be <level><strain>"""
         stringrep = stringrep[-2:] # only the last two characters
-        denomination = int(stringrep[0])
-        assert denomination >0 and denomination <8, 'denomination must be 1--7'
-        kind = stringrep[1]
-        assert kind in ['C', 'D', 'H', 'S', 'N'], 'kind must be one of CDHSN'
+        level = int(stringrep[0])
+        assert level >0 and level <8, 'level must be 1--7'
+        strain = stringrep[1]
+        assert strain in ['C', 'D', 'H', 'S', 'N'], 'strain must be one of CDHSN'
 
-        self.value = self.value(kind, denomination)
+        self.value = self.value(level, strain)
 
     def __str__(self):
         bids = ['C', 'D', 'H', 'S', 'N']
-        kind = bids[(self.value) % 5]
-        denomination = str((self.value) // 5 + 1)
-        return denomination + kind
+        strain = bids[(self.value) % 5]
+        level = str((self.value) // 5 + 1)
+        return level + strain
 
     def __repr__(self):
         return str(self.value)
@@ -71,10 +71,10 @@ class Bid:
             self.value += other*5
         return self
 
-    def value(self, kind, denomination):
+    def value(self, level, strain):
         bids = ['C', 'D', 'H', 'S', 'N']
-        val = bids.index(kind)
-        return val + (denomination-1)* 5
+        val = bids.index(strain)
+        return val + (level-1)* 5
 
 class Sequence:
     sequence = []
@@ -117,83 +117,100 @@ class Sequence:
 def systemdata_normal(child):
     return child.bid_type()['normal'] == True
 
-def systemdata_bidtable(children, systemdata):
-    children_special = [x for x in children if not systemdata_normal(x)]
-    children[:] = [x for x in children if systemdata_normal(x)]
+def systemdata_bidtable(children, systemdata, vars={}):
+    bids_processed = []
 
-    for i in children_special:
-        if bml.args.verbose > 1:
-            print("Special child: %s" % (i))
+    for c in children:
+        if not systemdata_normal(c):
+            if bml.args.verbose > 1:
+                print("Special child: %s" % (c))
 
-        bids_to_add = []
+            var = None # A strain variable 
+            strain = None
 
-        # special bids of the form <digit><kind>
-        # for instance 1HS, 2M, 3m etc
-        bid = i.bid_type()
-        if bid and bid['denomination']:
-            denomination = bid['denomination']
-            kind = bid['kind']
-            if(re.match(r'[CDHS]+\Z', kind)):
-                for k in kind:
-                    bids_to_add.append(denomination + k)
-            elif(kind == 'M'):
-                bids_to_add.append(denomination + 'H')
-                bids_to_add.append(denomination + 'S')
-            elif(kind == 'm'):
-                bids_to_add.append(denomination + 'C')
-                bids_to_add.append(denomination + 'D')
-            elif(kind.upper() == 'BLACK'):
-                bids_to_add.append(denomination + 'C')
-                bids_to_add.append(denomination + 'S')
-            elif(kind.upper() == 'RED'):
-                bids_to_add.append(denomination + 'D')
-                bids_to_add.append(denomination + 'H')
-            elif(kind.upper() == 'X'):
-                bids_to_add.append(denomination + 'C')
-                bids_to_add.append(denomination + 'D')
-                bids_to_add.append(denomination + 'H')
-                bids_to_add.append(denomination + 'S')
-            elif(kind.upper() in ['STEP', 'STEPS']):
-                parentbid = Bid(i.parent.all_bids()[-1])
-                parentbid += int(denomination)
-                bids_to_add.append(str(parentbid))
-            elif (kind in ['oM', 'om']):
-                # TO DO: oM and om
-                raise NotImplementedError(kind)
+            # special bids of the form <digit><strain>
+            # for instance 1HS, 2M, 3m etc
+            bid = c.bid_type()
+            if bid and bid['level']:
+                level = bid['level']
+                strain = bid['strain']
+                if re.match(r'[CDHS]+\Z', strain):
+                    pass
+                elif strain == 'M':
+                    var = strain
+                    strain = 'HS'
+                elif strain == 'm':
+                    var = strain
+                    strain = 'CD'
+                elif strain.upper() == 'BLACK':
+                    strain = 'CS'
+                elif strain.upper() == 'RED':
+                    strain = 'DH'
+                elif strain.upper() == 'X':
+                    var = 'X'
+                    strain = 'CDHS'
+                elif strain.upper() in ['STEP', 'STEPS']:
+                    parentbid = Bid(c.parent.all_bids()[-1])
+                    parentbid += int(level)
+                    m = re.match('(?P<level>[1-7])(?P<strain>[CDHSN])\Z', str(parentbid))
+                    assert m != None
+                    level = m.group['level']
+                    strain = m.group['strain']
+                elif strain == 'oM':
+                    assert 'M' in vars, 'When variable "oM" is used, variable "M" must already be defined'
+                    var = strain
+                    strain = 'S' if vars['M'] == 'H' else 'H'
+                elif strain == 'om':
+                    assert 'm' in vars, 'When variable "om" is used, variable "m" must already be defined'
+                    var = strain
+                    strain = 'D' if vars['m'] == 'C' else 'C'
+                else:
+                    raise Exception("Unknown strain (%s)" % (strain))
+
+                # If the variable is already defined use that definition else add the variable (temporarily)
+                add_var = False
+                if var:
+                    if var in vars:
+                        strain = vars[var]
+                    else:
+                        add_var = True
+
+                for k in strain:
+                    bid = level + k
+                    
+                    # We must not add such a new bid if that bid was already processed here before
+                    if bid not in bids_processed:
+                        if add_var:
+                            vars[var] = k
+                        h = copy.deepcopy(c)
+                        h.bid = bid
+                        systemdata_bidtable([h], systemdata, vars)
+                        if add_var:
+                            vars.pop(var, None) # remove M
+                        bids_processed.append(bid)
             else:
-                raise Exception("Unknown kind (%s)" % (kind))
-        else:
-            assert i.all_bids()[-1] == bml.EMPTY, 'Bid (%s) must be empty' % (i.bid)
-            assert len(children_special) == 1
-            assert len(bids_to_add) == 0
-            assert len(children) == 0
-            systemdata_bidtable(i.children, systemdata) # the function will stop after this call since bids_to_add and children are empty
+                assert c.all_bids()[-1] == bml.EMPTY, 'Bid (%s) must be empty' % (c.bid)
+                assert len(children) == 1
+                systemdata_bidtable(c.children, systemdata, vars) # the function will stop after this call since there are no other children
+        else: # systemdata_normal(c):
+            if bml.args.verbose > 1:
+                print("Normal child: %s" % (c))
 
-        for add in bids_to_add:
-            # We must not add such a new bid if that bid already existed as a normal bid
-            if add not in [c.all_bids()[-1] for c in children]:
-                h = copy.deepcopy(i)
-                h.bid = add
-                children.append(h)
+            seq = Sequence(c)
+            if not seq in systemdata:
+                systemdata.append(seq)
+            else:
+                si = systemdata.index(seq)
+                seq = systemdata[si]
+                if not systemdata[si].desc:
+                    systemdata[si].desc = c.desc
 
-    for r in children:
-        if bml.args.verbose > 1:
-            print("Normal child: %s" % (r))
+            if bml.args.verbose > 1:
+                print("Seq: %s" % (seq))
 
-        seq = Sequence(r)
-        if not seq in systemdata:
-            systemdata.append(seq)
-        else:
-            si = systemdata.index(seq)
-            seq = systemdata[si]
-            if not systemdata[si].desc:
-                systemdata[si].desc = r.desc
-
-        if bml.args.verbose > 1:
-            print("Seq: %s" % (seq))
-
-        systemdata_bidtable(r.children, systemdata)
-
+            systemdata_bidtable(c.children, systemdata, vars)
+            bids_processed.append(c.all_bids()[-1])
+        
 def to_systemdata(content):
     systemdata = []
 
@@ -207,7 +224,7 @@ def to_systemdata(content):
 def systemdata_to_bss(content, systemdata, f):
     f.write('*00{'+ content.meta['TITLE'] +'}=NYYYYYY' + content.meta['DESCRIPTION'] + '\n')
     for i in systemdata:
-        kind = str(i)[-2:]
+        bid = str(i)[-2:]
         if not i.we_open:
             f.write('*')
         f.write(i.seat)
@@ -219,10 +236,10 @@ def systemdata_to_bss(content, systemdata, f):
         f.write('YYYYYY')
 
         # GJP 2017-12-24 This seems to be a mandatory field
-        ## if re.match(r'\d[CDHSN]', kind):
+        ## if re.match(r'\d[CDHSN]', bid):
         # characteristics (signoff, control bid etc)
         f.write('0')
-        if kind[0] in "1234567" and kind[1] in "CDHS":
+        if bid[0] in "1234567" and bid[1] in "CDHS":
             # least/most amount of cards in suit
             f.write('08')
         f.write(i.desc+'\n')
