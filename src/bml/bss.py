@@ -118,7 +118,7 @@ class Sequence:
 def systemdata_normal(child):
     return child.bid_type()['normal'] == True
 
-def systemdata_bidtable(children, systemdata, vars={}):
+def systemdata_bidtable_old(children, systemdata, vars={}):
     bids_processed = []
 
     for c in children:
@@ -185,14 +185,14 @@ def systemdata_bidtable(children, systemdata, vars={}):
                             vars[var] = k
                         h = copy.deepcopy(c)
                         h.bid = bid
-                        systemdata_bidtable([h], systemdata, vars)
+                        systemdata_bidtable_old([h], systemdata, vars)
                         if add_var:
                             vars.pop(var, None) # remove M
                         bids_processed.append(bid)
             else:
                 assert c.all_bids()[-1] == bml.EMPTY, 'Bid (%s) must be empty' % (c.bid)
                 assert len(children) == 1
-                systemdata_bidtable(c.children, systemdata, vars) # the function will stop after this call since there are no other children
+                systemdata_bidtable_old(c.children, systemdata, vars) # the function will stop after this call since there are no other children
         else: # systemdata_normal(c):
             if bml.args.verbose > 1:
                 print("Normal child: %s" % (c))
@@ -209,18 +209,20 @@ def systemdata_bidtable(children, systemdata, vars={}):
             if bml.args.verbose > 1:
                 print("Seq: %s" % (seq))
 
-            systemdata_bidtable(c.children, systemdata, vars)
+            systemdata_bidtable_old(c.children, systemdata, vars)
             bids_processed.append(c.all_bids()[-1])
         
 def systemdata_bidtable_new(children, systemdata, vars={}):
     bids_processed = []
 
     for c in children:
-        var_set = False
+        all_normal = True
         for i in range(len(c.all_bids())):
             if not c.bid_type(i)['normal']:
                 if bml.args.verbose > 1:
                     print("Special child: %s" % (c))
+
+                all_normal = False
 
                 var = None # A strain variable 
                 strain = None
@@ -271,7 +273,6 @@ def systemdata_bidtable_new(children, systemdata, vars={}):
                             strain = vars[var]
                         else:
                             add_var = True
-                            var_set = True
                             
                     for k in strain:
                         bid = level + k
@@ -282,16 +283,16 @@ def systemdata_bidtable_new(children, systemdata, vars={}):
                                 vars[var] = k
                             h = copy.deepcopy(c)
                             h.bid = bid
-                            systemdata_bidtable([h], systemdata, vars)
+                            systemdata_bidtable_new([h], systemdata, vars)
                             if add_var:
                                 vars.pop(var, None) # remove M
                             bids_processed.append(bid)
                 else:
                     assert c.all_bids()[-1] == bml.EMPTY, 'Bid (%s) must be empty' % (c.bid)
                     assert len(children) == 1
-                    systemdata_bidtable(c.children, systemdata, vars) # the function will stop after this call since there are no other children
+                    systemdata_bidtable_new(c.children, systemdata, vars) # the function will stop after this call since there are no other children
 
-        if c.bid == bml.EMPTY or var_set:
+        if c.bid == bml.EMPTY or not(all_normal):
             break
 
         seq = Sequence(c)
@@ -306,7 +307,7 @@ def systemdata_bidtable_new(children, systemdata, vars={}):
         if bml.args.verbose > 1:
             print("Seq: %s" % (seq))
 
-        systemdata_bidtable(c.children, systemdata, vars)
+        systemdata_bidtable_new(c.children, systemdata, vars)
         bids_processed.append(c.all_bids()[-1])
 
 def to_systemdata(content):
@@ -315,7 +316,7 @@ def to_systemdata(content):
     for c in content.nodes:
         content_type, content = c
         if content_type == bml.ContentType.BIDTABLE:
-            systemdata_bidtable(content.children, systemdata)
+            systemdata_bidtable_old(content.children, systemdata)
 
     return systemdata
 
