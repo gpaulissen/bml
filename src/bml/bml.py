@@ -224,7 +224,7 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
             print("get_sequence (%s): %s" % (self, bids))
 
         # Check whether this sequence is correct, i.e. every 2nd belongs to the same party
-        we_bid = (bids[0][0] != '(')
+        we_bid = len(bids) == 0 or bids[0][0] != '('
         for b in bids[1:]:
             assert (b[0] != '(') != we_bid, 'Every 2nd bid must belong to the same party: %s' % (''.join(bids))
             we_bid = not(we_bid)
@@ -246,10 +246,10 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
         str = 'bid: %s; level: %d; desc: %s' % (self.bid, self.level(), self.desc)
         return str
 
-    def bid_type(self):
+    def bid_type(self, index=-1):
         # Matches <digit>[CDHSN], P, D and R, all possibly surrounded by ()
         dict = None
-        bid = self.all_bids()[-1]
+        bid = self.all_bids()[index]
         m = re.search(r'\((.+)\)\Z', bid)
         if m:
             bid = m.group(1)
@@ -356,6 +356,8 @@ def create_bidtree(text, content):
             lastnode = lastnode.add_child(bid, desc, indentation, desc_indentation)
         elif indentation == lastnode.indentation():
             lastnode = lastnode.parent.add_child(bid, desc, indentation, desc_indentation)
+        # Only first line may contain a bidding history
+        assert prev_lastnode == root or (bid.find('-') < 0 and bid.find(';') < 0)
 
     # The latex dirtree package states this:
     # --------------------------------------
