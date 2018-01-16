@@ -94,6 +94,7 @@ class Sequence:
         self.vul = VUL_DICT[node.vul]
         self.seat = SEAT_DICT[node.seat]
         self.contested = '(' in ''.join(self.sequence)
+        assert self.contested or len(self.sequence) == 1, "There must be at least one opponent's bid: %" % (''.join(self.sequence))
 
     def __str__(self):
         seq=''

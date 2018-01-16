@@ -222,6 +222,13 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
             
         if args.verbose > 1:
             print("get_sequence (%s): %s" % (self, bids))
+
+        # Check whether this sequence is correct, i.e. every 2nd belongs to the same party
+        we_bid = (bids[0][0] != '(')
+        for b in bids[1:]:
+            assert (b[0] != '(') != we_bid, 'Every 2nd bid must belong to the same party: %s' % (''.join(bids))
+            we_bid = not(we_bid)
+
         return bids
 
     def set_children(self, children):
