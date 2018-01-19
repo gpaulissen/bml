@@ -190,10 +190,10 @@ def systemdata_bidtable(children, systemdata, vars={}):
                             # So "1M" and "1 M" must be replaced but be aware
                             # that the first is a Python word.
                             s = r'([0-9]+)' + var + r'\b'
-                            d = '\1' + vars[var]
+                            d = '\1!' + vars[var].lower()
                             h.desc = re.sub(s, d, h.desc)
                             s = r'\b' + var + r'\b'
-                            d = vars[var]
+                            d = '!' + vars[var].lower()
                             h.desc = re.sub(s, d, h.desc)
                         systemdata_bidtable([h], systemdata, vars)
                         if add_var:

@@ -216,14 +216,16 @@ def to_latex(content, f):
     f.write('\\begin{document}\n')
     f.write('\\maketitle\n')
     f.write('\\tableofcontents\n\n')
-        
+
+    new_paragraph = '\n\\bigbreak\n'
+    
     # then start the document
     for c in content.nodes:
         content_type, text = c
         if content_type == bml.ContentType.PARAGRAPH:
             text = re.sub(r'(![cdhs])([^!]?)', latex_replace_suits_desc, text)
             text = latex_replace_characters(text)
-            f.write(text + '\n\n')
+            f.write(text + new_paragraph)
         elif content_type == bml.ContentType.BIDTABLE:
             if not text.export:
                 continue
@@ -234,9 +236,10 @@ def to_latex(content, f):
                 f.write('\\begin{bidtable}\n')
             latex_bidtable(text.children, f, True)
             if bml.args.tree:
-                f.write('\n}\n\n')
+                f.write('\n}')
             else:
-                f.write('\n\\end{bidtable}\n\n')
+                f.write('\n\\end{bidtable}')
+            f.write(new_paragraph)
         elif content_type == bml.ContentType.DIAGRAM:
             latex_diagram(text, f)
         elif content_type == bml.ContentType.H1:
@@ -261,7 +264,8 @@ def to_latex(content, f):
                 i = latex_replace_characters(i)
                 i = re.sub(r'(![cdhs])([^!]?)', latex_replace_suits_desc, i)
                 f.write('\\item %s\n' % i)
-            f.write('\n\\end{itemize}\n\n')
+            f.write('\n\\end{itemize}')
+            f.write(new_paragraph)
         elif content_type == bml.ContentType.DESCRIPTION:
             f.write('\\begin{description}\n')
             for i in text:
@@ -269,14 +273,16 @@ def to_latex(content, f):
                 i = re.sub(r'(![cdhs])([^!]?)', latex_replace_suits_desc, i)
                 i = i.split(' :: ')
                 f.write('\\item[%s] %s\n' % (i[0], i[1]))
-            f.write('\n\\end{description}\n\n')
+            f.write('\n\\end{description}')
+            f.write(new_paragraph)
         elif content_type == bml.ContentType.ENUM:
             f.write('\\begin{enumerate}\n')
             for i in text:
                 i = latex_replace_characters(i)
                 i = re.sub(r'(![cdhs])([^!]?)', latex_replace_suits_desc, i)
                 f.write('\\item %s\n' % i)
-            f.write('\n\\end{enumerate}\n\n')
+            f.write('\n\\end{enumerate}')
+            f.write(new_paragraph)
         elif content_type == bml.ContentType.TABLE:
             f.write('\\begin{tabular}{')
             columns = 0
@@ -292,6 +298,7 @@ def to_latex(content, f):
                     f.write(' & '.join(i))
                     f.write(' \\\\\n')
             f.write('\\end{tabular}\n\n')
+            f.write(new_paragraph)
         elif content_type == bml.ContentType.BIDDING:
             f.write('\\begin{bidding}\n')
             for i, r in enumerate(text):
@@ -305,8 +312,9 @@ def to_latex(content, f):
                 f.write(r)
                 if i < len(text) - 1:
                     f.write('\\\\\n')
-            f.write('\n\\end{bidding}\n\n')
-            
+            f.write('\n\\end{bidding}')
+            f.write(new_paragraph)
+
     f.write('\\end{document}\n')
 
 def bml2latex(input_filename, output_filename):

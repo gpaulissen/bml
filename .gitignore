@@ -9,3 +9,4 @@ test/.cache/v/cache/lastfailed
 *.toc
 test/tmp/*
 *~
+src/bml/auto/bml.el
