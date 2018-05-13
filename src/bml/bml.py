@@ -21,7 +21,7 @@ class Args:
     inputfile = None
     outputfile = None
 
-    def __init__(self, verbose=1, indentation=2, tree=False, include_external_files=True, inputfile='-', outputfile='-'):
+    def __init__(self, verbose=0, indentation=2, tree=False, include_external_files=True, inputfile='-', outputfile='-'):
         self.verbose = verbose
         self.indentation = indentation
         self.tree = tree
