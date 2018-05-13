@@ -37,11 +37,12 @@ class Bid:
         """Stringrep should be <level><strain>"""
         stringrep = stringrep[-2:] # only the last two characters
         level = int(stringrep[0])
-        assert level >0 and level <8, 'level must be 1--7'
+        assert level >0 and level <8, 'level must be 1--7 for bid %s' % (stringrep)
         strain = stringrep[1]
-        assert strain in ['C', 'D', 'H', 'S', 'N'], 'strain must be one of CDHSN'
-
-        self.value = self.value(level, strain)
+        bids = ['C', 'D', 'H', 'S', 'N']
+        assert strain in bids, 'strain must be one of CDHSN for bid %s' % (stringrep)
+        val = bids.index(strain)
+        self.value = val + (level-1)* 5
 
     def __str__(self):
         bids = ['C', 'D', 'H', 'S', 'N']
@@ -71,10 +72,6 @@ class Bid:
             self.value += other*5
         return self
 
-    def value(self, level, strain):
-        bids = ['C', 'D', 'H', 'S', 'N']
-        val = bids.index(strain)
-        return val + (level-1)* 5
 
 class Sequence:
     sequence = []
@@ -118,6 +115,24 @@ class Sequence:
 def systemdata_normal(child):
     return child.bid_type()['normal'] == True
 
+def get_last_normal_bid(parent):
+    # Could be:
+    #
+    # 1N-(P)-2red-(D)
+    #   P = no 3 cards fit 
+    #     R = retransfer
+    #     1step = to play
+    #
+    # So find the last 'normal' bid backwards.
+    idx = len(parent.all_bids())-1
+    parentbid = None
+    while idx >= 0:
+        try:
+            return Bid(parent.all_bids()[idx]) # Creation succeeds: stop
+        except:
+            idx = idx - 1
+    return get_last_normal_bid(parent.parent) # No bid was normal: continue recusrively with the parent
+
 def systemdata_bidtable(children, systemdata, vars={}):
     bids_processed = []
 
@@ -151,12 +166,12 @@ def systemdata_bidtable(children, systemdata, vars={}):
                     var = 'X'
                     strain = 'CDHS'
                 elif strain.upper() in ['STEP', 'STEPS']:
-                    parentbid = Bid(c.parent.all_bids()[-1])
-                    parentbid += int(level)
-                    m = re.match('(?P<level>[1-7])(?P<strain>[CDHSN])\Z', str(parentbid))
-                    assert m != None
-                    level = m.group['level']
-                    strain = m.group['strain']
+                    last_normal_bid = get_last_normal_bid(c.parent)
+                    last_normal_bid += int(level)
+                    m = re.match('(?P<level>[1-7])(?P<strain>[CDHSN])\Z', str(last_normal_bid))
+                    assert m != None, 'last normal bid: %s: %s' % (last_normal_bid)
+                    level = m.group('level')
+                    strain = m.group('strain')
                 elif strain == 'oM':
                     assert 'M' in vars, 'When variable "oM" is used, variable "M" must already be defined'
                     var = strain
