@@ -60,7 +60,7 @@ def latex_bidtable(children, file, first=False):
             bid = re.sub(r'^D$', 'Dbl', bid)
             bid = re.sub(r';(?=\S)', '; ', bid)
             bid = bid.replace('->', '$\\rightarrow$')
-            dots = "........"[:-1*len(bid.replace('\\',''))]
+            dots = "........"[:-1*len(bid.replace('\\B',''))]
             desc = latex_replace_characters(c.desc)
         else:
             bid = "\\O"
@@ -74,7 +74,7 @@ def latex_bidtable(children, file, first=False):
             desc = re.sub(r'(![cdhs])([^!]?)', latex_replace_suits_desc, desc)
             if bml.args.tree:
                 desc = desc.replace('\\n', '\\\\\n')
-                file.write(dots + '\\begin{minipage}[b]{0.8\\textwidth}\n' + desc.replace('.', '{.}') + '\n\\end{minipage}')
+                file.write(dots + '\\begin{minipage}[t]{0.8\\textwidth}\n' + desc.replace('.', '{.}') + '\n\\end{minipage}')
             else:
                 desc = desc.replace('\\n', '\\\\\n\\>')
                 file.write(' \\> ' + desc)
