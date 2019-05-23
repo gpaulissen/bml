@@ -3,9 +3,9 @@
   This GitHub repository (https://github.com/gpaulissen/bml) created by
   Gert-Jan Paulissen is a fork of https://github.com/Kungsgeten/bml created by
   Erik Sjöstrand. The BML format and its utilities in this repository are
-  supposed to be backwards compatible unless mentioned otherwise. For better
-  distinguishing both BML versions I may refer to BML 1 (Erik's version) and BML 2
-  (this version).
+  supposed to be backwards compatible unless mentioned otherwise. In order to
+  better distinguish between both BML versions, I may refer to BML 1 (Erik's
+  version) and BML 2 (this version).
 
   The purpose of the /Bridge Bidding Markup Language/ (BML) is to
   offer an easy way of documenting contract bridge bidding
