@@ -262,7 +262,7 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
             m = re.search(r'(?P<level>\d+)(?P<strain>[a-zA-Z]+)\Z', bid)
             if m:
                 strain = m.group('strain')
-                assert strain in ['M', 'm', 'oM', 'om'] or strain.upper() in ['BLACK', 'RED', 'X', 'STEP', 'STEPS'] or re.match(r'[CDHS]+\Z', strain), 'Last bid in "%s" incorrect; strain is "%s"' % (bid, strain)
+                assert strain in ['M', 'm', 'oM', 'om'] or strain.upper() in ['BLACK', 'RED', 'X', 'STEP', 'STEPS'] or re.match(r'[CDHSN]+\Z', strain), 'Last bid in "%s" incorrect; strain is "%s"' % (bid, strain)
                 dict = {'normal': False, 'level': m.group('level'), 'strain': strain}
             else:
                 assert bid in [EMPTY, ROOT], 'Last bid in "%s" must be "%s" or "%s"' % (bid, EMPTY, ROOT)

@@ -150,7 +150,7 @@ def systemdata_bidtable(children, systemdata, vars={}):
             if bid and bid['level']:
                 level = bid['level']
                 strain = bid['strain']
-                if re.match(r'[CDHS]+\Z', strain):
+                if re.match(r'[CDHSN]+\Z', strain):
                     pass
                 elif strain == 'M':
                     var = strain
