@@ -16,17 +16,17 @@
   Programs have been written in order to export BML-files to the
   following formats:
 
-  - HTML :: Outputs a .htm-file which can be used on the web. Use bml2html.py.
+  - HTML :: Outputs a .htm file which can be used on the web. Use bml2html.
 
-  - LaTeX :: Outputs a .tex-file which can be converted to a pdf,
-             using LaTeX. Use bml2latex.py.
+  - LaTeX :: Outputs a .tex file which can be converted to a pdf,
+             using LaTeX. Use bml2latex.
 
-  - Full Disclosure :: On the popular bridge website [[http://www.bridgebase.com][Bridge Base Online]]
-                       (BBO) the players are able to submit their own
-                       systems, in order to have their bids alerted
-                       automatically when bidding. bml2bss.py outputs a
-                       .bss-file, which can be put on BBO using the BBO
-                       desktop Windows client.
+  - Full Disclosure :: Outputs a .bss file to be used on the 
+	                     popular bridge website [[http://www.bridgebase.com][Bridge Base Online]]
+                       (BBO) where the players are able to submit their own
+                       systems in order to have their bids alerted
+                       automatically when bidding. Use bml2bss, which can be
+	                     put on BBO using the BBO desktop Windows client.
 
   Checkout example.txt for an example of how BML looks. Also be sure
   to check out example.htm, example.tex (and example.pdf) and

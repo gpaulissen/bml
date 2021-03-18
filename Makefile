@@ -30,6 +30,7 @@ clean:
 	$(PYTHON) -Bc "import pathlib; [p.unlink() for p in pathlib.Path('.').rglob('*.py[co]')]"
 	$(PYTHON) -Bc "import pathlib; [p.rmdir() for p in pathlib.Path('.').rglob('__pycache__')]"
 	-$(PYTHON) -Bc "import shutil; shutil.rmtree('.pytest_cache')"
+	-$(PYTHON) -Bc "import shutil; shutil.rmtree('.mypy_cache')"
 
 install: clean
 	$(PIP) install -e .

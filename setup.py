@@ -86,4 +86,10 @@ if __name__ == '__main__':
             'Operating System :: OS Independent',
             'License :: OSI Approved :: ' + about['__license__']
         ],
+        entry_points={
+            'console_scripts':
+            ['bml2bss = bml.bml2bss:main',
+             'bml2html = bml.bml2html:main',
+             'bml2latex = bml.bml2latex:main'],
+        },
     )
