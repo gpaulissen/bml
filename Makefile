@@ -41,11 +41,11 @@ test:
 	$(PYTHON) -m pytest --exitfirst
 
 dist: install test
-	$(PYTHON) setup.py sdist bdist_wheel
+	$(PYTHON) -m build
 	$(PYTHON) -m twine check dist/*
 
 upload_test: dist
-	$(PYTHON) -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+	$(PYTHON) -m twine upload --repository testpypi dist/*
 
 upload: dist
 	$(PYTHON) -m twine upload dist/*

@@ -71,7 +71,7 @@ if __name__ == '__main__':
         install_requires=[],
         tests_require=tests_require,
         setup_requires=[
-            'setuptools>=39.1.0',
+            'setuptools>=42',
         ],
         zip_safe=True,
         cmdclass={'test': PyTest},
