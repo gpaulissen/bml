@@ -10,10 +10,10 @@
   The purpose of the /Bridge Bidding Markup Language/ (BML) is to
   offer an easy way of documenting contract bridge bidding
   systems. The file(s) created are supposed to be easy to read for
-  both human and machines. A BML-file is created using an ordinary
+  both human and machines. A BML file is created using an ordinary
   text editor (like /Notepad/).
   
-  Programs have been written in order to export BML-files to the
+  Programs have been written in order to export BML files to the
   following formats:
 
   - HTML :: Outputs a .htm file which can be used on the web. Use bml2html.
@@ -37,7 +37,7 @@
   You need Python version 3 or higher in order to use the BML
   converters. Get it from http://www.python.org.
 
-  You can run the programs and type the name of the BML-file which
+  You can run the programs and type the name of the BML file which
   you want to convert.
 
 * Syntax
