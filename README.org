@@ -21,12 +21,12 @@
   - LaTeX :: Outputs a .tex-file which can be converted to a pdf,
              using LaTeX. Use bml2latex.py.
 
-  - Full Discloure :: On the popular bridge website [[http://www.bridgebase.com][Bridge Base Online]]
-                      (BBO) the players are able to submit their own
-                      systems, in order to have their bids alerted
-                      automatically when bidding. bml2bss.py outputs a
-                      .bss-file, which can be put on BBO using the BBO
-                      desktop Windows client.
+  - Full Disclosure :: On the popular bridge website [[http://www.bridgebase.com][Bridge Base Online]]
+                       (BBO) the players are able to submit their own
+                       systems, in order to have their bids alerted
+                       automatically when bidding. bml2bss.py outputs a
+                       .bss-file, which can be put on BBO using the BBO
+                       desktop Windows client.
 
   Checkout example.txt for an example of how BML looks. Also be sure
   to check out example.htm, example.tex (and example.pdf) and
