@@ -2,8 +2,7 @@
 
 import re
 
-import _pythonpath # necessary to find package bml in development
-import bml
+from bml import bml
 
 bml.args = bml.parse_arguments(description='Convert BML to BSS.', option_tree=False, option_include_external_files=False)
 if not bml.args.outputfile:

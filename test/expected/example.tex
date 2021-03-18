@@ -15,6 +15,7 @@
 \usepackage{listliketab}
 \usepackage{latexsym} % \Box
 \usepackage{pbox} % \Box
+\usepackage{parskip} % line between paragraphs
 
 % suits
 
@@ -120,16 +121,16 @@ the name of the system and \texttt{\#+DESCRIPTION} is a \emph{short summary of} 
 the system works. \texttt{\#+AUTHOR} is self explanatory. \texttt{Introduction} above,
 ``headed by an asterisk'', sets a section at the first level (the second
 level would have two asterisks etc).
-
+\bigbreak
 In the paragraph above I encapsulated some words between equal
 signs. This means that they will show up as a monospaced font when
 exported to HTML or LaTeX. It is also possible to make words (or
 sentences) \textbf{strong or bold} or \emph{in italics}.
-
+\bigbreak
 The system presented in this example file is meant to show many
 of the current features in BML. Let's start with the basic opening
 structure of the system:
-
+\bigbreak
 \begin{bidtable}
 \O\+\\
 1\BC \> 2+\BC . Natural or balanced\\
@@ -142,7 +143,7 @@ structure of the system:
 3X \> Preemptive\\
 3NT \> Gambling\-
 \end{bidtable}
-
+\bigbreak
 The above is an example of a bidding table; the reason why BML is
 more suited for bridge system notes than other markup languages. You
 start by writing the bid, then a number of whitespaces, and then the
@@ -151,19 +152,19 @@ for hearts, S for spades and N for no trump. There are also some
 special cases which you could use, above we use 1M (1H and 1S), 2HS
 (2H and 2S) and 3X (3C, 3D, 3H and 3S). We'll see more of these
 later.
-
+\bigbreak
 The reason why the 1NT opening is left out above is a secret for
 now!
-
+\bigbreak
 \section{The 1\pdfc\ opening}
 
 You might have noticed the \BC\ in the title of this section? This
 will be replaced by a club suit symbol when exported. The same is
 true for \BD , \BH\ and \BS\ (but these will be converted to diamonds,
 hearts and spades, of course).
-
+\bigbreak
 In this example we use transfer responses to the 1\BC\ opening:
-
+\bigbreak
 \begin{bidtable}
 1\BC--\+\\
 1red \> Transfer. 4+ major, 0+ hcp\\
@@ -173,12 +174,12 @@ In this example we use transfer responses to the 1\BC\ opening:
 2X \> 6+ suit, 4--8 hcp\\
 2NT \> Invitational\-
 \end{bidtable}
-
+\bigbreak
 By writing 1C--- we define that the following bids should be
 continuations to the sequence 1C. We could write 1C- or 1C-- too,
 the number of dashes only matters to the way the output looks. Also
 note the 1red response, this defines both 1D and 1H.
-
+\bigbreak
 \subsection{After a transfer}
 
 This section has two asterisks, meaning it will be at level two
@@ -186,7 +187,7 @@ This section has two asterisks, meaning it will be at level two
 paragraphs, the sections and the bidtables are separated by a
 blank line. This is important in BML, as the blank line is used to
 separate elements.
-
+\bigbreak
 \begin{bidtable}
 1\BC-1\BD\+\\
 1\BH \> Minimum with 2--3\BH \+\\
@@ -229,20 +230,20 @@ separate elements.
 3\BH \> 13--15 hcp, good hand, 5+\BC\ and 4\BH \+\\
 3NT \> Asking for singleton\-\-
 \end{bidtable}
-
+\bigbreak
 This bidding table shows a couple of new features. The most
 prominent is the ability to add continuations directly in the
 table, by using whitespaces. We also see another example of
 appending bids to an existing sequence, by using 1C-1D; in the
 beginning. There's also the use of 3m, meaning both 3C and 3D.
-
+\bigbreak
 \section{Defense to 1NT}
 
 Defining bidding when both sides bid is a little bit more tricky,
 since you have to write all the bids (even passes). The opponents'
 bid are indicated by encapsulating them in parentheses. P is used
 for Pass, D for Double and R for Redouble.
-
+\bigbreak
 \begin{bidtable}
 (1NT)--\+\\
 Dbl \> Strength, ca 15+\\
@@ -262,29 +263,29 @@ Rdbl \> Asking for better/longer major\\
 2NT \> 5-5 minors\\
 3X \> Preemptive\-
 \end{bidtable}
-
+\bigbreak
 Note that the above is only for a direct overcall over 1NT. To
 define the above also when balancing we will use BML's
 copy/cut/paste functionality in order to show that you do not
 have to write it all over again. Take a look below (only visible in
 the \emph{example.txt} or generated Full Disclosure file, not in HTML or LaTeX):
-
+\bigbreak
 First we used the \texttt{\#COPY} command; the text between \texttt{\#COPY} and \texttt{\#ENDCOPY}
 got put into a sort of clipboard, with the tag nt\_defense which we
 specified. To paste it into the bidding table above we used
 the \texttt{\#PASTE} command. We also used the \texttt{\#HIDE} option. When this is
 present in a bidding table the table will be exported to Full
 Disclosure, but not to HTML or LaTeX.
-
+\bigbreak
 You could also include other BML-files into your main file by using
 the \texttt{\#INCLUDE} command. Just type \texttt{\#INCLUDE <filename>} and the entire
 file will be inserted at the point where you wrote the command. This
 is a useful way to separate your system into modules, or perhaps
 just to make it more manageable.
-
+\bigbreak
 It is also possible to add continuations when the opponents
 interfere:
-
+\bigbreak
 \begin{bidtable}
 1\BC-(1\BD)--\+\\
 Dbl \> 4+\BH \\
@@ -295,33 +296,33 @@ Dbl \> 4+\BH \\
 2X \> 6+ suit, 4--8 hcp\\
 2NT \> Invitational\-
 \end{bidtable}
-
+\bigbreak
 \section{The 1NT opening}
 
 Here's the reason why I left out the 1NT opening earlier: I will
 show how to make sequences dependant on vulnerability and
 seat. This will be a bit messy, so hold tight!
-
+\bigbreak
 We start by cutting our NT-module, since this will be used on all
 NT-openings. \texttt{\#CUT} is similar to the \texttt{\#COPY} command, but using \texttt{\#CUT}
 means that it isn't parsed as a bidding table until it is pasted.
-
+\bigbreak
 The \texttt{\#VUL} command is used to set the vulnerability. It takes an
 argument of two characters, each can be Y, N or 0. The first
 character asks if we are vulnerable and the second asks if our
 opponents are vulnerable. Y is for Yes, N is for No and 0 means that
 it doesn't matter.
-
+\bigbreak
 The \texttt{\#SEAT} command sets the seat in which the bid should be valid. 0
 means that the seat doesn't matter (all seats), 12 means first or
 second and 34 means third or fourth. 1--4 could also be used.
-
+\bigbreak
 So when we're not vulnerable we open 1NT 12--14 in 1st and 2nd seat.
-
+\bigbreak
 But in third and fourth seat it is 14--16.
-
+\bigbreak
 When we're vulnerable we always open 1NT 14--16.
-
+\bigbreak
 \begin{bidtable}
 1NT--\+\\
 2\BC \> Stayman\+\\
@@ -332,16 +333,16 @@ When we're vulnerable we always open 1NT 14--16.
 2\BS \> Minor suit stayman\\
 2NT \> Invitational\-
 \end{bidtable}
-
+\bigbreak
 We've been using the \texttt{\#HIDE} command, so we don't have to see our
 NT-system over and over again. This time tough we paste it
 normally, so that we see it at least once.
-
+\bigbreak
 \section{Lists}
 
 I'd like to show you how to make lists in BML. It is pretty
 simple:
-
+\bigbreak
 \begin{itemize}
 \item Here's a list!
 
@@ -350,9 +351,9 @@ simple:
 \item Items in it
 
 \end{itemize}
-
+\bigbreak
 You could also make ordered lists:
-
+\bigbreak
 \begin{enumerate}
 \item This is ordered
 
@@ -361,5 +362,5 @@ You could also make ordered lists:
 \item To each item
 
 \end{enumerate}
-
+\bigbreak
 \end{document}

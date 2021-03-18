@@ -6,11 +6,13 @@ from collections import defaultdict
 import argparse
 from contextlib import contextmanager
 
-__all__ = ['parse_arguments', 'content_from_file', 'Node', 'ContentType', 'args', 'EMPTY', 'ROOT']
+__all__ = ['parse_arguments', 'content_from_file', 'Node', 'ContentType',
+           'args', 'EMPTY', 'ROOT']
 
 # constants
 ROOT = 'root'
 EMPTY = '{}'
+
 
 class Args:
     """The default command line arguments"""
@@ -21,15 +23,18 @@ class Args:
     inputfile = None
     outputfile = None
 
-    def __init__(self, verbose=0, indentation=2, tree=False, include_external_files=True, inputfile='-', outputfile='-'):
+    def __init__(self, verbose=0, indentation=2, tree=False,
+                 include_external_files=True, inputfile='-', outputfile='-'):
         self.verbose = verbose
         self.indentation = indentation
         self.tree = tree
         self.include_external_files = include_external_files
         self.inputfile = inputfile
         self.outputfile = outputfile
-    
+
+
 args = Args()
+
 
 class Content:
     """The content of a BML file"""
@@ -40,7 +45,7 @@ class Content:
     meta = None
 
     def __init__(self):
-        self.nodes = [] # A list of Nodes
+        self.nodes = []  # A list of Nodes
         # where we keep copies
         self.clipboard = {}
         self.vulnerability = '00'
@@ -52,6 +57,7 @@ class Content:
         # data in meta is only set once, and isn't overwritten
         self.meta = defaultdict(str)
 
+
 class Diagram:
     """A structure for deal diagrams"""
     # each hand can be None or a tuple of four strings (s, h, d, c)
@@ -59,11 +65,11 @@ class Diagram:
     east = None
     south = None
     west = None
-    dealer = None # can be None or "N", "E", "S", "W"
-    vul = None # can be None or "ALL", "NO", "NS", "EW"
-    board = None # can be None or a string
-    lead = None # can be None or a string tuple ([shdc], [2-9TAKQJ])"
-    contract = None # can be None or a tuple of strings
+    dealer = None  # can be None or "N", "E", "S", "W"
+    vul = None  # can be None or "ALL", "NO", "NS", "EW"
+    board = None  # can be None or a string
+    lead = None  # can be None or a string tuple ([shdc], [2-9TAKQJ])"
+    contract = None  # can be None or a tuple of strings
 
     def __init__(self, firstrow, hands):
         for h in hands:
@@ -82,7 +88,7 @@ class Diagram:
         dealer = re.search(r'(?:\A|\s)([NESW]),?(?:\Z|\s)', firstrow)
         if dealer:
             self.dealer = dealer.group(1)
-            
+
         vul = re.search(r'(?:\A|\s)(All|None|EW|NS),?(?:\Z|\s)', firstrow)
         if vul:
             self.vul = vul.group(1)
@@ -99,51 +105,55 @@ class Diagram:
         if contract:
             self.contract = ('P', None, None, None)
         else:
-            contract = re.search(r'(?:\A|\s)([1-7])([SHDCN])(XX?)?([NESW]),?(?:\Z|\s)', firstrow)
+            expr = r'(?:\A|\s)([1-7])([SHDCN])(XX?)?([NESW]),?(?:\Z|\s)'
+            contract = re.search(expr, firstrow)
             if contract:
-                self.contract = contract.groups() # level, suit, (re)double, declarer
+                # level, suit, (re)double, declarer
+                self.contract = contract.groups()
         self.check()
 
     def check(self):
-        assert self.north != None, 'North hand not defined'
-        assert self.east != None, 'East hand not defined'
-        assert self.south != None, 'South hand not defined'
-        assert self.west != None, 'West hand not defined'
-        assert self.dealer == None or self.dealer in ['N', 'E', 'S', 'W'], 'Dealer must be N, E, S or W'
-        assert self.vul == None or self.vul in ['All', 'None', 'EW', 'NS'], 'Vulnerability must be All, None, EW or NS'
-        assert self.board == None or re.match(r'\d+\Z', self.board), 'Board (%s) must match \d+\Z' % (self.board)
-        assert self.lead == None or len(self.lead) == 2 and re.match(r'[shdc][2-9AKQJT]\Z', self.lead[0] + self.lead[1]), 'Lead (%s) must match [shdc][2-9AKQJT]\Z' % (str(self.lead))
-        assert self.contract == None or len(self.contract) == 4, 'Contract (%s) must be a list of 4 elements' % (str(self.contract))
-        assert self.contract == None or re.match(r'(P|[1-7])', self.contract[0]) # level: P or 1-7
-        assert self.contract == None or self.contract[0] == 'P' or re.match(r'\d[SHDCN](XX?)?[NESW]\Z', self.contract[0]+self.contract[1]+self.contract[2]+self.contract[3])
-                
+        assert self.north is not None, 'North hand not defined'
+        assert self.east is not None, 'East hand not defined'
+        assert self.south is not None, 'South hand not defined'
+        assert self.west is not None, 'West hand not defined'
+        assert self.dealer is None or self.dealer in ['N', 'E', 'S', 'W'], 'Dealer must be N, E, S or W'
+        assert self.vul is None or self.vul in ['All', 'None', 'EW', 'NS'], 'Vulnerability must be All, None, EW or NS'
+        assert self.board is None or re.match(r'\d+\Z', self.board), 'Board (%s) must match \\d+\\Z' % (self.board)
+        assert self.lead is None or len(self.lead) == 2 and re.match(r'[shdc][2-9AKQJT]\Z', self.lead[0] + self.lead[1]), 'Lead (%s) must match [shdc][2-9AKQJT]\\Z' % (str(self.lead))
+        assert self.contract is None or len(self.contract) == 4, 'Contract (%s) must be a list of 4 elements' % (str(self.contract))
+        assert self.contract is None or re.match(r'(P|[1-7])', self.contract[0])  # level: P or 1-7
+        assert self.contract is None or self.contract[0] == 'P' or re.match(r'\d[SHDCN](XX?)?[NESW]\Z', self.contract[0] + self.contract[1] + self.contract[2] + self.contract[3])
+
+
 class Node:
     """
 A node in a bidding table.
 
 The indentation must be a multiple (>= 0) of the global indentation (program option).
 
-The level indicates the node depth in the tree. 
+The level indicates the node depth in the tree.
 
 Level is 0 for root and otherwise the indentation divided by the global indentation incremented by 1.
 
 
 """
-    vul = None # Vulnerability
+    vul = None  # Vulnerability
     seat = None
-    export = None # Export HTML or Latex? Export to BSS will take place anyway
-    bid = None # Either:
-               # 1) a single bid
-               # 2) a history (sequence) of bids (the first line in a bidding table) separated by a dash (-)
+    export = None  # Export HTML or Latex? Export to BSS will take place anyway
+    # Either:
+    # 1) a single bid
+    # 2) a history (sequence) of bids (the first line in a bidding table) separated by a dash (-)
+    bid = None
     desc = None
     desc_indentation = None
-    children = None # A list of child bids
-    parent = None # The parent bid
+    children = None  # A list of child bids
+    parent = None  # The parent bid
 
     def __init__(self, bid, desc, indentation, parent=None, desc_indentation=-1):
         # precondition
         # checks for non root
-        if parent != None and indentation:
+        if parent is not None and indentation:
             if indentation % args.indentation != 0:
                 raise IndentationError("Indentation (%d) must be a multiple of %d for a non root Node" % (indentation, args.indentation))
             if (indentation / args.indentation) != parent.level():
@@ -164,7 +174,7 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
             raise IndentationError("Level (%d) must be at least 1 for a non root Node" % (self.level()))
 
         # bid sanity check
-        assert self.bid_type() != None
+        assert self.bid_type() is not None
 
     def level(self):
         nr = 0
@@ -192,7 +202,7 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
     # 2) a history (sequence) of bids (the first line in a bidding table) separated by a dash (-)
     def all_bids(self):
         return self.bid.rstrip(';-').split('-')
-    
+
     def get_sequence(self):
         """List with all the parent and the current bids including generated passes in between"""
 
@@ -214,12 +224,12 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
                 # When the previous bid belongs to the same party we must add a pass
                 if len(bids) > 0:
                     if bid[0:1] == '(' and bids[-1][0:1] == '(':
-                        bids.append('P')                    
+                        bids.append('P')
                     elif bid[0:1] != '(' and bids[-1][0:1] != '(':
-                        bids.append('(P)')                   
-                bids.append(bid)                
+                        bids.append('(P)')
+                bids.append(bid)
             p = p.parent
-            
+
         if args.verbose > 1:
             print("get_sequence (%s): %s" % (self, bids))
 
@@ -253,7 +263,7 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
         m = re.search(r'\((.+)\)\Z', bid)
         if m:
             bid = m.group(1)
-            
+
         if bid in ['P', 'D', 'R'] or re.match(r'[1-7][CDHSN]\Z', bid):
             dict = {'normal': True}
         else:
@@ -271,6 +281,7 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
             print("bid_type; bid: %s; dict: %s" % (self.bid, str(dict)))
         return dict
 
+
 def create_bidtree(text, content):
     root = Node(ROOT, ROOT, -1)
     root.vul = content.vulnerability
@@ -280,30 +291,30 @@ def create_bidtree(text, content):
     # breaks when no more CUT in bidtable
     while True:
         cut = re.search(r'^(\s*)#\s*CUT\s+(\S+)\s*\n(.*)#ENDCUT[ ]*\n?',
-                        text, flags=re.DOTALL|re.MULTILINE)
+                        text, flags=re.DOTALL | re.MULTILINE)
         if not cut:
             break
         value = cut.group(3).split('\n')
         for i in range(len(value)):
             value[i] = value[i][len(cut.group(1)):]
         value = '\n'.join(value)
-        content.clipboard[cut.group(2)] = value # group2=key
-        text = text[:cut.start()]+text[cut.end():]
+        content.clipboard[cut.group(2)] = value  # group2=key
+        text = text[:cut.start()] + text[cut.end():]
 
     # breaks when no more COPY in bidtable
     while True:
         copy = re.search(r'^(\s*)#\s*COPY\s+(\S+)\s*\n(.*)#ENDCOPY[ ]*\n?',
-                         text, flags=re.DOTALL|re.MULTILINE)
+                         text, flags=re.DOTALL | re.MULTILINE)
         if not copy:
             break
         value = copy.group(3).split('\n')
         for i in range(len(value)):
             value[i] = value[i][len(copy.group(1)):]
         value = '\n'.join(value)
-        content.clipboard[copy.group(2)] = value # group2=key
-        text = text[:copy.end(3)]+text[copy.end():]
-        text = text[:copy.start()]+text[copy.start(3):]
-        
+        content.clipboard[copy.group(2)] = value  # group2=key
+        text = text[:copy.end(3)] + text[copy.end():]
+        text = text[:copy.start()] + text[copy.start(3):]
+
     # breaks when no more PASTE in bidtable
     while True:
         paste = re.search(r'^(\s*)#\s*PASTE\s+(\S+)\s*(.*)\n?', text, flags=re.MULTILINE)
@@ -318,11 +329,11 @@ def create_bidtree(text, content):
         for l in range(len(lines)):
             lines[l] = indentation + lines[l]
         text = text[:paste.start()] + '\n'.join(lines) + text[paste.end():]
-        
+
     hide = re.search(r'^\s*#\s*HIDE\s*\n', text, flags=re.MULTILINE)
     if hide:
         root.export = False
-        text = text[:hide.start()]+text[hide.end():]
+        text = text[:hide.start()] + text[hide.end():]
 
     text = re.sub(r'^\s*#\s*BIDTABLE\s*\n', '', text)
 
@@ -332,9 +343,9 @@ def create_bidtree(text, content):
     for row in text.split('\n'):
         original_row = row
         if row.strip() == '':
-            continue # could perhaps be nicer by stripping spaces resulting from copy/paste
+            continue  # could perhaps be nicer by stripping spaces resulting from copy/paste
         indentation = len(row) - len(row.lstrip())
-        
+
         # If the indentation is at the same level as the last bids
         # description indentation, the description should just
         # continue but with a line break
@@ -375,7 +386,7 @@ def create_bidtree(text, content):
     # b) Otherwise (a table of opening bids for example).
     #    1 - Now we just create a copy of root as the first child of root and
     #    2 - the original children of root will be moved to the copy
-    # 
+    #
     # In both cases we have to:
     # c) reparent all the children of the first non root node
 
@@ -386,7 +397,7 @@ def create_bidtree(text, content):
             intermediate = root.children[0]
             # a1
             assert len(intermediate.children) == 0, "Bid %s should not have children" % (intermediate.bid)
-            intermediate.bid = intermediate.bid[0:len(intermediate.bid)-1]
+            intermediate.bid = intermediate.bid[0:len(intermediate.bid) - 1]
             # a2
             intermediate.children = root.children[1:]
         else:
@@ -395,37 +406,39 @@ def create_bidtree(text, content):
             # b2
             intermediate.children = root.children
 
-        root.children = [intermediate] # one left        
+        root.children = [intermediate]  # one left
         # c
         for c in intermediate.children:
             c.parent = intermediate
 
         if args.verbose > 1:
             print("intermediate: %s" % (str(intermediate)))
-        
+
         assert intermediate.parent == root
         assert len(root.children) == 1
         assert root.children[0] == intermediate
         assert intermediate.children[0].parent == intermediate
         assert intermediate.level() == 1
         assert intermediate.children[0].level() == 2
-        
+
     return root
 
+
 class ContentType:
-    BIDTABLE = 1     # HTML, BSS
-    PARAGRAPH = 2    # HTML, Latex
-    H1 = 3           # HTML, Latex
-    H2 = 4           # HTML, Latex
-    H3 = 5           # HTML, Latex
-    H4 = 6           # HTML, Latex
-    LIST = 7         # HTML, Latex
-    ENUM = 8         # HTML, Latex
-    DIAGRAM = 9      # Latex
-    TABLE = 10       # Latex
-    DESCRIPTION = 11 # Latex
-    BIDDING = 12     # Latex
-    
+    BIDTABLE = 1      # HTML, BSS
+    PARAGRAPH = 2     # HTML, Latex
+    H1 = 3            # HTML, Latex
+    H2 = 4            # HTML, Latex
+    H3 = 5            # HTML, Latex
+    H4 = 6            # HTML, Latex
+    LIST = 7          # HTML, Latex
+    ENUM = 8          # HTML, Latex
+    DIAGRAM = 9       # Latex
+    TABLE = 10        # Latex
+    DESCRIPTION = 11  # Latex
+    BIDDING = 12      # Latex
+
+
 def ContentTypeStr(self):
     switcher = {
         ContentType.BIDTABLE: "BIDTABLE",
@@ -443,6 +456,7 @@ def ContentTypeStr(self):
     }
     return switcher.get(self, "nothing")
 
+
 def get_content_type(text, content):
     if text.startswith('****'):
         return (ContentType.H4, text[4:].lstrip())
@@ -452,7 +466,7 @@ def get_content_type(text, content):
         return (ContentType.H2, text[2:].lstrip())
     if text.startswith('*'):
         return (ContentType.H1, text[1:].lstrip())
-    
+
     # The first element is empty, therefore [1:]
     if(re.match(r'^\s*-', text)):
         return (ContentType.DESCRIPTION if text.find(' :: ') >= 0 else ContentType.LIST,
@@ -461,11 +475,11 @@ def get_content_type(text, content):
     if(re.match(r'^\s*#VUL', text)):
         content.vulnerability = text.split()[1]
         return None
-        
+
     if(re.match(r'^\s*#SEAT', text)):
         content.seat = text.split()[1]
         return None
-        
+
     if(re.match(r'^\s*1\.', text)):
         return (ContentType.ENUM, re.split(r'^\s*\d*\.\s*', text, flags=re.MULTILINE)[1:])
 
@@ -475,7 +489,7 @@ def get_content_type(text, content):
             if r:
                 table.append(r.split())
         return (ContentType.BIDDING, table)
-        
+
     if(re.match(r'^\s*\(?\d[A-Za-z]+', text)):
         bidtree = create_bidtree(text, content)
         if bidtree:
@@ -488,7 +502,7 @@ def get_content_type(text, content):
         rows = text.split('\n')
         for r in rows:
             table.append([c.strip() for c in re.findall(r'(?<=\|)[^\|]+', r)])
-        return (ContentType.TABLE, table)        
+        return (ContentType.TABLE, table)
 
     # diagrams
     hands = re.findall(r"""^\s*([NESW]):?\s*
@@ -496,13 +510,13 @@ def get_content_type(text, content):
                            ([2-9AKQJTx-]+)\s+
                            ([2-9AKQJTx-]+)\s+
                            ([2-9AKQJTx-]+)""",
-                       text, flags=re.MULTILINE|re.VERBOSE)
+                       text, flags=re.MULTILINE | re.VERBOSE)
 
     if hands and len(hands) + 2 >= len(text.split('\n')):
         return (ContentType.DIAGRAM, Diagram(text.split('\n')[0], hands))
-    
+
     metamatch = re.match(r'^\s*#\+(\w+):\s*(.*)', text)
-    
+
     if(metamatch):
         keyword = metamatch.group(1)
         if keyword in content.meta:
@@ -510,18 +524,19 @@ def get_content_type(text, content):
         value = metamatch.group(2)
         content.meta[keyword] = value
         return None
-                
+
     if(re.match(r'^\s*#', text)):
         bidtree = create_bidtree(text, content)
         if bidtree:
             return (ContentType.BIDTABLE, bidtree)
         return None
-        
+
     if(re.search(r'\S', text)):
         text = re.sub(r'\n +', '\n', text.strip())
         return (ContentType.PARAGRAPH, text)
-    
+
     return None
+
 
 @contextmanager
 def cd(newdir):
@@ -532,12 +547,14 @@ def cd(newdir):
     finally:
         os.chdir(prevdir)
 
+
 def include_file(matchobj):
     filename = matchobj.group(1)
     text = ''
     with open(filename, mode='r', encoding="utf-8") as f:
         text = f.read()
     return '\n' + text + '\n'
+
 
 def content_from_file(filename):
     content = None
@@ -549,6 +566,7 @@ def content_from_file(filename):
             with open(os.path.basename(os.path.abspath(filename)), mode='r', encoding="utf-8") as f:
                 content = content_from_string(f.read())
     return content
+
 
 def content_from_string(text):
     global args
@@ -574,14 +592,15 @@ def content_from_string(text):
                 content.nodes.append(content_type)
                 if args.verbose > 1:
                     print("[%d] Content type: %s; # nodes: %s\n%s\n" % (nr, ContentTypeStr(content_type[0]), len(content.nodes), c))
-        except Exception as e:
-            print("\nERROR in paragraph %d:\n\n%s\n" % (nr+1, c))
+        except Exception:
+            print("\nERROR in paragraph %d:\n\n%s\n" % (nr + 1, c))
             raise
     return content
-            
+
+
 def parse_arguments(description, option_tree=True, option_include_external_files=True):
     global args
-    
+
     parser = argparse.ArgumentParser(description)
     # default arguments
     parser.add_argument('-i', '--indentation', type=int, choices=range(1, 10), default=args.indentation, help='the indentation of a bidtable')
@@ -593,13 +612,13 @@ def parse_arguments(description, option_tree=True, option_include_external_files
         tree_parser = parser.add_mutually_exclusive_group(required=False)
         tree_parser.add_argument('--tree', dest='tree', action='store_true')
         tree_parser.add_argument('--no-tree', dest='tree', action='store_false')
-        parser.set_defaults(tree=args.tree) # BML 1.0
-        
+        parser.set_defaults(tree=args.tree)  # BML 1.0
+
     if option_include_external_files:
         include_external_files_parser = parser.add_mutually_exclusive_group(required=False)
         include_external_files_parser.add_argument('--include-external-files', dest='include_external_files', action='store_true')
         include_external_files_parser.add_argument('--no-include-external-files', dest='include_external_files', action='store_false')
-        parser.set_defaults(include_external_files=args.include_external_files) # BML 1.0
+        parser.set_defaults(include_external_files=args.include_external_files)  # BML 1.0
 
     args = parser.parse_args()
 
@@ -610,7 +629,8 @@ def parse_arguments(description, option_tree=True, option_include_external_files
         if not os.path.exists(args.inputfile):
             sys.exit('ERROR: File %s was not found!' % (args.inputfile))
     return args
-            
-if __name__ == '__main__':    
+
+
+if __name__ == '__main__':
     args = parse_arguments(description='Parse BML.')
     content_from_file(args.inputfile)

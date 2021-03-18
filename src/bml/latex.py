@@ -1,11 +1,13 @@
 import sys
 import os
 import re
-import bml
 
-__all__ = ['bml2latex'] # only thing to export
+from bml import bml
 
-SUIT2LATEX = { 'C': '\BC', 'D': '\BD', 'H': '\BH', 'S': '\BS' }
+__all__ = ['bml2latex']  # only thing to export
+
+SUIT2LATEX = {'C': '\\BC', 'D': '\\BD', 'H': '\\BH', 'S': '\\BS'}
+
 
 def latex_replace_suits_bid(matchobj):
     text = matchobj.group(0)
@@ -14,6 +16,7 @@ def latex_replace_suits_bid(matchobj):
     text = text.replace('N', 'NT')
     text = text.replace('AP', 'All pass')
     return text
+
 
 def latex_replace_suits_desc(matchobj):
     text = matchobj.group(1)
@@ -27,23 +30,25 @@ def latex_replace_suits_desc(matchobj):
         text += ' ' + matchobj.group(2)
     return text
 
+
 def latex_replace_suits_header(matchobj):
     text = matchobj.group(1)
-    text = text.replace('!c', '\pdfc')
-    text = text.replace('!d', '\pdfd')
-    text = text.replace('!h', '\pdfh')
-    text = text.replace('!s', '\pdfs')
+    text = text.replace('!c', '\\pdfc')
+    text = text.replace('!d', '\\pdfd')
+    text = text.replace('!h', '\\pdfh')
+    text = text.replace('!s', '\\pdfs')
     if matchobj.group(2) == ' ':
         text += '\\ '
     return text
 
+
 def latex_bidtable(children, file, first=False):
     bid = None
     desc = None
-        
+
     for i in range(len(children)):
         c = children[i]
-        
+
         if bml.args.verbose >= 2:
             print("child %d: %s" % (i, str(c)))
 
@@ -60,7 +65,7 @@ def latex_bidtable(children, file, first=False):
             bid = re.sub(r'^D$', 'Dbl', bid)
             bid = re.sub(r';(?=\S)', '; ', bid)
             bid = bid.replace('->', '$\\rightarrow$')
-            dots = "........"[:-1*len(bid.replace('\\B',''))]
+            dots = "........"[:-1 * len(bid.replace('\\B', ''))]
             desc = latex_replace_characters(c.desc)
         else:
             bid = "\\O"
@@ -69,7 +74,7 @@ def latex_bidtable(children, file, first=False):
         if bml.args.tree:
             file.write(' .%d ' % (c.level()))
         file.write(bid)
-        
+
         if desc:
             desc = re.sub(r'(![cdhs])([^!]?)', latex_replace_suits_desc, desc)
             if bml.args.tree:
@@ -81,26 +86,27 @@ def latex_bidtable(children, file, first=False):
 
         if bml.args.tree:
             file.write('. ')
-            
+
         if len(c.children) > 0:
             if not bml.args.tree:
                 file.write('\\+')
             latex_bidtable(c.children, file)
             if not bml.args.tree:
                 file.write('\\-')
-                
+
         first = False
-            
+
+
 def latex_diagram(diagram, file):
     header = []
-    suits = {'S':'\\BS ',
-             'H':'\\BH ',
-             'D':'\\BD ',
-             'C':'\\BC '}
-    players = {'N':'North',
-               'E':'East',
-               'S':'South',
-               'W':'West'}
+    suits = {'S': '\\BS ',
+             'H': '\\BH ',
+             'D': '\\BD ',
+             'C': '\\BC '}
+    players = {'N': 'North',
+               'E': 'East',
+               'S': 'South',
+               'W': 'West'}
     if diagram.board:
         header.append('Board %s' % diagram.board)
     if diagram.dealer and diagram.vul:
@@ -126,7 +132,7 @@ def latex_diagram(diagram, file):
         header.append(lead)
 
     header = '\\\\'.join(header)
-    
+
     def write_hand(hand, handtype):
         if hand:
             handstring = '{\\%s{%s}{%s}{%s}{%s}}\n' % \
@@ -157,18 +163,23 @@ def latex_diagram(diagram, file):
         handtype = 'vhand'
         write_hand(diagram.west, handtype)
         write_hand(diagram.east, handtype)
-        
+
+
 def replace_quotes(matchobj):
     return "``" + matchobj.group(1) + "''"
+
 
 def replace_strong(matchobj):
     return '\\textbf{' + matchobj.group(1) + '}'
 
+
 def replace_italics(matchobj):
     return '\\emph{' + matchobj.group(1) + '}'
 
+
 def replace_truetype(matchobj):
     return '\\texttt{' + matchobj.group(1) + '}'
+
 
 def latex_replace_characters(text):
     text = text.replace('->', '$\\rightarrow$')
@@ -179,7 +190,8 @@ def latex_replace_characters(text):
     text = re.sub(r'(?<=\s)/(\S[^/]*)/', replace_italics, text, flags=re.DOTALL)
     text = re.sub(r'(?<=\s)=(\S[^=]*)=', replace_truetype, text, flags=re.DOTALL)
     return text
-            
+
+
 def to_latex(content, f):
     # the preamble
     # TODO: Config file for the preamble?
@@ -190,11 +202,11 @@ def to_latex(content, f):
 
     bml_tex_str = None
     if not bml.args.include_external_files:
-        bml_tex_str = "\include{bml}"
+        bml_tex_str = "\\include{bml}"
     else:
         with open(os.path.join(os.path.dirname(__file__), 'bml.tex'), 'r') as bml_tex:
             bml_tex_str = bml_tex.read()
-        
+
     preamble = r"""\documentclass[a4paper]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage[T1]{fontenc}
@@ -218,7 +230,7 @@ def to_latex(content, f):
     f.write('\\tableofcontents\n\n')
 
     new_paragraph = '\n\\bigbreak\n'
-    
+
     # then start the document
     for c in content.nodes:
         content_type, text = c
@@ -245,19 +257,19 @@ def to_latex(content, f):
         elif content_type == bml.ContentType.H1:
             text = latex_replace_characters(text)
             text = re.sub(r'(![cdhs])( ?)', latex_replace_suits_header, text)
-            f.write('\\section{%s}' % text +'\n\n')
+            f.write('\\section{%s}' % text + '\n\n')
         elif content_type == bml.ContentType.H2:
             text = latex_replace_characters(text)
             text = re.sub(r'(![cdhs])( ?)', latex_replace_suits_header, text)
-            f.write('\\subsection{%s}' % text +'\n\n')
+            f.write('\\subsection{%s}' % text + '\n\n')
         elif content_type == bml.ContentType.H3:
             text = latex_replace_characters(text)
             text = re.sub(r'(![cdhs])( ?)', latex_replace_suits_header, text)
-            f.write('\\subsubsection{%s}' % text +'\n\n')
+            f.write('\\subsubsection{%s}' % text + '\n\n')
         elif content_type == bml.ContentType.H4:
             text = latex_replace_characters(text)
             text = re.sub(r'(![cdhs])( ?)', latex_replace_suits_header, text)
-            f.write('\\paragraph{%s}' % text +'\n\n')
+            f.write('\\paragraph{%s}' % text + '\n\n')
         elif content_type == bml.ContentType.LIST:
             f.write('\\begin{itemize}\n')
             for i in text:
@@ -302,7 +314,7 @@ def to_latex(content, f):
         elif content_type == bml.ContentType.BIDDING:
             f.write('\\begin{bidding}\n')
             for i, r in enumerate(text):
-                r = ' \> '.join(r)
+                r = ' \\> '.join(r)
                 r = re.sub(r'\d([CDHS]|N(?!T))+', latex_replace_suits_bid, r)
                 r = r.replace('AP', 'All pass')
                 r = r.replace('D', 'Dbl')
@@ -316,6 +328,7 @@ def to_latex(content, f):
             f.write(new_paragraph)
 
     f.write('\\end{document}\n')
+
 
 def bml2latex(input_filename, output_filename):
     content = bml.content_from_file(input_filename)

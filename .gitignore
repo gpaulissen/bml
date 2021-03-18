@@ -10,3 +10,14 @@ test/.cache/v/cache/lastfailed
 test/tmp/*
 *~
 src/bml/auto/bml.el
+
+develop-eggs
+dist
+src/*.egg-info
+tags
+build
+eggs
+htmlcov
+.coverage
+*.log
+.mypy_cache

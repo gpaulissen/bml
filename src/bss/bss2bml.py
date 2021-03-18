@@ -1,11 +1,12 @@
-import sys
-import re
-import bml
-import bml2bss
+from typing import Dict, Any
 
-SEAT_DICT = {v: k for k,v in bml2bss.SEAT_DICT.items()}
-VUL_DICT = {v: k for k,v in bml2bss.VUL_DICT.items()}
-    
+import re
+
+import bml.bss
+
+SEAT_DICT = {v: k for k, v in bml.bss.SEAT_DICT.items()}
+VUL_DICT = {v: k for k, v in bml.bss.VUL_DICT.items()}
+
 # key: parent prefix from a BSS bidding sequence
 # data: the parent (type bml.Node)
 #
@@ -16,13 +17,14 @@ VUL_DICT = {v: k for k,v in bml2bss.VUL_DICT.items()}
 #
 # the parent key is "00" (parents.bid is empty) and we will add the node 1C to the parent children array
 #
-parents = {}
+parents: Dict[str, Any] = {}
 
-state = [ 'header', 'stock convention card', 'bidding sequence', 'include', 'defensive carding' ]
-state_nr = 0 # state to parse   
+state = ['header', 'stock convention card', 'bidding sequence', 'include', 'defensive carding']
+state_nr = 0  # state to parse
 file_type = None
 system_name = None
 summary = None
+
 
 def bss2bml(input, output):
     """
@@ -42,13 +44,14 @@ Zero or one defensive carding records
     state_nr = 0
     for line in input:
         while state_nr < len(state) and not parse_line(line):
-            state_nr = state_nr + 1          
+            state_nr = state_nr + 1
 
     print_bml(output)
 
+
 def parse_line(line):
     global state_nr, file_type, system_name, summary
-    
+
     if bml.args.verbose > 1:
         print("state_nr: %s; line: %s" % (state_nr, line))
 
@@ -65,14 +68,14 @@ def parse_line(line):
     position = None
     vulnerability = None
     bidding_sequence = None
-    artificial = None
-    possible_outcomes = None
-    disposition = None
-    suit_length = None
+    # artificial = None
+    # possible_outcomes = None
+    # disposition = None
+    # suit_length = None
     description = None
 
     result = False
-    
+
     if state[state_nr] == 'header':
         """
 Header Record
@@ -103,9 +106,8 @@ Summary is the system summary entered in the Define dialog when editing the conv
         summary = m.group('summary')
         if bml.args.verbose > 1:
             print("file_type: %s; system_name: %s; summary: %s" % (file_type, system_name, summary))
-        state_nr = state_nr + 1 # only one header
+        state_nr = state_nr + 1  # only one header
         result = True
-            
     elif state[state_nr] == 'stock convention card':
         """
 Stock Convention Card Record
@@ -118,7 +120,7 @@ When you edit one of the stock convention cards online, change it, and save it u
 
 There can only be one Convention Card Record in a Convention Card Definition file. If there is one, it appears immediately after the Header record.
 
-File Name is the name of the stock Convention Card Definition file. These files are stored in the “convcards\default convcards” subdirectory of the “Bridge Base Online” directory.
+File Name is the name of the stock Convention Card Definition file. These files are stored in the “convcards\\default convcards” subdirectory of the “Bridge Base Online” directory.
 
         """
         m = re.match(r"\$(?P<stock_convention_card_file_name>.*$)", line)
@@ -126,9 +128,8 @@ File Name is the name of the stock Convention Card Definition file. These files 
             stock_convention_card_file_name = m.group('stock_convention_card_file_name')
             if bml.args.verbose > 1:
                 print("stock_convention_card_file_name: %s" % (stock_convention_card_file_name))
-            state_nr = state_nr + 1 # there is only one
+            state_nr = state_nr + 1  # there is only one
             result = True
-            
     elif state[state_nr] == 'include':
         """
 Convention Record
@@ -151,7 +152,6 @@ File Name is the name of the Convention Definition file. These files are stored 
                 print("convention_file_name: %s" % (m.group('convention_file_name')))
             # there may be another convention file so do not increment state_nr
             result = True
-            
     elif state[state_nr] == 'defensive carding':
         """
 Defensive Carding Record
@@ -218,7 +218,7 @@ K — Other
             if bml.args.verbose > 1:
                 print("leads_vs_nt: %s; leads_vs_suits: %s; defensive_signals: %s; description_and_other_agreements: %s" %
                       (leads_vs_nt, leads_vs_suits, defensive_signals, description_and_other_agreements))
-            state_nr = state_nr + 1 # there is only one
+            state_nr = state_nr + 1  # there is only one
             result = True
 
     elif state[state_nr] == 'bidding sequence':
@@ -318,11 +318,8 @@ The Description string is whatever you entered under Description when you define
             position = m.group('position')
             vulnerability = m.group('vulnerability')
             bidding_sequence = m.group('bidding_sequence')
-            artificial = m.group('artificial')
-            possible_outcomes = m.group('possible_outcomes')
-            disposition = m.group('disposition')
             description = m.group('description')
-            
+
             if bml.args.verbose > 1:
                 print("party: %s; bidding_sequence: %s; description: %s" % (party, bidding_sequence, description))
             m = re.search(r"(?P<bid>(P|D|R|[1-7][CDHSN]))$", bidding_sequence)
@@ -330,10 +327,10 @@ The Description string is whatever you entered under Description when you define
             if m:
                 bid = m.group('bid')
                 if len(bid) == 2 and bid[0] in "1234567" and bid[1] in "CDHS":
-                    suit_length = description[0:2]
+                    # suit_length = description[0:2]
                     description = description[2:]
-                else:
-                    suit_length = ''
+                # else:
+                #    suit_length = ''
 
                 parent_bidding_sequence = opener + position + vulnerability + bidding_sequence[0:(len(bidding_sequence) - len(bid))]
                 if bml.args.verbose > 1:
@@ -353,14 +350,15 @@ The Description string is whatever you entered under Description when you define
                 parents[parent_bidding_sequence + bid] = child
                 # there may be more than one bidding sequence so do not increase state_nr
                 result = True
-                
+
     return result
+
 
 def print_bml(output):
     global system_name, summary
-    
-    output.write("#+TITLE: %s\n\n#+DESCRIPTION: %s\n" % (system_name, summary))           
-    for opener in [ '', '*' ]:
+
+    output.write("#+TITLE: %s\n\n#+DESCRIPTION: %s\n" % (system_name, summary))
+    for opener in ['', '*']:
         for seat in SEAT_DICT.keys():
             for vul in VUL_DICT.keys():
                 parent_bidding_sequence = opener + seat + vul
@@ -368,6 +366,7 @@ def print_bml(output):
                     if bml.args.verbose > 1:
                         print("# childs for %s: %s" % (parent_bidding_sequence, len(parents[parent_bidding_sequence].children)))
                     print_bidtable(output, parents[parent_bidding_sequence], opener, seat, vul)
+
 
 def print_bidtable(output, parent, opener=None, seat=None, vul=None):
     if vul:
@@ -378,16 +377,3 @@ def print_bidtable(output, parent, opener=None, seat=None, vul=None):
     for c in parent.children:
         output.write("%s%s%s%s\n" % (" " * c.level(), c.bid, ' = ' if c.desc else '', c.desc))
         print_bidtable(output, c)
-   
-if __name__ == '__main__':
-    bml.args = bml.parse_arguments(description='Convert BSS to BML.', option_tree=False, option_include_external_files=False)
-    if not bml.args.outputfile:
-        bml.args.outputfile = '-' if bml.args.inputfile == '-' else bml.args.inputfile.split('.')[0] + '.bml'
-    with open(bml.args.inputfile, mode='r', encoding="utf-8") as input:
-        if bml.args.verbose > 1:
-            print("Output file:", bml.args.outputfile)
-        if bml.args.outputfile == '-':
-            bss2bml(input, sys.stdout)
-        else:
-            with open(bml.args.outputfile, mode='w', encoding="utf-8") as output:
-                bss2bml(input, output)

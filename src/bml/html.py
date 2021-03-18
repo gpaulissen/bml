@@ -3,9 +3,10 @@ import re
 import xml.etree.ElementTree as ET
 import os.path
 
-import bml
+from bml import bml
 
-__all__ = ['bml2html'] # only thing to export
+__all__ = ['bml2html']  # only thing to export
+
 
 def html_bidtable(et_element, children, root=False):
     if len(children) > 0:
@@ -24,8 +25,8 @@ def html_bidtable(et_element, children, root=False):
                 li.attrib['class'] = 'node'
 
             root = False
-            
-            desc_rows = c.desc.split('\\n') # can be more than one line
+
+            desc_rows = c.desc.split('\\n')  # can be more than one line
             bid = re.sub(r'^P$', 'Pass', c.bid)
             bid = re.sub(r'^R$', 'Rdbl', bid)
             bid = re.sub(r'^D$', 'Dbl', bid)
@@ -61,6 +62,7 @@ def html_bidtable(et_element, children, root=False):
                     td.text = desc_rows[r]
             html_bidtable(li, c.children)
 
+
 def html_replace_suits(matchobj):
     text = matchobj.group(0)
     text = text.replace('C', '<span class="ccolor">&clubs;</span>')
@@ -70,15 +72,19 @@ def html_replace_suits(matchobj):
     text = text.replace('N', 'NT')
     return text
 
+
 def replace_strong(matchobj):
     return '<strong>' + matchobj.group(1) + '</strong>'
+
 
 def replace_italics(matchobj):
     return '<em>' + matchobj.group(1) + '</em>'
 
+
 def replace_truetype(matchobj):
     return '<code>' + matchobj.group(1) + '</code>'
-    
+
+
 def to_html(content):
     html = ET.Element('html')
     head = ET.SubElement(html, 'head')
@@ -99,7 +105,7 @@ def to_html(content):
         style.attrib['type'] = "text/css"
         with open(os.path.join(os.path.dirname(__file__), 'bml.css'), 'r') as bml_css:
             style.text = bml_css.read()
-    
+
     body = ET.SubElement(html, 'body')
 
     for c in content.nodes:
@@ -145,7 +151,6 @@ def to_html(content):
     bodystring = re.sub(r'(?<=\s)/(\S[^/<>]*)/', replace_italics, bodystring, flags=re.DOTALL)
     bodystring = re.sub(r'(?<=\s)=(\S[^=<>]*)=', replace_truetype, bodystring, flags=re.DOTALL)
 
-    
     # Replaces !c!d!h!s with suit symbols
     bodystring = bodystring.replace('!c', '<span class="ccolor">&clubs;</span>')
     bodystring = bodystring.replace('!d', '<span class="dcolor">&diams;</span>')
@@ -161,6 +166,7 @@ def to_html(content):
     return """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
 <html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>""" + str(ET.tostring(head), 'UTF8') + bodystring + '</html>'
+
 
 def bml2html(input_filename, output_filename):
     content = bml.content_from_file(input_filename)

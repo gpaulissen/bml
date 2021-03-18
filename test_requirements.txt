@@ -1,0 +1,6 @@
+pytest
+pytest-cover
+pytest-flakes
+pytest-pycodestyle
+flake8
+
