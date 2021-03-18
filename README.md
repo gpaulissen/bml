@@ -19,9 +19,11 @@ mode](https://orgmode.org/).
 
 ## Installation
 
-This utility uses Python. Install Python (and pip) first.
+This utility uses Python version 3 or higher. Install [Python](http://www.python.org) (and pip) first.
 
 ### Using pip
+
+To install the utility, issue:
 
 ```
 $ pip install bridge-markup
