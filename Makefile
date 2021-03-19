@@ -29,8 +29,7 @@ clean:
 	$(RM_EGGS)
 	$(PYTHON) -Bc "import pathlib; [p.unlink() for p in pathlib.Path('.').rglob('*.py[co]')]"
 	$(PYTHON) -Bc "import pathlib; [p.rmdir() for p in pathlib.Path('.').rglob('__pycache__')]"
-	-$(PYTHON) -Bc "import shutil; shutil.rmtree('.pytest_cache')"
-	-$(PYTHON) -Bc "import shutil; shutil.rmtree('.mypy_cache')"
+	$(PYTHON) -Bc "import shutil; import os; [shutil.rmtree(d) for d in ['.pytest_cache', '.mypy_cache', 'dist', 'htmlcov', '.coverage'] if os.path.isdir(d)]"
 
 install: clean
 	$(PIP) install -e .
