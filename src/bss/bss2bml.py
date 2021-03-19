@@ -1,11 +1,21 @@
-from typing import Dict, Any
+from typing import Dict, IO, Any, AnyStr, Union
 
+from pathlib import Path
+import sys
 import re
 
-import bml.bss
+from bml import bss
+from bml import bml
 
-SEAT_DICT = {v: k for k, v in bml.bss.SEAT_DICT.items()}
-VUL_DICT = {v: k for k, v in bml.bss.VUL_DICT.items()}
+
+Pathish = Union[AnyStr, Path]  # in lieu of yet-unimplemented PEP 519
+FileSpec = Pathish
+
+
+__all__ = ['bss2bml', 'main']
+
+SEAT_DICT = {v: k for k, v in bss.SEAT_DICT.items()}
+VUL_DICT = {v: k for k, v in bss.VUL_DICT.items()}
 
 # key: parent prefix from a BSS bidding sequence
 # data: the parent (type bml.Node)
@@ -26,7 +36,39 @@ system_name = None
 summary = None
 
 
-def bss2bml(input, output):
+def bss2bml(input_spec: FileSpec, output_spec: FileSpec) -> None:
+    "Convert BSS to BML for an input/output file (or file path)"
+    input = None
+    output = None
+
+    try:
+        if input_spec == '-':
+            input = sys.stdin
+        elif isinstance(input_spec, (str, bytes, Path)):
+            input = open(input_spec, mode='r', encoding="utf-8")
+        else:
+            assert "ERROR: unknown file type for %r" % (input_spec)
+
+        if output_spec == '-':
+            output = sys.stdout
+        elif isinstance(output_spec, (str, bytes, Path)):
+            output = open(output_spec, mode='w', encoding="utf-8")
+        else:
+            assert "ERROR: unknown file type for %r" % (output_spec)
+
+        assert input
+        assert output
+        _bss2bml(input, output)
+    finally:
+        if input and input_spec != '-':
+            input.close()
+        if output and output_spec != '-':
+            output.close()
+
+    return
+
+
+def _bss2bml(input: IO, output: IO) -> None:
     """
 Convention Card Definition and Convention Definition files are ASCII text files having a “.bss” file name extension. As might be surmised from the use of a specific file name extension, the files have a well defined format, including encoding of information. In a defined context, a specific character will be an encoding of something, for example, a single character will represent position at the table (including one character to indicate 1st or 2nd position, etc.).
 
@@ -42,9 +84,13 @@ Zero or one defensive carding records
     global state, state_nr
 
     state_nr = 0
-    for line in input:
-        while state_nr < len(state) and not parse_line(line):
-            state_nr = state_nr + 1
+    for line_nr, line in enumerate(input):
+        try:
+            while state_nr < len(state) and not parse_line(line):
+                state_nr = state_nr + 1
+        except Exception as e:
+            print("ERROR in line %d (state: %s)" % (line_nr + 1, state[state_nr]))
+            raise e
 
     print_bml(output)
 
@@ -377,3 +423,12 @@ def print_bidtable(output, parent, opener=None, seat=None, vul=None):
     for c in parent.children:
         output.write("%s%s%s%s\n" % (" " * c.level(), c.bid, ' = ' if c.desc else '', c.desc))
         print_bidtable(output, c)
+
+
+def main():
+    bml.args = bml.parse_arguments(description='Convert BSS to BML.', option_tree=False, option_include_external_files=False)
+    if not bml.args.outputfile:
+        bml.args.outputfile = '-' if bml.args.inputfile == '-' else re.sub(r'\..+\Z', '.bml', bml.args.inputfile)
+    if bml.args.verbose > 1:
+        print("Output file:", bml.args.outputfile)
+    bss2bml(bml.args.inputfile, bml.args.outputfile)

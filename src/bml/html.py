@@ -133,14 +133,14 @@ def to_html(content):
             element.text = text
         elif content_type == bml.ContentType.LIST:
             element = ET.SubElement(body, 'ul')
-            for l in text:
+            for i in text:
                 li = ET.SubElement(element, 'li')
-                li.text = l
+                li.text = i
         elif content_type == bml.ContentType.ENUM:
             element = ET.SubElement(body, 'ol')
-            for l in text:
+            for i in text:
                 li = ET.SubElement(element, 'li')
-                li.text = l
+                li.text = i
 
     bodystring = str(ET.tostring(body), 'UTF8')
 

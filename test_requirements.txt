@@ -1,5 +1,5 @@
 pytest
-pytest-cover
+pytest-cov
 pytest-flakes
 pytest-pycodestyle
 flake8

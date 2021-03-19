@@ -1,3 +1,7 @@
 include test_requirements.txt
 include Makefile
 include CHANGELOG.md
+include README.org
+include LICENSE.org
+include src/bml/bml.css
+include src/bml/bml.tex

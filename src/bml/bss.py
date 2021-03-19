@@ -6,7 +6,7 @@ import copy
 
 from bml import bml
 
-__all__ = ['bml2bss', 'VUL_DICT', 'SEAT_DICT']  # only thing to export
+__all__ = ['bml2bss', 'VUL_DICT', 'SEAT_DICT']
 
 VUL_DICT = {
     # key: bml representation

@@ -6,7 +6,7 @@ __description__ = ' '.join('''
 Bridge Markup Language for creating bridge (card game) bidding documents.
 '''.strip().split())
 __email__ = "gert.jan.paulissen@gmail.com"
-__version__ = '2.0.0'
+__version__ = '2.0.1'
 __license__ = "MIT License"
 __copyright__ = 'Copyright (c) 2013 Erik Sjöstrand, 2018 Gert-Jan Paulissen'
 __url__ = "https://github.com/gpaulissen/bml"

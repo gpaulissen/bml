@@ -326,8 +326,8 @@ def create_bidtree(text, content):
             target, replacement = r.split('=')
             lines = lines.replace(target, replacement)
         lines = lines.split('\n')
-        for l in range(len(lines)):
-            lines[l] = indentation + lines[l]
+        for i in range(len(lines)):
+            lines[i] = indentation + lines[i]
         text = text[:paste.start()] + '\n'.join(lines) + text[paste.end():]
 
     hide = re.search(r'^\s*#\s*HIDE\s*\n', text, flags=re.MULTILINE)

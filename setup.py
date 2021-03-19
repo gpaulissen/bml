@@ -33,7 +33,7 @@ class PyTest(TestCommand):
 
 tests_require = [
     'pytest',
-    'pytest-cover',
+    'pytest-cov',
     'pytest-flakes',
     'pytest-pycodestyle',
     'flake8',

@@ -7,11 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2021-03-19
+
+### Added
+
+	- Python package now correctly includes external files bml.css and bml.tex.
+
+### Changed
+
+	- README.md now links correctly to README.org for a Python package.
+	- Replaced test package pytest-cover by pytest-cov (pytest-cover has been merged back into pytest-cov 2.0).
+
 ## [2.0.0] - 2021-03-18
 
 ### Added
 
 	- Applied Python best practices.
 	- Uploading to PyPi as package bridge-markup.
-	- Using conda to make the package.
 
