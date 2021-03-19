@@ -164,7 +164,7 @@ output file which adds colours and tree graphics (if set). The default is
 
 ### bml2latex
 
-Convert to LaTeX format. See **LaTeX** in above.
+Convert to LaTeX format. See **LaTeX** above.
 
 ```
 $ bml2latex -h
