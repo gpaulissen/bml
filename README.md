@@ -27,7 +27,7 @@
 
 # BML - Bridge Bidding Markup Language
 
-This GitHub repository (<https://github.com/gpaulissen/bml>) created by Gert-Jan Paulissen is a fork of <https://github.com/Kungsgeten/bml> created by Erik Sjöstrand. The BML format and its utilities in this repository are supposed to be backwards compatible unless mentioned otherwise. In order to better distinguish between both BML versions, I may refer to BML 1 (Erik's version) and BML 2 (this version).
+This GitHub repository (<https://github.com/gpaulissen/bml>) created by Gert-Jan Paulissen is a fork of <https://github.com/Kungsgeten/bml> created by Erik SjÃ¶strand. The BML format and its utilities in this repository are supposed to be backwards compatible unless mentioned otherwise. In order to better distinguish between both BML versions, I may refer to BML 1 (Erik's version) and BML 2 (this version).
 
 The purpose of the *Bridge Bidding Markup Language* (BML) is to offer an easy way of documenting contract bridge bidding systems. The file(s) created are supposed to be easy to read for both human and machines. A BML file is created using an ordinary text editor (like *Notepad*).
 
@@ -45,7 +45,10 @@ Checkout example.txt for an example of how BML looks. Also be sure to check out 
 
 # Using the BML converters
 
-You need Python version 3 or higher in order to use the BML converters. Get it from <http://www.python.org>.
+You need Python version 3 or higher in order to use the BML converters. Get it
+from <http://www.python.org> or, even better, use
+[Miniconda](https://docs.conda.io/en/latest/miniconda.html) so you can have
+easily several versions of a Python environment.
 
 <a id="installation_using_pypi"></a>
 
