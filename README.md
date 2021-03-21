@@ -154,11 +154,13 @@ optional arguments:
 If no output file is supplied, it is constructed from the input file by
 replacing that extension by `.htm` (except of course when the input is `-`).
 
-The `--tree` command line option creates bidtable trees. The default is `--no-tree`.
+The `--tree` command line option creates nice looking bidtable trees (this is the
+default). The `--no-tree` does not create such trees.
 
-The `--include-external-files` adds the bml.css style sheet to the generated
-output file which adds colours and tree graphics (if set). The default is
-`--no-include-external-files`.
+The `--include-external-files` includes the bml.css style sheet into the
+generated output file (this is the default). The `--no-include-external-files`
+just creates a link reference to that file but then at run-time that style
+sheet should be present.
 
 <a id="bml2latex"></a>
 
@@ -191,10 +193,13 @@ optional arguments:
   --no-include-external-files
 ```
 
-The `--tree` command line option creates bidtable trees. The default is `--no-tree`.
+The `--tree` command line option creates nice looking bidtable trees (this is the
+default). The `--no-tree` does not create such trees.
 
-The `--include-external-files` adds the bml.tex package to the generated
-output file. The default is `--no-include-external-files`. 
+The `--include-external-files` includes the bml.tex package into the generated
+output file (this is the default). The `--no-include-external-files`
+just adds \\include{bml} to the generated output file but then you must have
+the bml.tex at some point where LaTeX can find it.
 
 <a id="orgb7edaf0"></a>
 
