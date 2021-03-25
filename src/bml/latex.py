@@ -183,8 +183,15 @@ def replace_truetype(matchobj):
 
 def latex_replace_characters(text):
     text = text.replace('->', '$\\rightarrow$')
-    text = text.replace('#', '\\#')
-    text = text.replace('_', '\\_')
+    # see https://tex.stackexchange.com/questions/34580/escape-character-in-latex
+    # replace & % $ # _ { } ~ ^ \ by
+    # \& \% \$ \# \_ \{ \} \textasciitilde \textasciicircum \textbackslash
+    for ch in "&%$#_{}":
+        text = text.replace(ch, '\\' + ch)
+    text = text.replace('~', '\\textasciitilde')
+    text = text.replace('^', '\\textasciicircum')
+    # do not replace the backslash since it interferes with other LaTeX constructions
+    # text = text.replace('\\', '\\textbackslash')
     text = re.sub(r'(?<=\s)"(\S[^"]*)"', replace_quotes, text, flags=re.DOTALL)
     text = re.sub(r'(?<=\s)\*(\S[^*]*)\*', replace_strong, text, flags=re.DOTALL)
     text = re.sub(r'(?<=\s)/(\S[^/]*)/', replace_italics, text, flags=re.DOTALL)

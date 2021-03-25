@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+  - Some characters have a special meaning for LaTeX (issue #8)
+
 ## [2.0.3] - 2021-03-21
 
 ### Changed

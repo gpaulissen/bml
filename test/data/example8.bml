@@ -1,0 +1,10 @@
+// https://github.com/gpaulissen/bml/issues/4
+// strange characters for laTeX: & % $ # _ { } ~ ^ \
+
+1N-2C PUP to 2!d
+  2D Forced
+    P Weak with !d
+    2H TRF
+      2S
+        2N 5+c !s, G/T
+        3CD !s & minor, G/T (%$#_{}~^\)
