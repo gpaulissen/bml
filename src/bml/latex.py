@@ -49,8 +49,7 @@ def latex_bidtable(children, file, first=False):
     for i in range(len(children)):
         c = children[i]
 
-        if bml.args.verbose >= 2:
-            print("child %d: %s" % (i, str(c)))
+        bml.logger.debug("child %d: %s" % (i, str(c)))
 
         if not first:
             if bml.args.tree:

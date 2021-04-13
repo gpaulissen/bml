@@ -2,6 +2,7 @@ from os import listdir
 from os.path import isfile, join, dirname
 
 import filecmp
+import logging
 
 from bml.bml import content_from_file
 from bml.bss import bml2bss
@@ -37,14 +38,18 @@ def test_content_from_file():
 
 
 def test_bml2bss():
+    from bml.bml import logger
     print("")
     for file in DATA_FILES:
         print("Testing bml2bss(%s)" % (file))
+        if file == "example.bml":
+            logger.setLevel(logging.DEBUG)
         output_filename = file[0:len(file) - 4] + '.bss'
         output_filename_expected = join(EXPECTED_DIR, output_filename)
         output_filename = join(TMP_DIR, output_filename)
         content = bml2bss(join(DATA_DIR, file), output_filename)
         _check(output_filename, output_filename_expected, content)
+    logger.setLevel(logging.INFO)
     return
 
 
@@ -98,8 +103,11 @@ def _test_bss2bml():
 if __name__ == '__main__':
     from bml.bml import args
     args.verbose = 1
-    test_content_from_file()
-    test_bml2bss()
-    test_bml2html()
-    test_bml2latex()
-    # _test_bss2bml()
+    test_bss2bml = True
+    if not test_bss2bml:
+        test_content_from_file()
+        test_bml2bss()
+        test_bml2html()
+        test_bml2latex()
+    else:
+        _test_bss2bml()

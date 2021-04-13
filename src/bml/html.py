@@ -30,8 +30,7 @@ def html_bidtable(et_element, children, root=False):
             bid = re.sub(r'^P$', 'Pass', c.bid)
             bid = re.sub(r'^R$', 'Rdbl', bid)
             bid = re.sub(r'^D$', 'Dbl', bid)
-            if bml.args.verbose > 1:
-                print("bid: %s; description line 1: %s" % (bid, desc_rows[0]))
+            bml.logger.debug("bid: %s; description line 1: %s" % (bid, desc_rows[0]))
 
             if not bml.args.tree:
                 div.text = bid

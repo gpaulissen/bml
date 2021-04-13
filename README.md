@@ -9,6 +9,7 @@
     - [bml2html](#bml2html)
     - [bml2latex](#bml2latex)
 - [Syntax](#orgb7edaf0)
+  - [Editor](#editor)
   - [Bidding tables](#org7d04bc7)
     - [Competitive auctions](#orgb09a520)
     - [Hiding from export](#org1ad58a1)
@@ -29,7 +30,10 @@
 
 This GitHub repository (<https://github.com/gpaulissen/bml>) created by Gert-Jan Paulissen is a fork of <https://github.com/Kungsgeten/bml> created by Erik Sjöstrand. The BML format and its utilities in this repository are supposed to be backwards compatible unless mentioned otherwise. In order to better distinguish between both BML versions, I may refer to BML 1 (Erik's version) and BML 2 (this version).
 
-The purpose of the *Bridge Bidding Markup Language* (BML) is to offer an easy way of documenting contract bridge bidding systems. The file(s) created are supposed to be easy to read for both human and machines. A BML file is created using an ordinary text editor (like *Notepad*).
+The purpose of the *Bridge Bidding Markup Language* (BML) is to offer an easy
+way of documenting contract bridge bidding systems. The file(s) created are
+supposed to be easy to read for both human and machines. A BML file is created
+using an ordinary text editor (like *Notepad* or even better [Notepad++](https://notepad-plus-plus.org/)).
 
 Programs have been written in order to export BML files to the following formats:
 
@@ -212,6 +216,20 @@ Perhaps the best way to get an introduction to BML is to read example.txt, as it
 A BML file can contain a number of elements: bidding tables, text paragraphs, section names, lists and metadata. All elements must be separated by a blank line.
 
 
+<a id="editor"></a>
+
+## Editor
+
+Please be aware of TAB characters in your BML file. They count as 1 character
+but may look like 1 or more spaces. The rules for indentation (described later
+on) count the number of whitespace characters (so a SPACE and a TAB count both
+for one). So please try to avoid using TAB characters (or convert them to
+SPACEs using your editor settings).
+
+The [Notepad++](https://notepad-plus-plus.org/) is a free source code editor
+that may be useful to edit BML files. Of course you may use *Notepad* but be
+warned about the TAB character.
+
 <a id="org7d04bc7"></a>
 
 ## Bidding tables
@@ -292,7 +310,6 @@ If a bid has already been defined, it will not be overwritten; the first definit
 2X Weak
   2N Ogust
 ```
-
 
 <a id="orgb09a520"></a>
 

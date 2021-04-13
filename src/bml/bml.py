@@ -5,9 +5,10 @@ import copy
 from collections import defaultdict
 import argparse
 from contextlib import contextmanager
+import logging
 
 __all__ = ['parse_arguments', 'content_from_file', 'Node', 'ContentType',
-           'args', 'EMPTY', 'ROOT']
+           'args', 'EMPTY', 'ROOT', 'logger']
 
 # constants
 ROOT = 'root'
@@ -31,8 +32,12 @@ class Args:
         self.include_external_files = include_external_files
         self.inputfile = inputfile
         self.outputfile = outputfile
+        if verbose > 1:
+            logger.setLevel(logging.DEBUG)
 
 
+logging.basicConfig(format='%(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
 args = Args()
 
 
@@ -230,8 +235,7 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
                 bids.append(bid)
             p = p.parent
 
-        if args.verbose > 1:
-            print("get_sequence (%s): %s" % (self, bids))
+        logger.debug("get_sequence (%s): %s" % (self, bids))
 
         # Check whether this sequence is correct, i.e. every 2nd belongs to the same party
         we_bid = len(bids) == 0 or bids[0][0] != '('
@@ -272,13 +276,12 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
             m = re.search(r'(?P<level>\d+)(?P<strain>[a-zA-Z]+)\Z', bid)
             if m:
                 strain = m.group('strain')
-                assert strain in ['M', 'm', 'oM', 'om'] or strain.upper() in ['BLACK', 'RED', 'X', 'STEP', 'STEPS'] or re.match(r'[CDHSN]+\Z', strain), 'Last bid in "%s" incorrect; strain is "%s"' % (bid, strain)
+                assert strain in ['M', 'm', 'oM', 'om'] or strain.upper() in ['BLACK', 'RED', 'X', 'Y', 'Z', 'STEP', 'STEPS'] or re.match(r'[CDHSN]+\Z', strain), 'Last bid in "%s" incorrect; strain is "%s"' % (bid, strain)
                 dict = {'normal': False, 'level': m.group('level'), 'strain': strain}
             else:
                 assert bid in [EMPTY, ROOT], 'Last bid in "%s" must be "%s" or "%s"' % (bid, EMPTY, ROOT)
                 dict = {'normal': False, 'level': None, 'strain': None}
-        if args.verbose > 1:
-            print("bid_type; bid: %s; dict: %s" % (self.bid, str(dict)))
+        logger.debug("bid_type; bid: %s; dict: %s" % (self.bid, str(dict)))
         return dict
 
 
@@ -411,8 +414,7 @@ def create_bidtree(text, content):
         for c in intermediate.children:
             c.parent = intermediate
 
-        if args.verbose > 1:
-            print("intermediate: %s" % (str(intermediate)))
+        logger.debug("intermediate: %s" % (str(intermediate)))
 
         assert intermediate.parent == root
         assert len(root.children) == 1
@@ -573,8 +575,7 @@ def content_from_string(text):
 
     content = Content()
 
-    if args.verbose > 1:
-        print("# nodes: %s" % (len(content.nodes)))
+    logger.debug("# nodes: %s" % (len(content.nodes)))
 
     paragraphs = []
     text = re.sub(r'^\s*#\s*INCLUDE\s*(\S+)\s*\n?', include_file, text, flags=re.MULTILINE)
@@ -590,10 +591,9 @@ def content_from_string(text):
             content_type = get_content_type(c, content)
             if content_type:
                 content.nodes.append(content_type)
-                if args.verbose > 1:
-                    print("[%d] Content type: %s; # nodes: %s\n%s\n" % (nr, ContentTypeStr(content_type[0]), len(content.nodes), c))
+                logger.debug("[%d] Content type: %s; # nodes: %s\n%s\n" % (nr, ContentTypeStr(content_type[0]), len(content.nodes), c))
         except Exception:
-            print("\nERROR in paragraph %d:\n\n%s\n" % (nr + 1, c))
+            logger.error("Content type error in paragraph %d:\n\n%s\n" % (nr + 1, c))
             raise
     return content
 
@@ -622,8 +622,7 @@ def parse_arguments(description, option_tree=True, option_include_external_files
 
     args = parser.parse_args()
 
-    if args.verbose >= 1:
-        print("Input file:", args.inputfile)
+    logger.debug("Input file:", args.inputfile)
     if args.inputfile != '-':
         args.inputfile = os.path.realpath(args.inputfile)
         if not os.path.exists(args.inputfile):
