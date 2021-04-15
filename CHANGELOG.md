@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0] - 2021-04-15
+
 ### Changed
-  - Some characters have a special meaning for LaTeX (issue #8)
+	- Two More Variable Colours (issue #1)
   - Things for newbies to do (issue #3)
+  - Some characters have a special meaning for LaTeX (issue #8)
 
 ## [2.0.3] - 2021-03-21
 

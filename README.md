@@ -209,7 +209,10 @@ the bml.tex at some point where LaTeX can find it.
 
 # Syntax
 
-The goal of BML's syntax is to be readable and easy to write. It is heavily inspired by [org-mode](http://orgmode.org/); a plugin included in the powerful text editor [Emacs](http://www.gnu.org/software/emacs/). If using org-mode in Emacs, there's some nifty features which might make it easier to work with BML.
+The goal of BML's syntax is to be readable and easy to write. It is heavily
+inspired by [org-mode](http://orgmode.org/); a plugin included in the powerful
+text editor [Emacs](http://www.gnu.org/software/emacs/). If using org-mode in
+Emacs, there are some nifty features which might make it easier to work with BML.
 
 Perhaps the best way to get an introduction to BML is to read example.txt, as it show of a lot of the features of BML.
 
@@ -278,14 +281,35 @@ You may add equal signs when separating bids and descriptions, instead of only w
 2N = 20--21
 ```
 
-As bids you could type for instance 1C, to show the bid of 1 club. D(iamond), H(eart), S(spade) and N(o trump) work too. You could also use to suits, like 3CD to define both 3C and 3D at the same time. There's also some other special cases:
+As bids you could type for instance 1C, to show the bid of 1 club. D(iamond),
+H(eart), S(spade) and N(o trump) work too. You could also use to suits, like
+3CD to define both 3C and 3D at the same time. There are also some other
+special cases: variable suits.
 
--   **<digit>m:** Defines both <digit>C and <digit>D
--   **<digit>M:** Defines both <digit>H and <digit>S
--   **<digit>X:** Defines <digit>C, <digit>D, <digit>H and <digit>S
--   **<digit>red:** Defines <digit>D and <digit>H
--   **<digit>black:** Defines <digit>C and <digit>S. Since BML 2.
--   **<digit>step[s]:** Defines the bid <digit> steps above the parent bid (the previous bid made). In response to 1C, 1step would be 1D, 2steps would be 1H etc.
+You can use variable suits m, om, M, oM and they can be used for suits **NOT**
+already bid (neither literally nor variable).
+
+-   **&lt;digit&gt;m**: Defines a minor suit, hence both &lt;digit&gt;C and &lt;digit&gt;D (not bid already).
+-   **&lt;digit&gt;om**: Defines the other minor, hence both &lt;digit&gt;C and &lt;digit&gt;D (but only if &lt;digit&gt;m is used before).
+-   **&lt;digit&gt;M**: Defines a major suit, hence both &lt;digit&gt;H and &lt;digit&gt;S (not bid already).
+-   **&lt;digit&gt;oM**: Defines the other major suit, hence both &lt;digit&gt;H and &lt;digit&gt;S (but only if &lt;digit&gt;M is used before).
+
+You can use variable suits X, Y and Z where X < Y < Z. So for instance if in a
+bidding table 2X, 1Y and 3Z are used then X may be clubs, Y hearts and Z
+spades. But not X diamonds and Y clubs since then Y < X.
+
+-   **&lt;digit&gt;X**: Defines &lt;digit&gt;C, &lt;digit&gt;D, &lt;digit&gt;H and &lt;digit&gt;S.
+-   **&lt;digit&gt;Y**: Defines &lt;digit&gt;C, &lt;digit&gt;D, &lt;digit&gt;H and &lt;digit&gt;S.
+-   **&lt;digit&gt;Z**: Defines &lt;digit&gt;C, &lt;digit&gt;D, &lt;digit&gt;H and &lt;digit&gt;S.
+
+And here some more special variables:
+
+-   **&lt;digit&gt;red**: Defines &lt;digit&gt;D and &lt;digit&gt;H
+-   **&lt;digit&gt;black**: Defines &lt;digit&gt;C and &lt;digit&gt;S. Since BML 2.
+-   **&lt;digit&gt;step[s]**: Defines the bid &lt;digit&gt; steps above the parent bid (the previous bid made). In response to 1C, 1step would be 1D, 2steps would be 1H etc.
+
+In all cases you can not use two or more variables for the same suit so using
+m and X for clubs is considered an error.
 
 It is worth noticing that whitespace before the **first bid** in the bidding table is ignored. Other indentation whitespace is part of the syntax.
 

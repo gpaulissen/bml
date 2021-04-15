@@ -40,7 +40,9 @@ class Bid:
     bids = ['C', 'D', 'H', 'S', 'N']
 
     def __init__(self, stringrep):
-        """Stringrep should be <level><strain>"""
+        """Stringrep should be <level><strain> or (<level><strain>)"""
+        if stringrep.startswith('(') and stringrep.endswith(')'):
+            stringrep = stringrep[1:-1]
         stringrep = stringrep[-2:]  # only the last two characters
         level = int(stringrep[0])
         assert level > 0 and level < 8, 'level must be 1--7 for bid %s' % (stringrep)
@@ -153,26 +155,24 @@ def get_last_normal_bid(parent):
     return get_last_normal_bid(parent.parent)  # No bid was normal: continue recursively with the parent
 
 
-def systemdata_bidtable(children, systemdata, vars, last_bids_by_strain, recursive=True):
+def systemdata_bidtable(children, systemdata, vars, last_bids_by_strain, depth):
     def check_vars(var, level, strain):
         """Check that a new variable is not already part of the vars.values() and X < Y < Z"""
         assert var is not None, "Variable should not be None."
         assert var not in vars, "Variable %s should not already be defined." % (var)
 
-        bml.logger.debug("check_vars(var=%s, level=%s, strain=%s)" % (var, level, strain))
-
         bid = Bid(level + strain)
         last_bid = max(last_bids_by_strain.values()) if len(last_bids_by_strain) > 0 else None
-        bml.logger.debug("Bid=%s; last bid=%s; last bids by strain=%s" % (bid, last_bid, last_bids_by_strain))
+        info = "vars=%s; last_bids_by_strain=%s; bid=%s; last bid=%s" % (vars, last_bids_by_strain, bid, last_bid)
         result = True
 
         # Must we replace a variable and is there a last bid?
         # Then not every k is eligible.
         if last_bid and bid <= last_bid:  # is new bid not sufficient: ignore
-            bml.logger.debug("Rejecting bid %s since it is not greater than the last bid %s" % (bid, last_bid))
+            info += "; rejecting bid since it is not greater than the last bid"
             result = False
-        elif strain in vars.values():
-            bml.logger.debug("Rejecting bid %s since the strain is already assigned to a variable (vars=%s)" % (bid, vars))
+        elif strain in last_bids_by_strain:
+            info += "; rejecting bid since the strain is already used"
             result = False
         # X < Y < Z
         elif var in ['X', 'Y', 'Z'] and len(vars) > 0:
@@ -190,11 +190,13 @@ def systemdata_bidtable(children, systemdata, vars, last_bids_by_strain, recursi
                 result = False
 
             if not result:
-                bml.logger.debug("Rejecting bid %s since it is does not confirm to XYZ rules (var=%s; vars=%s)" % (bid, var, vars))
+                info += "; rejecting bid since it is does not confirm to XYZ rules"
+
+        bml.logger.debug("check_vars(var=%s, level=%s, strain=%s) = %s (%s)" % (var, level, strain, result, info))
 
         return result
 
-    bml.logger.debug("systemdata_bidtable(children=%s, systemdata=%s, vars=%s, last_bids_by_strain=%s, recursive=%s)" % (str(children), str(systemdata), str(vars), str(last_bids_by_strain), recursive))
+    bml.logger.debug("systemdata_bidtable(children=%s, systemdata=%s, vars=%s, last_bids_by_strain=%s, depth=%s)" % (children, systemdata, vars, last_bids_by_strain, depth))
 
     bids_processed = []
     bid = None
@@ -281,7 +283,8 @@ def systemdata_bidtable(children, systemdata, vars, last_bids_by_strain, recursi
                         prev_bid = last_bids_by_strain.pop(k, None)
                         last_bids_by_strain[k] = Bid(bid)
 
-                        systemdata_bidtable([h], systemdata, vars, last_bids_by_strain)
+                        # Now the depth does not increase: we are just replacing a variable bid by a normal bid
+                        systemdata_bidtable([h], systemdata, vars, last_bids_by_strain, depth)
 
                         if prev_bid:
                             last_bids_by_strain[k] = prev_bid
@@ -302,7 +305,7 @@ def systemdata_bidtable(children, systemdata, vars, last_bids_by_strain, recursi
             else:
                 assert c.all_bids()[-1] == bml.EMPTY, 'Bid (%s) must be empty' % (c.bid)
                 assert len(children) == 1
-                systemdata_bidtable(c.children, systemdata, vars, last_bids_by_strain)  # the function will stop after this call since there are no other children
+                systemdata_bidtable(c.children, systemdata, vars, last_bids_by_strain, depth + 1)  # the function will stop after this call since there are no other children
         else:  # systemdata_normal(c):
             bml.logger.debug("Normal child: %s" % (c))
 
@@ -328,7 +331,7 @@ def systemdata_bidtable(children, systemdata, vars, last_bids_by_strain, recursi
                 prev_bid = None
                 pass
 
-            systemdata_bidtable(c.children, systemdata, vars, last_bids_by_strain)
+            systemdata_bidtable(c.children, systemdata, vars, last_bids_by_strain, depth + 1)
             if prev_bid:
                 last_bids_by_strain[bid.strain()] = prev_bid
             elif bid:
@@ -386,7 +389,7 @@ def to_systemdata(content):
                 else:  # at the end of the loop
                     parent.set_children(children)
                     parent.desc = desc
-            systemdata_bidtable(content.children, systemdata, vars={}, last_bids_by_strain={}, recursive=False)
+            systemdata_bidtable(content.children, systemdata, {}, {}, 1)
 
     return systemdata
 
