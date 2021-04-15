@@ -245,8 +245,8 @@ The most powerful part of BML is the ability to write bidding tables easily. Let
     1H  Any hand with 20+ hcp
   1HS 5+ suit, forcing to game (8+ hcp)
   1N  Natural game force, 8+ hcp
-  2m  5+ suit, forcing to game (8+ hcp)
-  2M  6+ suit, 5--7 hcp
+  2CD  5+ suit, forcing to game (8+ hcp)
+  2HS  6+ suit, 5--7 hcp
 1D  Nebulous with 2+!d, 11--15 hcp
 1HS 5+ suit, 11--15 hcp
 1N  14--16 hcp
@@ -286,17 +286,24 @@ H(eart), S(spade) and N(o trump) work too. You could also use to suits, like
 3CD to define both 3C and 3D at the same time. There are also some other
 special cases: variable suits.
 
-You can use variable suits m, om, M, oM and they can be used for suits **NOT**
-already bid (neither literally nor variable).
+You can use variable suits m (minor), om (other minor), M (major), oM (other
+major) and they can be used for suits **NOT** already used in the sequence
+(neither literally nor variable). So for instance when you have a bidding
+table of opening bids you can start with 1C and later use 3m for the 3 level
+minor preempt openings since m is not used in the sequence yet (1C is not part
+of the sequence). But if you use m for any bid in the sequence **after** the
+opening bid 1C, m will be diamonds. And om is not possible.
 
--   **&lt;digit&gt;m**: Defines a minor suit, hence both &lt;digit&gt;C and &lt;digit&gt;D (not bid already).
+-   **&lt;digit&gt;m**: Defines a minor suit, hence both &lt;digit&gt;C and &lt;digit&gt;D (not used already in the sequence).
 -   **&lt;digit&gt;om**: Defines the other minor, hence both &lt;digit&gt;C and &lt;digit&gt;D (but only if &lt;digit&gt;m is used before).
--   **&lt;digit&gt;M**: Defines a major suit, hence both &lt;digit&gt;H and &lt;digit&gt;S (not bid already).
+-   **&lt;digit&gt;M**: Defines a major suit, hence both &lt;digit&gt;H and &lt;digit&gt;S (not used already in the sequence).
 -   **&lt;digit&gt;oM**: Defines the other major suit, hence both &lt;digit&gt;H and &lt;digit&gt;S (but only if &lt;digit&gt;M is used before).
 
-You can use variable suits X, Y and Z where X < Y < Z. So for instance if in a
-bidding table 2X, 1Y and 3Z are used then X may be clubs, Y hearts and Z
-spades. But not X diamonds and Y clubs since then Y < X.
+You can use variable suits X, Y and Z where X < Y < Z. Here too they can be
+used for suits **NOT** already used in the sequence (neither literally nor
+variable). So for instance if in a bidding table 2X, 1Y and 3Z are used then X
+may be clubs, Y hearts and Z spades. But not X diamonds and Y clubs since then
+Y < X.
 
 -   **&lt;digit&gt;X**: Defines &lt;digit&gt;C, &lt;digit&gt;D, &lt;digit&gt;H and &lt;digit&gt;S.
 -   **&lt;digit&gt;Y**: Defines &lt;digit&gt;C, &lt;digit&gt;D, &lt;digit&gt;H and &lt;digit&gt;S.
