@@ -278,14 +278,34 @@ You may add equal signs when separating bids and descriptions, instead of only w
 2N = 20--21
 ```
 
-As bids you could type for instance 1C, to show the bid of 1 club. D(iamond), H(eart), S(spade) and N(o trump) work too. You could also use to suits, like 3CD to define both 3C and 3D at the same time. There's also some other special cases:
+As bids you could type for instance 1C, to show the bid of 1 club. D(iamond),
+H(eart), S(spade) and N(o trump) work too. You could also use to suits, like
+3CD to define both 3C and 3D at the same time. There are also some other special cases:
 
--   **<digit>m:** Defines both <digit>C and <digit>D
--   **<digit>M:** Defines both <digit>H and <digit>S
--   **<digit>X:** Defines <digit>C, <digit>D, <digit>H and <digit>S
--   **<digit>red:** Defines <digit>D and <digit>H
--   **<digit>black:** Defines <digit>C and <digit>S. Since BML 2.
--   **<digit>step[s]:** Defines the bid <digit> steps above the parent bid (the previous bid made). In response to 1C, 1step would be 1D, 2steps would be 1H etc.
+### Variable suits
+
+#### Minors and majors
+
+You can use variable suits m, om, M, oM and they can be used for (variable) suits **NOT**
+already bid.
+
+-   **&lt;digit&gt;m**: Defines a minor suit, hence both <digit>C and <digit>D (not bid already).
+-   **<digit>om**: Defines the other minor, hence both <digit>C and <digit>D (but only if <digit>m is used before).
+-   **<digit>M**: Defines a major suit, hence both <digit>H and <digit>S (not bid already).
+-   **<digit>oM**: Defines the other major suit, hence both <digit>H and <digit>S (but only if <digit>M is used before).
+
+### Any suit
+
+You can use variable suits X, Y and Z where X < Y < Z. So for instance if in a
+bidding table 2X, 1Y and 3Z are used then X may be clubs, Y hearts and Z spades.
+
+-   **<digit>X**: Defines <digit>C, <digit>D, <digit>H and <digit>S
+-   **<digit>Y**: Defines <digit>C, <digit>D, <digit>H and <digit>S
+-   **<digit>Z**: Defines <digit>C, <digit>D, <digit>H and <digit>S
+
+-   **<digit>red**: Defines <digit>D and <digit>H
+-   **<digit>black**: Defines <digit>C and <digit>S. Since BML 2.
+-   **<digit>step[s]**: Defines the bid <digit> steps above the parent bid (the previous bid made). In response to 1C, 1step would be 1D, 2steps would be 1H etc.
 
 It is worth noticing that whitespace before the **first bid** in the bidding table is ignored. Other indentation whitespace is part of the syntax.
 
