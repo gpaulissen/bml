@@ -4,7 +4,7 @@ from os.path import isfile, join, dirname
 import filecmp
 import logging
 
-from bml.bml import content_from_file
+from bml.bml import content_from_file, logger
 from bml.bss import bml2bss
 from bml.html import bml2html
 from bml.latex import bml2latex
@@ -38,7 +38,6 @@ def test_content_from_file():
 
 
 def test_bml2bss():
-    from bml.bml import logger
     print("")
     for file in DATA_FILES:
         print("Testing bml2bss(%s)" % (file))
@@ -77,11 +76,13 @@ def test_bml2latex():
     return
 
 
-def _test_bss2bml():
+def test_bss2bml():
     print("")
-    for file in DATA_FILES:
+    for file in [f for f in DATA_FILES if f != 'example.bml']:
         try:
             print("Testing bss.bss2bml(%s)" % (file))
+            if file == "example2.bml":
+                logger.setLevel(logging.DEBUG)
             input_filename = join(DATA_DIR, file)
             output_filename = file[0:len(file) - 4] + '.bss'
             output_filename_expected = join(EXPECTED_DIR, output_filename)
@@ -97,17 +98,15 @@ def _test_bss2bml():
         except Exception as e:
             print("ERROR for input file %s" % (input_filename))
             raise e
+    logger.setLevel(logging.INFO)
     return
 
 
 if __name__ == '__main__':
     from bml.bml import args
     args.verbose = 1
-    test_bss2bml = True
-    if not test_bss2bml:
-        test_content_from_file()
-        test_bml2bss()
-        test_bml2html()
-        test_bml2latex()
-    else:
-        _test_bss2bml()
+    test_content_from_file()
+    test_bml2bss()
+    test_bml2html()
+    test_bml2latex()
+    test_bss2bml()

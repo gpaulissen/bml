@@ -1,0 +1,22 @@
+#+TITLE: 
+
+#+DESCRIPTION: 
+
+#VUL 00
+
+#SEAT 0
+
+  1C = 2+!c. Natural or balanced
+  1D = 4+ suit, unbalanced
+  1H = 5+ !h, showing a Major
+  1S = 5+ !s, showing a Major
+  2C = 20--21 bal / Any game force
+  2D = 6+!h or 6+!s, 5--9 hcp
+  2H = 6+ suit, 10--13 hcp
+  2S = 6+ suit, 10--13 hcp
+  2N = 22--24
+  3C = 6+!c, Preemptive
+  3D = 6+!d, Preemptive
+  3H = 6+!h, Preemptive
+  3S = 6+!s, Preemptive
+  3N = Gambling

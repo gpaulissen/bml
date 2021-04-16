@@ -257,7 +257,7 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
         return self.children[arg]
 
     def __str__(self):
-        str = 'bid: %s; level: %d; desc: %s' % (self.bid, self.level(), self.desc)
+        str = 'bid: %s; level: %d; desc: %s; # children: %d' % (self.bid, self.level(), self.desc, len(self.children))
         return str
 
     def bid_type(self, index=-1):
