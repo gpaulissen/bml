@@ -1,52 +1,48 @@
-#+TITLE: 
-
-#+DESCRIPTION: 
-
 #VUL 00
 
 #SEAT 0
 
 1C
-    1D
-        1H = Minimum with 2--3!h
-            1S = 4+!h, 4!s, at most invitational
-            1N = Sign off
-            2C = Puppet to 2!d
-                2D = Forced
-                    2H = Mildly invitational with 5!h
-                    2S = Invitational, 5+!h and 4!s
-                    2N = Strongly invitational with 5!h
-                    3C = Invitational with 4!h and 5+!c
-                    3D = Invitational with 4!h and 5+!d
-                    3H = 6!h, about 11--12 hcp
-            2D = Artificial game force
-            2H = 6+!h, about 9--10 hcp
-        1S = 5+!c, 4+!s, unlimited
-        1N = 17--19 bal, 2--3!h
-        2C = 5+!c, unbal, 0--2!h, 0--3!s
-        2D = Reverse
-        2H = Minimum, 4!h
-        2S = 16+ hcp, 5+!c and 4+!h
-            3D = Retransfer
-                3H
-                    3S = Cue bid, slam interest
-                    4C = Cue bid, slam interest
-                    4D = Cue bid, slam interest
-                    4H = To play
-            3H = Invitational
-            3S = Splinter
-            4C = Splinter
-            4D = Splinter
-            4H = To play
-        2N = 16+ hcp, 6+!c. 18+ if 3!h
-            3C = Suggestion to play
-            3D = Relay
-                3H = 3!h, 18+ hcp
-            3H = Game forcing with 6+!h
-        3C = 15--17 hcp, 6+!c and 3!h
-            3D = Retransfer
-            3H = Invitational
-        3D = 17--19 bal, 4!h
-            3H = To play
-        3H = 13--15 hcp, good hand, 5+!c and 4!h
-            3N = Asking for singleton
+  1D
+    1H = Minimum with 2--3!h
+      1S = 4+!h, 4!s, at most invitational
+      1N = Sign off
+      2C = Puppet to 2!d
+        2D = Forced
+          2H = Mildly invitational with 5!h
+          2S = Invitational, 5+!h and 4!s
+          2N = Strongly invitational with 5!h
+          3C = Invitational with 4!h and 5+!c
+          3D = Invitational with 4!h and 5+!d
+          3H = 6!h, about 11--12 hcp
+      2D = Artificial game force
+      2H = 6+!h, about 9--10 hcp
+    1S = 5+!c, 4+!s, unlimited
+    1N = 17--19 bal, 2--3!h
+    2C = 5+!c, unbal, 0--2!h, 0--3!s
+    2D = Reverse
+    2H = Minimum, 4!h
+    2S = 16+ hcp, 5+!c and 4+!h
+      3D = Retransfer
+        3H
+          3S = Cue bid, slam interest
+          4C = Cue bid, slam interest
+          4D = Cue bid, slam interest
+          4H = To play
+      3H = Invitational
+      3S = Splinter
+      4C = Splinter
+      4D = Splinter
+      4H = To play
+    2N = 16+ hcp, 6+!c. 18+ if 3!h
+      3C = Suggestion to play
+      3D = Relay
+        3H = 3!h, 18+ hcp
+      3H = Game forcing with 6+!h
+    3C = 15--17 hcp, 6+!c and 3!h
+      3D = Retransfer
+      3H = Invitational
+    3D = 17--19 bal, 4!h
+      3H = To play
+    3H = 13--15 hcp, good hand, 5+!c and 4!h
+      3N = Asking for singleton

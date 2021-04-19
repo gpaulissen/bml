@@ -39,10 +39,13 @@ class Bid:
     """Numeric representation of a bid"""
     bids = ['C', 'D', 'H', 'S', 'N']
 
-    def __init__(self, stringrep):
+    def __init__(self, stringrep, we=True):
         """Stringrep should be <level><strain> or (<level><strain>)"""
         if stringrep.startswith('(') and stringrep.endswith(')'):
             stringrep = stringrep[1:-1]
+            self.we = False
+        else:
+            self.we = we
         stringrep = stringrep[-2:]  # only the last two characters
         level = int(stringrep[0])
         assert level > 0 and level < 8, 'level must be 1--7 for bid %s' % (stringrep)
@@ -52,7 +55,10 @@ class Bid:
         self.value = val + (level - 1) * 5
 
     def __str__(self):
-        return self.level() + self.strain()
+        if self.we:
+            return self.level() + self.strain()
+        else:
+            return '(' + self.level() + self.strain() + ')'
 
     def __repr__(self):
         return str(self.value)
@@ -156,12 +162,12 @@ def get_last_normal_bid(parent):
 
 
 def systemdata_bidtable(children, systemdata, vars, last_bids_by_strain, depth):
-    def check_vars(var, level, strain):
+    def check_vars(var, level, strain, we):
         """Check that a new variable is not already part of the vars.values() and X < Y < Z"""
         assert var is not None, "Variable should not be None."
         assert var not in vars, "Variable %s should not already be defined." % (var)
 
-        bid = Bid(level + strain)
+        bid = Bid(level + strain, we)
         last_bid = max(last_bids_by_strain.values()) if len(last_bids_by_strain) > 0 else None
         info = "vars=%s; last_bids_by_strain=%s; bid=%s; last bid=%s" % (vars, last_bids_by_strain, bid, last_bid)
         result = True
@@ -192,7 +198,7 @@ def systemdata_bidtable(children, systemdata, vars, last_bids_by_strain, depth):
             if not result:
                 info += "; rejecting bid since it is does not confirm to XYZ rules"
 
-        bml.logger.debug("check_vars(var=%s, level=%s, strain=%s) = %s (%s)" % (var, level, strain, result, info))
+        bml.logger.debug("check_vars(var=%s, level=%s, strain=%s, we=%s) = %s (%s)" % (var, level, strain, we, result, info))
 
         return result
 
@@ -214,6 +220,7 @@ def systemdata_bidtable(children, systemdata, vars, last_bids_by_strain, depth):
             # special bids of the form <digit><strain>
             # for instance 1HS, 2M, 3m etc
             bid = c.bid_type()
+            we = bid['we']
             if bid and bid['level']:
                 level = bid['level']
                 strain = bid['strain']
@@ -260,10 +267,10 @@ def systemdata_bidtable(children, systemdata, vars, last_bids_by_strain, depth):
 
                 found = False
                 for k in strain:
-                    bid = level + k
+                    bid = str(Bid(level + k, we))
 
                     # We must not add such a new bid if that bid was already processed here before
-                    if bid not in bids_processed and (not add_var or check_vars(var, level, k)):
+                    if bid not in bids_processed and (not add_var or check_vars(var, level, k, we)):
                         found = True
                         if add_var:
                             vars[var] = k
@@ -281,7 +288,7 @@ def systemdata_bidtable(children, systemdata, vars, last_bids_by_strain, depth):
                             h.desc = re.sub(s, d, h.desc)
 
                         prev_bid = last_bids_by_strain.pop(k, None)
-                        last_bids_by_strain[k] = Bid(bid)
+                        last_bids_by_strain[k] = bid
 
                         # Now the depth does not increase: we are just replacing a variable bid by a normal bid
                         systemdata_bidtable([h], systemdata, vars, last_bids_by_strain, depth)

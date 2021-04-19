@@ -256,7 +256,7 @@ The most powerful part of BML is the ability to write bidding tables easily. Let
 2N  Weak with 5-5 minors
 ```
 
-Pretty simple, right? A row is written according to the format <bid> <description>. Each bid may have sub-bids, by increasing the indentation (number of spaces). The text !c, !d, !h and !s will be converted to suit symbols when exported (and so will the bid names in the bid table).
+Pretty simple, right? A row is written according to the format &lt;bid&gt; &lt;description&gt;. Each bid may have sub-bids, by increasing the indentation (number of spaces). The text !c, !d, !h and !s will be converted to suit symbols when exported (and so will the bid names in the bid table).
 
 When writing bidding tables you may sometimes want to have a description with linebreaks. This can be done in BML by indenting the description lines at the same level. Here's an example:
 
@@ -299,11 +299,11 @@ opening bid 1C, m will be diamonds. And om is not possible.
 -   **&lt;digit&gt;M**: Defines a major suit, hence both &lt;digit&gt;H and &lt;digit&gt;S (not used already in the sequence).
 -   **&lt;digit&gt;oM**: Defines the other major suit, hence both &lt;digit&gt;H and &lt;digit&gt;S (but only if &lt;digit&gt;M is used before).
 
-You can use variable suits X, Y and Z where X < Y < Z. Here too they can be
+You can use variable suits X, Y and Z where X &lt; Y &lt; Z. Here too they can be
 used for suits **NOT** already used in the sequence (neither literally nor
 variable). So for instance if in a bidding table 2X, 1Y and 3Z are used then X
 may be clubs, Y hearts and Z spades. But not X diamonds and Y clubs since then
-Y < X.
+Y &lt; X.
 
 -   **&lt;digit&gt;X**: Defines &lt;digit&gt;C, &lt;digit&gt;D, &lt;digit&gt;H and &lt;digit&gt;S.
 -   **&lt;digit&gt;Y**: Defines &lt;digit&gt;C, &lt;digit&gt;D, &lt;digit&gt;H and &lt;digit&gt;S.
@@ -378,9 +378,9 @@ If you add #HIDE at the beginning of a row somewhere in the bidding table, the b
 
 ### Copy/Cut/Paste
 
-You could copy/cut sections of bidding tables. This is done by writing #COPY <name> or #CUT <name>. The <name> is later used when pasting the copy. The difference between #COPY and #CUT is that #COPY will preserve the copied rows, while #CUT will remove them (and hence they will not be parsed until pasted). Use #ENDCOPY or #ENDCUT to specify where the copying/cutting ends.
+You could copy/cut sections of bidding tables. This is done by writing #COPY &lt;name&gt; or #CUT &lt;name&gt;. The &lt;name&gt; is later used when pasting the copy. The difference between #COPY and #CUT is that #COPY will preserve the copied rows, while #CUT will remove them (and hence they will not be parsed until pasted). Use #ENDCOPY or #ENDCUT to specify where the copying/cutting ends.
 
-To paste a copied/cut section, use #PASTE <name>. #PASTE takes indentation into consideration, so for instance a #CUT may be done at the top level of the document and later pasted deep into a bidding table. You can also replace text in the copy when pasting, a somewhat complex but powerful tool. This is done by typing #PASTE <name> <target>=<replacement>. A paste may have several targets and replacements. Let's look at an example:
+To paste a copied/cut section, use #PASTE &lt;name&gt;. #PASTE takes indentation into consideration, so for instance a #CUT may be done at the top level of the document and later pasted deep into a bidding table. You can also replace text in the copy when pasting, a somewhat complex but powerful tool. This is done by typing #PASTE &lt;name&gt; &lt;target&gt;=&lt;replacement&gt;. A paste may have several targets and replacements. Let's look at an example:
 
 ```
 #CUT transfer
@@ -402,9 +402,9 @@ To paste a copied/cut section, use #PASTE <name>. #PASTE takes indentation into 
 
 By default it doesn't matter which seat you're in, or which vulnerability it is, when you bid. Full Disclosure, however, allows for different meanings of sequences depending on these factors.
 
-To change the vulnerability (for the forthcoming bidding tables) type #VUL <we><them>. Both <we> and <them> can be Y, N or 0: Yes, No or Doesn't matter. #VUL Y0 would mean that where vulnerable, but it doesn't matter if the opponents are.
+To change the vulnerability (for the forthcoming bidding tables) type #VUL &lt;we&gt;&lt;them&gt;. Both &lt;we&gt; and &lt;them&gt; can be Y, N or 0: Yes, No or Doesn't matter. #VUL Y0 would mean that where vulnerable, but it doesn't matter if the opponents are.
 
-Seat is changed in a similar way: #SEAT <seat>, where <seat> can be 0 (doesn't matter), 1, 2, 3, 4, 12 (first or second) or 34 (third or fourth).
+Seat is changed in a similar way: #SEAT &lt;seat&gt;, where &lt;seat&gt; can be 0 (doesn't matter), 1, 2, 3, 4, 12 (first or second) or 34 (third or fourth).
 
 
 <a id="org611b48c"></a>
@@ -522,7 +522,7 @@ If you want to write text which shouldn't be shown in the export, use `//comment
 
 ## Including other files
 
-It is possible to split your system notes into different files. To include another file in a document, use #INCLUDE <filename>. The filename may be a relative path. Let's say you have made a BML file for a multi opening, and placed it into a subfolder called "modules". You could now write #INCLUDE modules/multi.txt where you want the file to be inserted.
+It is possible to split your system notes into different files. To include another file in a document, use #INCLUDE &lt;filename&gt;. The filename may be a relative path. Let's say you have made a BML file for a multi opening, and placed it into a subfolder called "modules". You could now write #INCLUDE modules/multi.txt where you want the file to be inserted.
 
 
 <a id="org52b95c3"></a>

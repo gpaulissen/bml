@@ -1,0 +1,29 @@
+#VUL 00
+
+#SEAT 0
+
+1N
+  2C = PUP to 2!d
+    2D = Forced
+      P = Weak with !d
+      2H = TRF
+        2S
+          2N = 5+c !s, G/T
+          3C = !s & minor, G/T (%$#_{}~^\)
+          3D = !s & minor, G/T (%$#_{}~^\)
+1C
+  (1D)
+    2C = support
+    2D = cuebid
+    2H = weak jump
+    2S = weak jump
+  (1H)
+    2C = support
+    2D = forcing
+    2H = cuebid
+    2S = weak jump
+  (1S)
+    2C = support
+    2D = forcing
+    2H = forcing
+    2S = cuebid

@@ -90,10 +90,10 @@ def test_bml2latex():
 
 def test_bss2bml():
     print("")
-    for file in [f for f in DATA_FILES if f != 'example.bml']:
+    for file in DATA_FILES:
         try:
             print("Testing bss.bss2bml(%s)" % (file))
-            if file in ["example2.bml"]:
+            if file in ["example.bml"]:
                 logger.setLevel(logging.DEBUG)
             input_filename = join(DATA_DIR, file)
             output_filename = file[0:len(file) - 4] + '.bss'

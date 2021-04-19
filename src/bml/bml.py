@@ -264,9 +264,12 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
         # Matches <digit>[CDHSN], P, D and R, all possibly surrounded by ()
         dict = None
         bid = self.all_bids()[index]
+        we = True
+        # Our bid?
         m = re.search(r'\((.+)\)\Z', bid)
         if m:
             bid = m.group(1)
+            we = False
 
         if bid in ['P', 'D', 'R'] or re.match(r'[1-7][CDHSN]\Z', bid):
             dict = {'normal': True}
@@ -281,6 +284,7 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
             else:
                 assert bid in [EMPTY, ROOT], 'Last bid in "%s" must be "%s" or "%s"' % (bid, EMPTY, ROOT)
                 dict = {'normal': False, 'level': None, 'strain': None}
+        dict['we'] = we
         logger.debug("bid_type; bid: %s; dict: %s" % (self.bid, str(dict)))
         return dict
 

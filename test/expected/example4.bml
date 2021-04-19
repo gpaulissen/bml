@@ -1,0 +1,49 @@
+#VUL 00
+
+#SEAT 0
+
+(1N)
+  D = Strength, ca 15+
+  2C = At least 5-4 majors
+    (D)
+      P = 5+!c, suggestion to play
+      R = Asking for better/longer major
+      2D = 5+!d, suggestion to play
+    (P)
+      2D = Asking for better/longer major
+  2D = A weak major or a strong minor
+    (P)
+      2H = Pass/correct
+      2S = Pass/correct
+      2N = Asking
+  2H = Constructive
+  2S = Constructive
+  2N = 5-5 minors
+  3C = Preemptive
+  3D = Preemptive
+  3H = Preemptive
+  3S = Preemptive
+
+(1N)
+  P
+    (P)
+      D = Strength, ca 15+
+      2C = At least 5-4 majors
+        (D)
+          P = 5+!c, suggestion to play
+          R = Asking for better/longer major
+          2D = 5+!d, suggestion to play
+        (P)
+          2D = Asking for better/longer major
+      2D = A weak major or a strong minor
+        (P)
+          2H = Pass/correct
+          2S = Pass/correct
+          2N = Asking
+      2H = Constructive
+      2S = Constructive
+      2N = 5-5 minors
+      3C = Preemptive
+      3D = Preemptive
+      3H = Preemptive
+      3S = Preemptive

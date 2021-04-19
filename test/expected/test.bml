@@ -1,0 +1,60 @@
+#+TITLE: Precision club
+
+#+DESCRIPTION: Strong club system. Nebulous diamond and 5 card majors
+
+#VUL 00
+
+#SEAT 0
+
+1C = 3+ minor
+1D = 3+ minor
+1H = 5+ major
+1S = 5+ major
+1N = 15--17\nMay have 5M, 6m or 5-4 minors
+  2C = Stayman
+    2D = No 4 card major
+      2H = 5+!h, 4!s, invitational
+      2S = 5+!s, invitational
+      3H = Smolen (5+ cards in other major)
+      3S = Smolen (5+ cards in other major)
+    2H = 4+ suit
+    2S = 4+ suit
+    2N = 4-4 majors, minimum
+    3C = 4-4 majors, maximum
+  2D = Transfer
+    2H = Transfer accept
+    3H = Super accept
+  2H = Transfer
+    2S = Transfer accept
+    3S = Super accept
+2C = Strong and forcing
+  2D = Waiting
+2D = Weak
+  2N = Ogust
+2H = Weak
+  2N = Ogust
+2S = Weak
+  2N = Ogust
+2N = 20--21
+
+#VUL 00
+
+#SEAT 0
+
+(1N)
+  D = Strength, ca 15+
+  2C = At least 5-4 majors
+    (D)
+      P = 5+!c, suggestion to play
+      R = Asking for better/longer major
+      2D = 5+!d, suggestion to play
+    (P)
+      2D = Asking for better/longer major
+  2D = A weak major or a strong minor
+  2H = Constructive
+  2S = Constructive
+  2N = 5-5 minors
+  3C = Preemptive
+  3D = Preemptive
+  3H = Preemptive
+  3S = Preemptive

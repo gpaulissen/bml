@@ -1,18 +1,14 @@
-#+TITLE: 
-
-#+DESCRIPTION: 
-
 #VUL 00
 
 #SEAT 0
 
 1C
-    1D = Transfer. 4+ major, 0+ hcp
-    1H = Transfer. 4+ major, 0+ hcp
-    1S = INV+ with 5+!d / Negative NT
-    1N = Game forcing, 5+!c or balanced
-    2C = 5+!c, 5--9 hcp
-    2D = 6+ suit, 4--8 hcp
-    2H = 6+ suit, 4--8 hcp
-    2S = 6+ suit, 4--8 hcp
-    2N = Invitational
+  1D = Transfer. 4+ major, 0+ hcp
+  1H = Transfer. 4+ major, 0+ hcp
+  1S = INV+ with 5+!d / Negative NT
+  1N = Game forcing, 5+!c or balanced
+  2C = 5+!c, 5--9 hcp
+  2D = 6+ suit, 4--8 hcp
+  2H = 6+ suit, 4--8 hcp
+  2S = 6+ suit, 4--8 hcp
+  2N = Invitational

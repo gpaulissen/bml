@@ -1,0 +1,41 @@
+#VUL Y0
+
+#SEAT 0
+
+1N = 14--16
+  2C = Stayman
+    2D = No major
+    2N = 4-4 majors, minimum
+    3C = 4-4 majors, maximum
+  2D = Transfer
+  2H = Transfer
+  2S = Minor suit stayman
+  2N = Invitational
+
+#VUL N0
+
+#SEAT 12
+
+1N = 12--14
+  2C = Stayman
+    2D = No major
+    2N = 4-4 majors, minimum
+    3C = 4-4 majors, maximum
+  2D = Transfer
+  2H = Transfer
+  2S = Minor suit stayman
+  2N = Invitational
+
+#VUL N0
+
+#SEAT 34
+
+1N = 14--16
+  2C = Stayman
+    2D = No major
+    2N = 4-4 majors, minimum
+    3C = 4-4 majors, maximum
+  2D = Transfer
+  2H = Transfer
+  2S = Minor suit stayman
+  2N = Invitational

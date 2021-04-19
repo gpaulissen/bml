@@ -147,7 +147,7 @@ Summary is the system summary entered in the Define dialog when editing the conv
         assert m, "line (%s) does not match header record" % (line)
         self.file_type = m.group('file_type')
         self.system_name = m.group('system_name')
-        self.summary = m.group('summary')
+        self.summary = m.group('summary').rstrip()
         bml.logger.debug("file_type: %s; system_name: %s; summary: %s" % (self.file_type, self.system_name, self.summary))
         self.state_nr = self.state_nr + 1  # only one header
         return True
@@ -519,27 +519,47 @@ The Description string is whatever you entered under Description when you define
     def print_bml(self, output):
         bml.logger.debug("BssFile.print_bml(output=%s)" % (output))
         bml.logger.debug("parents=%s" % (self.parents))
-        output.write("#+TITLE: %s\n\n#+DESCRIPTION: %s\n" % (self.system_name, self.summary))
+
+        first = True
+        if self.system_name:
+            output.write("#+TITLE: %s\n\n" % (self.system_name))
+        if self.summary:
+            output.write("#+DESCRIPTION: %s\n\n" % (self.summary))
         for opener in ['', '*']:
             for seat in SEAT_DICT.keys():
                 for vul in VUL_DICT.keys():
                     parent = self.get_parent(opener, seat, vul, [])
                     if parent:
                         bml.logger.debug("# childs for %s: %s" % (parent, len(parent.children)))
-                        self.print_bidtable(output, parent, opener, seat, vul)
+                        if not first:
+                            output.write("\n")
+                        self.print_bidtable(output, 0, False, parent, "", opener, seat, vul)
+                        first = False
 
-    def print_bidtable(self, output, parent, opener=None, seat=None, vul=None):
-        bml.logger.debug("BssFile.print_bidtable(parent=%s; opener=%s; seat=%s; vul=%s)" % (parent, opener, seat, vul))
+    def print_bidtable(self, output, level, competitive, parent, header, opener=None, seat=None, vul=None):
+        bml.logger.debug("BssFile.print_bidtable(level=%s; competitive=%s; parent=%s; header=%s; opener=%s; seat=%s; vul=%s)" % (level, competitive, parent, header, opener, seat, vul))
         if vul:
-            output.write("\n#VUL %s\n\n" % (VUL_DICT[vul]))
+            output.write("#VUL %s\n\n" % (VUL_DICT[vul]))
         if seat:
             output.write("#SEAT %s\n\n" % (SEAT_DICT[seat]))
 
+        prev_c = None
         for c in parent.children:
-            # ignore passes without a description if it is the only bid in the list of children
-            if c.desc or c.bid not in ['P', '(P)'] or len(parent.children) > 1:
-                output.write("%s%s%s%s\n" % ("  " * (c.level() - 1), c.bid, ' = ' if c.desc else '', c.desc))
-            self.print_bidtable(output, c)
+            ignore_pass = True
+            # Repeat the header if the child bid is a P, D or R (length module 2 is 1) and the previous not.
+            if prev_c and len(c.bid) % 2 == 1 and len(prev_c.bid) % 2 == 0:
+                output.write("\n" + header)
+                ignore_pass = False
+            # ignore passes without a description if it is the only bid in the list of children (unless the header is repeated or there is competition)
+            line = ''
+            if competitive or not(ignore_pass) or c.desc or c.bid not in ['P', '(P)'] or len(parent.children) > 1:
+                line = "%s%s%s%s\n" % ("  " * level, c.bid, ' = ' if c.desc else '', c.desc)
+            else:
+                level -= 1
+            output.write(line)
+            bml.logger.debug("ignore_pass: %s; line: %s; prev_c: %s)" % (ignore_pass, line, prev_c))
+            self.print_bidtable(output, level + 1, competitive or (c.bid[0:1] == '(' and c.bid != '(P)'), c, header + line)
+            prev_c = c
 
 
 def bss2bml(input_spec: FileSpec, output_spec: FileSpec) -> None:
