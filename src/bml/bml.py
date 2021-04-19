@@ -284,6 +284,64 @@ Level is 0 for root and otherwise the indentation divided by the global indentat
         logger.debug("bid_type; bid: %s; dict: %s" % (self.bid, str(dict)))
         return dict
 
+    def restructure(self):
+        root = self
+        while root.parent:
+            root = root.parent
+
+        # The latex dirtree package states this:
+        # --------------------------------------
+        # There are two rules you must respect:
+        # 1. The first node (first child of root) must have the level one.
+        # 2. When you create a node, if the last node had level n, the created node
+        # must have a level between 2 and n + 1.
+        # --------------------------------------
+        # So this means that if there is more than one child of root
+        # this principle will be violated.
+        # We can solve this:
+        # a) If the first bid ends with a semi-colon or dash it is actually a continuation.
+        #    1 - In that case the first child should not have children and
+        #    2 - we will move root children 2 till the end to the children of root child 1.
+        # b) Otherwise (a table of opening bids for example).
+        #    1 - Now we just create a copy of root as the first child of root and
+        #    2 - the original children of root will be moved to the copy
+        #
+        # In both cases we have to:
+        # c) reparent all the children of the first non root node
+
+        if len(root.children) > 1:
+            intermediate = None
+            if root.children[0].bid[-1] in ";-":
+                # a)
+                intermediate = root.children[0]
+                # a1)
+                assert len(intermediate.children) == 0, "Bid %s should not have children" % (intermediate.bid)
+                intermediate.bid = intermediate.bid[0:len(intermediate.bid) - 1]  # GJP 2021-04-17 Why remove last character?
+                # a2)
+                intermediate.children = root.children[1:]
+            else:
+                # b)
+                # b1)
+                intermediate = Node(EMPTY, '', 0, root)
+                # b2)
+                intermediate.children = root.children
+
+            root.children = [intermediate]  # one left
+            # c)
+            for c in intermediate.children:
+                c.parent = intermediate
+
+            logger.debug("intermediate: %s" % (str(intermediate)))
+
+            assert intermediate.parent == root
+            assert len(root.children) == 1
+            assert root.children[0] == intermediate
+            assert intermediate.children[0].parent == intermediate
+            assert intermediate.level() == 1
+            assert intermediate.children[0].level() == 2
+
+        return root
+
 
 def create_bidtree(text, content):
     root = Node(ROOT, ROOT, -1)
@@ -373,57 +431,7 @@ def create_bidtree(text, content):
         # Only first line may contain a bidding history
         assert prev_lastnode == root or (bid.find('-') < 0 and bid.find(';') < 0)
 
-    # The latex dirtree package states this:
-    # --------------------------------------
-    # There are two rules you must respect:
-    # 1. The first node (first child of root) must have the level one.
-    # 2. When you create a node, if the last node had level n, the created node
-    # must have a level between 2 and n + 1.
-    # --------------------------------------
-    # So this means that if there is more than one child of root
-    # this principle will be violated.
-    # We can solve this:
-    # a) If the first bid ends with a semi-colon or dash it is actually a continuation.
-    #    1 - In that case the first child should not have children and
-    #    2 - we will move root children 2 till the end to the children of root child 1.
-    # b) Otherwise (a table of opening bids for example).
-    #    1 - Now we just create a copy of root as the first child of root and
-    #    2 - the original children of root will be moved to the copy
-    #
-    # In both cases we have to:
-    # c) reparent all the children of the first non root node
-
-    if len(root.children) > 1:
-        # (a)
-        intermediate = None
-        if root.children[0].bid[-1] in ";-":
-            intermediate = root.children[0]
-            # a1
-            assert len(intermediate.children) == 0, "Bid %s should not have children" % (intermediate.bid)
-            intermediate.bid = intermediate.bid[0:len(intermediate.bid) - 1]
-            # a2
-            intermediate.children = root.children[1:]
-        else:
-            # b1
-            intermediate = Node(EMPTY, '', 0, root)
-            # b2
-            intermediate.children = root.children
-
-        root.children = [intermediate]  # one left
-        # c
-        for c in intermediate.children:
-            c.parent = intermediate
-
-        logger.debug("intermediate: %s" % (str(intermediate)))
-
-        assert intermediate.parent == root
-        assert len(root.children) == 1
-        assert root.children[0] == intermediate
-        assert intermediate.children[0].parent == intermediate
-        assert intermediate.level() == 1
-        assert intermediate.children[0].level() == 2
-
-    return root
+    return root.restructure()
 
 
 class ContentType:

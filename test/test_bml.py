@@ -1,7 +1,6 @@
 from os import listdir
 from os.path import isfile, join, dirname
 
-import filecmp
 import logging
 
 from bml.bml import content_from_file, logger
@@ -17,13 +16,26 @@ TMP_DIR = join(dirname(__file__), 'tmp')
 EXPECTED_DIR = join(dirname(__file__), 'expected')
 
 
+def _filecmp(file1, file2):
+    with open(file1) as f1, open(file2) as f2:
+        for line1, line2 in zip(f1, f2):
+            line1 = line1.rstrip()
+            line2 = line2.rstrip()
+
+            if (not line1 and not line2) or line1 == line2:
+                pass
+            else:
+                return False
+    return True
+
+
 def _check(output_filename=None, output_filename_expected=None, content=None):
     if output_filename:
         assert isfile(output_filename), 'File %s must exist' % (output_filename)
     if output_filename_expected:
         assert isfile(output_filename_expected), 'Expected file %s must exist' % (output_filename_expected)
     if output_filename and output_filename_expected:
-        assert filecmp.cmp(output_filename, output_filename_expected), 'Files %s and %s must be the same' % (output_filename, output_filename_expected)
+        assert _filecmp(output_filename, output_filename_expected), 'Files %s and %s must be the same' % (output_filename, output_filename_expected)
     if content:
         assert len(content.nodes) > 0, 'Something must have been parsed'
 
@@ -81,7 +93,7 @@ def test_bss2bml():
     for file in [f for f in DATA_FILES if f != 'example.bml']:
         try:
             print("Testing bss.bss2bml(%s)" % (file))
-            if file == "example2.bml":
+            if file in ["example2.bml"]:
                 logger.setLevel(logging.DEBUG)
             input_filename = join(DATA_DIR, file)
             output_filename = file[0:len(file) - 4] + '.bss'
