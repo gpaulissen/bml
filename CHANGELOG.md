@@ -7,20 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0] - 2021-04-20
+
 ### Changed
-	- README enhanced for non-HTML tags like <bid> <description>.
-	- Variable suits also correctly translated for their bids.
-	- bss2bml utility added.
-	
+  - Added BSS syntax to README.
+  - README enhanced for non-HTML tags like <bid> <description>.
+  - Variable suits also correctly translated for their bids.
+  - bss2bml utility added.
+  
 ## [2.2.1] - 2021-04-15
 
 ### Changed
-	- README enhanced for variable suits.
+  - README enhanced for variable suits.
 
 ## [2.2.0] - 2021-04-15
 
 ### Changed
-	- Two More Variable Colours (issue #1)
+  - Two More Variable Colours (issue #1)
   - Things for newbies to do (issue #3)
   - Some characters have a special meaning for LaTeX (issue #8)
 

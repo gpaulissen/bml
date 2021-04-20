@@ -77,7 +77,7 @@ file is:
 A single header record
 Zero or one stock convention card records
 Zero or more bidding sequence records
-Zero or more include records
+Zero or more include (convention) records
 Zero or one defensive carding records
         """
 
@@ -157,6 +157,7 @@ Summary is the system summary entered in the Define dialog when editing the conv
 Stock Convention Card Record
 
 Format
+------
 $ <File Name>
 
 Description
@@ -425,7 +426,6 @@ In the case of the maximum length ('L'), the digits '0' to '7' are used to repre
 Description
 -----------
 The Description string is whatever you entered under Description when you defined the last bid in the bidding sequence.
-
         """
         bml.logger.debug("BssFile.parse_bidding_sequence(line=%s)" % (line))
         result = False
@@ -553,11 +553,15 @@ The Description string is whatever you entered under Description when you define
             # ignore passes without a description if it is the only bid in the list of children (unless the header is repeated or there is competition)
             line = ''
             if competitive or not(ignore_pass) or c.desc or c.bid not in ['P', '(P)'] or len(parent.children) > 1:
-                line = "%s%s%s%s\n" % ("  " * level, c.bid, ' = ' if c.desc else '', c.desc)
+                bid = "%s%s" % (" " * bml.args.indentation * level, c.bid)
+                if c.desc:
+                    bid += ' = '
+                    line = bid + c.desc.replace("\\n", "\n" + " " * len(bid)) + "\n"
+                else:
+                    line = bid + "\n"
+                output.write(line)
             else:
                 level -= 1
-            output.write(line)
-            bml.logger.debug("ignore_pass: %s; line: %s; prev_c: %s)" % (ignore_pass, line, prev_c))
             self.print_bidtable(output, level + 1, competitive or (c.bid[0:1] == '(' and c.bid != '(P)'), c, header + line)
             prev_c = c
 

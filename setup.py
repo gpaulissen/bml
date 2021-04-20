@@ -90,6 +90,7 @@ if __name__ == '__main__':
             'console_scripts':
             ['bml2bss = bml.bml2bss:main',
              'bml2html = bml.bml2html:main',
-             'bml2latex = bml.bml2latex:main'],
+             'bml2latex = bml.bml2latex:main',
+             'bss2bml = bss.bss2bml:main'],
         },
     )
