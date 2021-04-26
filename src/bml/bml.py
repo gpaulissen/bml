@@ -8,7 +8,7 @@ from contextlib import contextmanager
 import logging
 
 __all__ = ['parse_arguments', 'content_from_file', 'Node', 'ContentType',
-           'args', 'EMPTY', 'ROOT', 'logger']
+           'args', 'Args', 'EMPTY', 'ROOT', 'logger']
 
 # constants
 ROOT = 'root'
@@ -24,7 +24,7 @@ class Args:
     inputfile = None
     outputfile = None
 
-    def __init__(self, verbose=0, indentation=2, tree=False,
+    def __init__(self, verbose=0, indentation=2, tree=True,
                  include_external_files=True, inputfile='-', outputfile='-'):
         self.verbose = verbose
         self.indentation = indentation

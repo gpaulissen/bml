@@ -45,6 +45,7 @@ def latex_replace_suits_header(matchobj):
 def latex_bidtable(children, file, first=False):
     bid = None
     desc = None
+    EOL = '\n'
 
     for i in range(len(children)):
         c = children[i]
@@ -65,7 +66,10 @@ def latex_bidtable(children, file, first=False):
             bid = re.sub(r';(?=\S)', '; ', bid)
             bid = bid.replace('->', '$\\rightarrow$')
             dots = "........"[:-1 * len(bid.replace('\\B', ''))]
-            desc = latex_replace_characters(c.desc)
+            # Some characters have a special meaning for LaTeX (issue #8).
+            # Replace the backslash first otherwise it interferes with other LaTeX constructions.
+            # But before that we need to replace the \n (backslash and n) by another substring that later will be replace by a line feed
+            desc = latex_replace_characters(c.desc.replace('\\n', EOL))
         else:
             bid = "\\O"
             desc = None
@@ -76,11 +80,14 @@ def latex_bidtable(children, file, first=False):
 
         if desc:
             desc = re.sub(r'(![cdhs])([^!]?)', latex_replace_suits_desc, desc)
+            # Some characters have a special meaning for LaTeX (issue #8).
+            # Replace the backslash first otherwise it interferes with other LaTeX constructions.
+            # Now replace string EOL by a line feed
             if bml.args.tree:
-                desc = desc.replace('\\n', '\\\\\n')
+                desc = desc.replace(EOL, '\\\\\n')
                 file.write(dots + '\\begin{minipage}[t]{0.8\\textwidth}\n' + desc.replace('.', '{.}') + '\n\\end{minipage}')
             else:
-                desc = desc.replace('\\n', '\\\\\n\\>')
+                desc = desc.replace(EOL, '\\\\\n\\>')
                 file.write(' \\> ' + desc)
 
         if bml.args.tree:
@@ -181,6 +188,9 @@ def replace_truetype(matchobj):
 
 
 def latex_replace_characters(text):
+    # Some characters have a special meaning for LaTeX (issue #8).
+    # Replace the backslash first otherwise it interferes with other LaTeX constructions.
+    text = text.replace('\\', '\\textbackslash')
     text = text.replace('->', '$\\rightarrow$')
     # see https://tex.stackexchange.com/questions/34580/escape-character-in-latex
     # replace & % $ # _ { } ~ ^ \ by
@@ -189,8 +199,6 @@ def latex_replace_characters(text):
         text = text.replace(ch, '\\' + ch)
     text = text.replace('~', '\\textasciitilde')
     text = text.replace('^', '\\textasciicircum')
-    # do not replace the backslash since it interferes with other LaTeX constructions
-    # text = text.replace('\\', '\\textbackslash')
     text = re.sub(r'(?<=\s)"(\S[^"]*)"', replace_quotes, text, flags=re.DOTALL)
     text = re.sub(r'(?<=\s)\*(\S[^*]*)\*', replace_strong, text, flags=re.DOTALL)
     text = re.sub(r'(?<=\s)/(\S[^/]*)/', replace_italics, text, flags=re.DOTALL)
@@ -241,8 +249,10 @@ def to_latex(content, f):
     for c in content.nodes:
         content_type, text = c
         if content_type == bml.ContentType.PARAGRAPH:
-            text = re.sub(r'(![cdhs])([^!]?)', latex_replace_suits_desc, text)
+            # Some characters have a special meaning for LaTeX (issue #8).
+            # Replace characters (and thus backslash) before suits are replaced.
             text = latex_replace_characters(text)
+            text = re.sub(r'(![cdhs])([^!]?)', latex_replace_suits_desc, text)
             f.write(text + new_paragraph)
         elif content_type == bml.ContentType.BIDTABLE:
             if not text.export:

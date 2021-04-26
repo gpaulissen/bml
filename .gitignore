@@ -1,3 +1,4 @@
+.miktex
 *.pdf
 *.pyc
 auto/*
@@ -10,7 +11,6 @@ test/.cache/v/cache/lastfailed
 test/tmp/*
 *~
 src/bml/auto/bml.el
-
 develop-eggs
 dist
 src/*.egg-info
@@ -21,3 +21,5 @@ htmlcov
 .coverage
 *.log
 .mypy_cache
+build.bat
+build.sh

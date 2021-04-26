@@ -1,0 +1,535 @@
+\documentclass[a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{newcent}
+\usepackage{helvet}
+\usepackage{graphicx}
+\usepackage{dirtree}
+\usepackage[pdftex, pdfborder={0 0 0}]{hyperref}
+\frenchspacing
+
+\usepackage{txfonts} % For \varheartsuit and \vardiamondsuit
+\usepackage[usenames,dvipsnames]{color} % dvipsnames necessary to made PDFLaTeX work.
+\usepackage{enumerate}
+\usepackage{listliketab}
+\usepackage{latexsym} % \Box
+\usepackage{pbox} % \Box
+\usepackage{parskip} % line between paragraphs
+
+% suits
+
+%%% Colors
+
+\newcommand{\BC}{\textcolor{OliveGreen}{$\clubsuit$}}
+\newcommand{\BD}{\textcolor{RedOrange}{$\vardiamondsuit$}}
+\newcommand{\BH}{\textcolor{Red}{$\varheartsuit${}}}
+\newcommand{\BS}{\textcolor{Blue}{$\spadesuit${}}}
+
+%suits for pdf-friendly titles
+\newcommand{\pdfc}{\texorpdfstring{\BC{}}{C}}
+\newcommand{\pdfd}{\texorpdfstring{\BD{}}{D}}
+\newcommand{\pdfh}{\texorpdfstring{\BH{}}{H}}
+\newcommand{\pdfs}{\texorpdfstring{\BS{}}{S}}
+
+\newenvironment{bidtable}
+{\begin{tabbing}
+
+xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=\kill}
+{\end{tabbing} }%
+
+\newenvironment{bidding}%
+{\begin{tabbing}
+xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx \kill
+}{\end{tabbing} }%end bidding
+
+
+% writing hands
+\newcommand{\cards}[1]{\textsf{#1}}
+\newcommand{\spades}[1]{\BS\cards{#1}}
+\newcommand{\hearts}[1]{\BH\cards{#1}}
+\newcommand{\diamonds}[1]{\BD\cards{#1}}
+\newcommand{\clubs}[1]{\BC\cards{#1}}
+\newcommand{\void}{--}
+\newcommand{\hand}[4]{\spades{#1}\ \hearts{#2}\ \diamonds{#3} \clubs{#4}}
+\newcommand{\vhand}[4]{\spades{#1}\\\hearts{#2}\\\diamonds{#3}\\\clubs{#4}}
+
+% The \Box should always appear the same distance from the left margin
+\newcommand\onesuit[4]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+                & \cards{#2} \\%
+      \cards{#1}& $\Box$    & \cards{#3} \\%
+                & \cards{#4} %
+    \end{tabular}
+  \end{center}%
+}
+
+% A special command if the south hand is not shown to avoid whitespace
+\newcommand\onesuitenw[3]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}%
+                & \cards{#2} \\%
+      \cards{#1}& $\Box$    & \cards{#3}%
+    \end{tabular}%
+  \end{center}%
+}
+
+\newcommand\dealdiagram[5]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+      \pbox{20cm}{\small #5}& \pbox{20cm}{#2} \\%
+      \pbox{20cm}{#1}& $\Box$    & \pbox{20cm}{#3} \\%
+                & \pbox{20cm}{#4} %
+    \end{tabular}
+  \end{center}%
+}
+
+\newcommand\dealdiagramenw[4]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+      \pbox{20cm}{\small #4}& \pbox{20cm}{#2} \\%
+      \pbox{20cm}{#1}& $\Box$    & \pbox{20cm}{#3} \\%
+    \end{tabular}
+  \end{center}%
+}
+
+\newcommand\dealdiagramew[2]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+      \pbox{20cm}{#1}& $\Box$    & \pbox{20cm}{#2} \\%
+    \end{tabular}
+  \end{center}%
+}
+
+\title{BML 5542}
+\author{Erik Sjostrand}
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+
+Welcome to BML! This is a normal paragraph, and above we can see
+the \texttt{\#+TITLE}, the \texttt{\#+AUTHOR} and the \texttt{\#+DESCRIPTION} of the file. \texttt{\#+TITLE} is
+the name of the system and \texttt{\#+DESCRIPTION} is a \emph{short summary of} how
+the system works. \texttt{\#+AUTHOR} is self explanatory. \texttt{Introduction} above,
+``headed by an asterisk'', sets a section at the first level (the second
+level would have two asterisks etc).
+\bigbreak
+In the paragraph above I encapsulated some words between equal
+signs. This means that they will show up as a monospaced font when
+exported to HTML or LaTeX. It is also possible to make words (or
+sentences) \textbf{strong or bold} or \emph{in italics}.
+\bigbreak
+The system presented in this example file is meant to show many
+of the current features in BML. Let's start with the basic opening
+structure of the system:
+\bigbreak
+\
+\dirtree{%%
+ .1 \O. 
+ .2 1\BC......\begin{minipage}[t]{0.8\textwidth}
+2+\BC {.} Natural or balanced
+\end{minipage}. 
+ .2 1\BD......\begin{minipage}[t]{0.8\textwidth}
+4+ suit, unbalanced
+\end{minipage}. 
+ .2 1M......\begin{minipage}[t]{0.8\textwidth}
+5+ suit
+\end{minipage}. 
+ .2 2\BC......\begin{minipage}[t]{0.8\textwidth}
+20--21 bal / Any game force
+\end{minipage}. 
+ .2 2\BD......\begin{minipage}[t]{0.8\textwidth}
+6+\BH\ or 6+\BS , 5--9 hcp
+\end{minipage}. 
+ .2 2\BH\BS.....\begin{minipage}[t]{0.8\textwidth}
+6+ suit, 10--13 hcp
+\end{minipage}. 
+ .2 2NT.....\begin{minipage}[t]{0.8\textwidth}
+22--24
+\end{minipage}. 
+ .2 3X......\begin{minipage}[t]{0.8\textwidth}
+Preemptive
+\end{minipage}. 
+ .2 3NT.....\begin{minipage}[t]{0.8\textwidth}
+Gambling
+\end{minipage}. 
+}
+\bigbreak
+The above is an example of a bidding table; the reason why BML is
+more suited for bridge system notes than other markup languages. You
+start by writing the bid, then a number of whitespaces, and then the
+description of the bid. Simple! C is for clubs, D for diamonds, H
+for hearts, S for spades and N for no trump. There are also some
+special cases which you could use, above we use 1M (1H and 1S), 2HS
+(2H and 2S) and 3X (3C, 3D, 3H and 3S). We'll see more of these
+later.
+\bigbreak
+The reason why the 1NT opening is left out above is a secret for
+now!
+\bigbreak
+\section{The 1\pdfc\ opening}
+
+You might have noticed the \BC\ in the title of this section? This
+will be replaced by a club suit symbol when exported. The same is
+true for \BD , \BH\ and \BS\ (but these will be converted to diamonds,
+hearts and spades, of course).
+\bigbreak
+In this example we use transfer responses to the 1\BC\ opening:
+\bigbreak
+\
+\dirtree{%%
+ .1 1\BC--. 
+ .2 1red....\begin{minipage}[t]{0.8\textwidth}
+Transfer{.} 4+ major, 0+ hcp
+\end{minipage}. 
+ .2 1\BS......\begin{minipage}[t]{0.8\textwidth}
+INV+ with 5+\BD\ / Negative NT
+\end{minipage}. 
+ .2 1NT.....\begin{minipage}[t]{0.8\textwidth}
+Game forcing, 5+\BC\ or balanced
+\end{minipage}. 
+ .2 2\BC......\begin{minipage}[t]{0.8\textwidth}
+5+\BC , 5--9 hcp
+\end{minipage}. 
+ .2 2X......\begin{minipage}[t]{0.8\textwidth}
+6+ suit, 4--8 hcp
+\end{minipage}. 
+ .2 2NT.....\begin{minipage}[t]{0.8\textwidth}
+Invitational
+\end{minipage}. 
+}
+\bigbreak
+By writing 1C--- we define that the following bids should be
+continuations to the sequence 1C. We could write 1C- or 1C-- too,
+the number of dashes only matters to the way the output looks. Also
+note the 1red response, this defines both 1D and 1H.
+\bigbreak
+\subsection{After a transfer}
+
+This section has two asterisks, meaning it will be at level two
+(so its a subsection). You might also have noticed that the
+paragraphs, the sections and the bidtables are separated by a
+blank line. This is important in BML, as the blank line is used to
+separate elements.
+\bigbreak
+\
+\dirtree{%%
+ .1 1\BC-1\BD. 
+ .2 1\BH......\begin{minipage}[t]{0.8\textwidth}
+Minimum with 2--3\BH 
+\end{minipage}. 
+ .3 1\BS......\begin{minipage}[t]{0.8\textwidth}
+4+\BH , 4\BS , at most invitational
+\end{minipage}. 
+ .3 1NT.....\begin{minipage}[t]{0.8\textwidth}
+Sign off
+\end{minipage}. 
+ .3 2\BC......\begin{minipage}[t]{0.8\textwidth}
+Puppet to 2\BD 
+\end{minipage}. 
+ .4 2\BD......\begin{minipage}[t]{0.8\textwidth}
+Forced
+\end{minipage}. 
+ .5 2\BH......\begin{minipage}[t]{0.8\textwidth}
+Mildly invitational with 5\BH 
+\end{minipage}. 
+ .5 2\BS......\begin{minipage}[t]{0.8\textwidth}
+Invitational, 5+\BH\ and 4\BS 
+\end{minipage}. 
+ .5 2NT.....\begin{minipage}[t]{0.8\textwidth}
+Strongly invitational with 5\BH 
+\end{minipage}. 
+ .5 3\BC......\begin{minipage}[t]{0.8\textwidth}
+Invitational with 4\BH\ and 5+\BC 
+\end{minipage}. 
+ .5 3\BD......\begin{minipage}[t]{0.8\textwidth}
+Invitational with 4\BH\ and 5+\BD 
+\end{minipage}. 
+ .5 3\BH......\begin{minipage}[t]{0.8\textwidth}
+6\BH , about 11--12 hcp
+\end{minipage}. 
+ .3 2\BD......\begin{minipage}[t]{0.8\textwidth}
+Artificial game force
+\end{minipage}. 
+ .3 2\BH......\begin{minipage}[t]{0.8\textwidth}
+6+\BH , about 9--10 hcp
+\end{minipage}. 
+ .2 1\BS......\begin{minipage}[t]{0.8\textwidth}
+5+\BC , 4+\BS , unlimited
+\end{minipage}. 
+ .2 1NT.....\begin{minipage}[t]{0.8\textwidth}
+17--19 bal, 2--3\BH 
+\end{minipage}. 
+ .2 2\BC......\begin{minipage}[t]{0.8\textwidth}
+5+\BC , unbal, 0--2\BH , 0--3\BS 
+\end{minipage}. 
+ .2 2\BD......\begin{minipage}[t]{0.8\textwidth}
+Reverse
+\end{minipage}. 
+ .2 2\BH......\begin{minipage}[t]{0.8\textwidth}
+Minimum, 4\BH 
+\end{minipage}. 
+ .2 2\BS......\begin{minipage}[t]{0.8\textwidth}
+16+ hcp, 5+\BC\ and 4+\BH 
+\end{minipage}. 
+ .3 3\BD......\begin{minipage}[t]{0.8\textwidth}
+Retransfer
+\end{minipage}. 
+ .4 3\BH. 
+ .5 3\BS......\begin{minipage}[t]{0.8\textwidth}
+Cue bid, slam interest
+\end{minipage}. 
+ .5 4\BC\BD.....\begin{minipage}[t]{0.8\textwidth}
+Cue bid, slam interest
+\end{minipage}. 
+ .5 4\BH......\begin{minipage}[t]{0.8\textwidth}
+To play
+\end{minipage}. 
+ .3 3\BH......\begin{minipage}[t]{0.8\textwidth}
+Invitational
+\end{minipage}. 
+ .3 3\BS......\begin{minipage}[t]{0.8\textwidth}
+Splinter
+\end{minipage}. 
+ .3 4\BC\BD.....\begin{minipage}[t]{0.8\textwidth}
+Splinter
+\end{minipage}. 
+ .3 4\BH......\begin{minipage}[t]{0.8\textwidth}
+To play
+\end{minipage}. 
+ .2 2NT.....\begin{minipage}[t]{0.8\textwidth}
+16+ hcp, 6+\BC {.} 18+ if 3\BH 
+\end{minipage}. 
+ .3 3\BC......\begin{minipage}[t]{0.8\textwidth}
+Suggestion to play
+\end{minipage}. 
+ .3 3\BD......\begin{minipage}[t]{0.8\textwidth}
+Relay
+\end{minipage}. 
+ .4 3\BH......\begin{minipage}[t]{0.8\textwidth}
+3\BH , 18+ hcp
+\end{minipage}. 
+ .3 3\BH......\begin{minipage}[t]{0.8\textwidth}
+Game forcing with 6+\BH 
+\end{minipage}. 
+ .2 3\BC......\begin{minipage}[t]{0.8\textwidth}
+15--17 hcp, 6+\BC\ and 3\BH 
+\end{minipage}. 
+ .3 3\BD......\begin{minipage}[t]{0.8\textwidth}
+Retransfer
+\end{minipage}. 
+ .3 3\BH......\begin{minipage}[t]{0.8\textwidth}
+Invitational
+\end{minipage}. 
+ .2 3\BD......\begin{minipage}[t]{0.8\textwidth}
+17--19 bal, 4\BH 
+\end{minipage}. 
+ .3 3\BH......\begin{minipage}[t]{0.8\textwidth}
+To play
+\end{minipage}. 
+ .2 3\BH......\begin{minipage}[t]{0.8\textwidth}
+13--15 hcp, good hand, 5+\BC\ and 4\BH 
+\end{minipage}. 
+ .3 3NT.....\begin{minipage}[t]{0.8\textwidth}
+Asking for singleton
+\end{minipage}. 
+}
+\bigbreak
+This bidding table shows a couple of new features. The most
+prominent is the ability to add continuations directly in the
+table, by using whitespaces. We also see another example of
+appending bids to an existing sequence, by using 1C-1D; in the
+beginning.
+\bigbreak
+\section{Defense to 1NT}
+
+Defining bidding when both sides bid is a little bit more tricky,
+since you have to write all the bids (even passes). The opponents'
+bid are indicated by encapsulating them in parentheses. P is used
+for Pass, D for Double and R for Redouble.
+\bigbreak
+\
+\dirtree{%%
+ .1 (1NT)--. 
+ .2 Dbl.....\begin{minipage}[t]{0.8\textwidth}
+Strength, ca 15+
+\end{minipage}. 
+ .2 2\BC......\begin{minipage}[t]{0.8\textwidth}
+At least 5-4 majors
+\end{minipage}. 
+ .3 (D). 
+ .4 Pass....\begin{minipage}[t]{0.8\textwidth}
+5+\BC , suggestion to play
+\end{minipage}. 
+ .4 Rdbl....\begin{minipage}[t]{0.8\textwidth}
+Asking for better/longer major
+\end{minipage}. 
+ .4 2\BD......\begin{minipage}[t]{0.8\textwidth}
+5+\BD , suggestion to play
+\end{minipage}. 
+ .3 (P). 
+ .4 2\BD......\begin{minipage}[t]{0.8\textwidth}
+Asking for better/longer major
+\end{minipage}. 
+ .2 2\BD......\begin{minipage}[t]{0.8\textwidth}
+A weak major or a strong minor
+\end{minipage}. 
+ .3 (P). 
+ .4 2\BH......\begin{minipage}[t]{0.8\textwidth}
+Pass/correct
+\end{minipage}. 
+ .4 2\BS......\begin{minipage}[t]{0.8\textwidth}
+Pass/correct
+\end{minipage}. 
+ .4 2NT.....\begin{minipage}[t]{0.8\textwidth}
+Asking
+\end{minipage}. 
+ .2 2\BH\BS.....\begin{minipage}[t]{0.8\textwidth}
+Constructive
+\end{minipage}. 
+ .2 2NT.....\begin{minipage}[t]{0.8\textwidth}
+5-5 minors
+\end{minipage}. 
+ .2 3X......\begin{minipage}[t]{0.8\textwidth}
+Preemptive
+\end{minipage}. 
+}
+\bigbreak
+Note that the above is only for a direct overcall over 1NT. To
+define the above also when balancing we will use BML's
+copy/cut/paste functionality in order to show that you do not
+have to write it all over again. Take a look below (only visible in
+the \emph{example.txt} or generated Full Disclosure file, not in HTML or LaTeX):
+\bigbreak
+First we used the \texttt{\#COPY} command; the text between \texttt{\#COPY} and \texttt{\#ENDCOPY}
+got put into a sort of clipboard, with the tag nt\_defense which we
+specified. To paste it into the bidding table above we used
+the \texttt{\#PASTE} command. We also used the \texttt{\#HIDE} option. When this is
+present in a bidding table the table will be exported to Full
+Disclosure, but not to HTML or LaTeX.
+\bigbreak
+You could also include other BML-files into your main file by using
+the \texttt{\#INCLUDE} command. Just type \texttt{\#INCLUDE <filename>} and the entire
+file will be inserted at the point where you wrote the command. This
+is a useful way to separate your system into modules, or perhaps
+just to make it more manageable.
+\bigbreak
+It is also possible to add continuations when the opponents
+interfere:
+\bigbreak
+\
+\dirtree{%%
+ .1 1\BC-(1\BD)--. 
+ .2 Dbl.....\begin{minipage}[t]{0.8\textwidth}
+4+\BH 
+\end{minipage}. 
+ .2 1\BH......\begin{minipage}[t]{0.8\textwidth}
+4+\BS 
+\end{minipage}. 
+ .2 1\BS......\begin{minipage}[t]{0.8\textwidth}
+INV+ with 5+\BD\ / Negative NT
+\end{minipage}. 
+ .2 1NT.....\begin{minipage}[t]{0.8\textwidth}
+Game forcing, 5+\BC\ or balanced
+\end{minipage}. 
+ .2 2\BC......\begin{minipage}[t]{0.8\textwidth}
+5+\BC , 5--9 hcp
+\end{minipage}. 
+ .2 2X......\begin{minipage}[t]{0.8\textwidth}
+6+ suit, 4--8 hcp
+\end{minipage}. 
+ .2 2NT.....\begin{minipage}[t]{0.8\textwidth}
+Invitational
+\end{minipage}. 
+}
+\bigbreak
+\section{The 1NT opening}
+
+Here's the reason why I left out the 1NT opening earlier: I will
+show how to make sequences dependant on vulnerability and
+seat. This will be a bit messy, so hold tight!
+\bigbreak
+We start by cutting our NT-module, since this will be used on all
+NT-openings. \texttt{\#CUT} is similar to the \texttt{\#COPY} command, but using \texttt{\#CUT}
+means that it isn't parsed as a bidding table until it is pasted.
+\bigbreak
+The \texttt{\#VUL} command is used to set the vulnerability. It takes an
+argument of two characters, each can be Y, N or 0. The first
+character asks if we are vulnerable and the second asks if our
+opponents are vulnerable. Y is for Yes, N is for No and 0 means that
+it doesn't matter.
+\bigbreak
+The \texttt{\#SEAT} command sets the seat in which the bid should be valid. 0
+means that the seat doesn't matter (all seats), 12 means first or
+second and 34 means third or fourth. 1--4 could also be used.
+\bigbreak
+So when we're not vulnerable we open 1NT 12--14 in 1st and 2nd seat.
+\bigbreak
+But in third and fourth seat it is 14--16.
+\bigbreak
+When we're vulnerable we always open 1NT 14--16.
+\bigbreak
+\
+\dirtree{%%
+ .1 1NT--. 
+ .2 2\BC......\begin{minipage}[t]{0.8\textwidth}
+Stayman
+\end{minipage}. 
+ .3 2\BD......\begin{minipage}[t]{0.8\textwidth}
+No major
+\end{minipage}. 
+ .3 2NT.....\begin{minipage}[t]{0.8\textwidth}
+4-4 majors, minimum
+\end{minipage}. 
+ .3 3\BC......\begin{minipage}[t]{0.8\textwidth}
+4-4 majors, maximum
+\end{minipage}. 
+ .2 2red....\begin{minipage}[t]{0.8\textwidth}
+Transfer
+\end{minipage}. 
+ .2 2\BS......\begin{minipage}[t]{0.8\textwidth}
+Minor suit stayman
+\end{minipage}. 
+ .2 2NT.....\begin{minipage}[t]{0.8\textwidth}
+Invitational
+\end{minipage}. 
+}
+\bigbreak
+We've been using the \texttt{\#HIDE} command, so we don't have to see our
+NT-system over and over again. This time tough we paste it
+normally, so that we see it at least once.
+\bigbreak
+\section{Lists}
+
+I'd like to show you how to make lists in BML. It is pretty
+simple:
+\bigbreak
+\begin{itemize}
+\item Here's a list!
+
+\item With a couple of
+
+\item Items in it
+
+\end{itemize}
+\bigbreak
+You could also make ordered lists:
+\bigbreak
+\begin{enumerate}
+\item This is ordered
+
+\item Just add numbers
+
+\item To each item
+
+\end{enumerate}
+\bigbreak
+\end{document}

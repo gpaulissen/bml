@@ -1,0 +1,294 @@
+\documentclass[a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{newcent}
+\usepackage{helvet}
+\usepackage{graphicx}
+\usepackage{dirtree}
+\usepackage[pdftex, pdfborder={0 0 0}]{hyperref}
+\frenchspacing
+
+\usepackage{txfonts} % For \varheartsuit and \vardiamondsuit
+\usepackage[usenames,dvipsnames]{color} % dvipsnames necessary to made PDFLaTeX work.
+\usepackage{enumerate}
+\usepackage{listliketab}
+\usepackage{latexsym} % \Box
+\usepackage{pbox} % \Box
+\usepackage{parskip} % line between paragraphs
+
+% suits
+
+%%% Colors
+
+\newcommand{\BC}{\textcolor{OliveGreen}{$\clubsuit$}}
+\newcommand{\BD}{\textcolor{RedOrange}{$\vardiamondsuit$}}
+\newcommand{\BH}{\textcolor{Red}{$\varheartsuit${}}}
+\newcommand{\BS}{\textcolor{Blue}{$\spadesuit${}}}
+
+%suits for pdf-friendly titles
+\newcommand{\pdfc}{\texorpdfstring{\BC{}}{C}}
+\newcommand{\pdfd}{\texorpdfstring{\BD{}}{D}}
+\newcommand{\pdfh}{\texorpdfstring{\BH{}}{H}}
+\newcommand{\pdfs}{\texorpdfstring{\BS{}}{S}}
+
+\newenvironment{bidtable}
+{\begin{tabbing}
+
+xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx\=\kill}
+{\end{tabbing} }%
+
+\newenvironment{bidding}%
+{\begin{tabbing}
+xxxxxx\=xxxxxx\=xxxxxx\=xxxxxx \kill
+}{\end{tabbing} }%end bidding
+
+
+% writing hands
+\newcommand{\cards}[1]{\textsf{#1}}
+\newcommand{\spades}[1]{\BS\cards{#1}}
+\newcommand{\hearts}[1]{\BH\cards{#1}}
+\newcommand{\diamonds}[1]{\BD\cards{#1}}
+\newcommand{\clubs}[1]{\BC\cards{#1}}
+\newcommand{\void}{--}
+\newcommand{\hand}[4]{\spades{#1}\ \hearts{#2}\ \diamonds{#3} \clubs{#4}}
+\newcommand{\vhand}[4]{\spades{#1}\\\hearts{#2}\\\diamonds{#3}\\\clubs{#4}}
+
+% The \Box should always appear the same distance from the left margin
+\newcommand\onesuit[4]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+                & \cards{#2} \\%
+      \cards{#1}& $\Box$    & \cards{#3} \\%
+                & \cards{#4} %
+    \end{tabular}
+  \end{center}%
+}
+
+% A special command if the south hand is not shown to avoid whitespace
+\newcommand\onesuitenw[3]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}%
+                & \cards{#2} \\%
+      \cards{#1}& $\Box$    & \cards{#3}%
+    \end{tabular}%
+  \end{center}%
+}
+
+\newcommand\dealdiagram[5]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+      \pbox{20cm}{\small #5}& \pbox{20cm}{#2} \\%
+      \pbox{20cm}{#1}& $\Box$    & \pbox{20cm}{#3} \\%
+                & \pbox{20cm}{#4} %
+    \end{tabular}
+  \end{center}%
+}
+
+\newcommand\dealdiagramenw[4]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+      \pbox{20cm}{\small #4}& \pbox{20cm}{#2} \\%
+      \pbox{20cm}{#1}& $\Box$    & \pbox{20cm}{#3} \\%
+    \end{tabular}
+  \end{center}%
+}
+
+\newcommand\dealdiagramew[2]%
+{%
+  \begin{center}%
+    \begin{tabular}{>{\hfill}p{3cm}cp{3cm}}
+      \pbox{20cm}{#1}& $\Box$    & \pbox{20cm}{#2} \\%
+    \end{tabular}
+  \end{center}%
+}
+
+\title{Precision club}
+\author{John Smith}
+\begin{document}
+\maketitle
+\tableofcontents
+
+\
+\dirtree{%%
+ .1 \O. 
+ .2 1m......\begin{minipage}[t]{0.8\textwidth}
+3+ minor
+\end{minipage}. 
+ .2 1M......\begin{minipage}[t]{0.8\textwidth}
+5+ major
+\end{minipage}. 
+ .2 1NT.....\begin{minipage}[t]{0.8\textwidth}
+15--17\\
+May have 5M, 6m or 5-4 minors
+\end{minipage}. 
+ .2 2\BC......\begin{minipage}[t]{0.8\textwidth}
+Strong and forcing
+\end{minipage}. 
+ .2 2X......\begin{minipage}[t]{0.8\textwidth}
+Weak
+\end{minipage}. 
+ .2 2NT.....\begin{minipage}[t]{0.8\textwidth}
+20--21
+\end{minipage}. 
+}
+\bigbreak
+\
+\dirtree{%%
+ .1 1NT-2\BC. 
+ .2 2\BD......\begin{minipage}[t]{0.8\textwidth}
+No 4 card major
+\end{minipage}. 
+ .3 2\BH......\begin{minipage}[t]{0.8\textwidth}
+5+\BH , 4\BS , invitational
+\end{minipage}. 
+ .3 2\BS......\begin{minipage}[t]{0.8\textwidth}
+5+\BS , invitational
+\end{minipage}. 
+ .3 3\BH\BS.....\begin{minipage}[t]{0.8\textwidth}
+Smolen (5+ cards in other major)
+\end{minipage}. 
+ .2 2\BH\BS.....\begin{minipage}[t]{0.8\textwidth}
+4+ suit
+\end{minipage}. 
+ .2 2NT.....\begin{minipage}[t]{0.8\textwidth}
+4-4 majors, minimum
+\end{minipage}. 
+ .2 3\BC......\begin{minipage}[t]{0.8\textwidth}
+4-4 majors, maximum
+\end{minipage}. 
+}
+\bigbreak
+\
+\dirtree{%%
+ .1 \O. 
+ .2 2\BC......\begin{minipage}[t]{0.8\textwidth}
+Strong, forcing
+\end{minipage}. 
+ .3 2\BD......\begin{minipage}[t]{0.8\textwidth}
+Waiting
+\end{minipage}. 
+ .2 2X......\begin{minipage}[t]{0.8\textwidth}
+Weak
+\end{minipage}. 
+ .3 2NT.....\begin{minipage}[t]{0.8\textwidth}
+Ogust
+\end{minipage}. 
+}
+\bigbreak
+\
+\dirtree{%%
+ .1 (1NT)--. 
+ .2 Dbl.....\begin{minipage}[t]{0.8\textwidth}
+Strength, ca 15+
+\end{minipage}. 
+ .2 2\BC......\begin{minipage}[t]{0.8\textwidth}
+At least 5-4 majors
+\end{minipage}. 
+ .3 (D). 
+ .4 Pass....\begin{minipage}[t]{0.8\textwidth}
+5+\BC , suggestion to play
+\end{minipage}. 
+ .4 Rdbl....\begin{minipage}[t]{0.8\textwidth}
+Asking for better/longer major
+\end{minipage}. 
+ .4 2\BD......\begin{minipage}[t]{0.8\textwidth}
+5+\BD , suggestion to play
+\end{minipage}. 
+ .3 (P). 
+ .4 2\BD......\begin{minipage}[t]{0.8\textwidth}
+Asking for better/longer major
+\end{minipage}. 
+ .2 2\BD......\begin{minipage}[t]{0.8\textwidth}
+A weak major or a strong minor
+\end{minipage}. 
+ .2 2\BH\BS.....\begin{minipage}[t]{0.8\textwidth}
+Constructive
+\end{minipage}. 
+ .2 2NT.....\begin{minipage}[t]{0.8\textwidth}
+5-5 minors
+\end{minipage}. 
+ .2 3X......\begin{minipage}[t]{0.8\textwidth}
+Preemptive
+\end{minipage}. 
+}
+\bigbreak
+\
+\dirtree{%%
+ .1 1NT--. 
+ .2 2\BC......\begin{minipage}[t]{0.8\textwidth}
+Stayman
+\end{minipage}. 
+ .2 2\BD......\begin{minipage}[t]{0.8\textwidth}
+Transfer
+\end{minipage}. 
+ .3 2\BH......\begin{minipage}[t]{0.8\textwidth}
+Transfer accept
+\end{minipage}. 
+ .3 3\BH......\begin{minipage}[t]{0.8\textwidth}
+Super accept
+\end{minipage}. 
+ .2 2\BH......\begin{minipage}[t]{0.8\textwidth}
+Transfer
+\end{minipage}. 
+ .3 2\BS......\begin{minipage}[t]{0.8\textwidth}
+Transfer accept
+\end{minipage}. 
+ .3 3\BS......\begin{minipage}[t]{0.8\textwidth}
+Super accept
+\end{minipage}. 
+}
+\bigbreak
+\section{The 1\pdfc\ opening}
+
+Opening 1\BC\ shows at least 16+ hcp, and is forcing. The
+continuation is fairly natural.
+\bigbreak
+Some hands might be upgraded to 1\BC\ due to distribution, but
+wildly distributional hands might also be downgraded to avoid
+problems if the opponents preempt.
+\bigbreak
+\subsection{The 1\pdfd\ negative}
+
+Responding 1\BD\ shows a hand which doesn't have enough values to
+establish a game force.
+\bigbreak
+\dealdiagram
+{\vhand{QT}{KQxxxx}{KTx}{Jx}}
+{\vhand{Kxx}{T9}{xxx}{Q987x}}
+{\vhand{Jx}{AJxxx}{AJx}{KTx}}
+{\vhand{A987xx}{\void}{Q9xx}{Axx}}
+{Board 35\\North / None\\4\BS X by South\\Lead \BH K}
+
+\dealdiagram
+{\vhand{QT}{KQxxxx}{KTx}{Jx}}
+{\vhand{Kxx}{T9}{xxx}{Q987x}}
+{\vhand{Jx}{AJxxx}{AJx}{KTx}}
+{\vhand{A987xx}{\void}{Q9xx}{Axx}}
+{Board 35\\North / None\\4\BS X by South\\Lead \BH K}
+
+\begin{itemize}
+\item The first item in an unordered list
+
+\item The second item
+
+\item Etc..
+
+\end{itemize}
+\bigbreak
+\begin{enumerate}
+\item The first item in an ordered list
+
+\item The second item
+
+\item Etc..
+
+\end{enumerate}
+\bigbreak
+/Here's/ \textbf{an} \texttt{example} (italic, bold, monospace)
+\bigbreak
+\end{document}

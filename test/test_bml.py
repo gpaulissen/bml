@@ -1,9 +1,7 @@
 from os import listdir
 from os.path import isfile, join, dirname
 
-import logging
-
-from bml.bml import content_from_file, logger
+from bml import bml
 from bml.bss import bml2bss
 from bml.html import bml2html
 from bml.latex import bml2latex
@@ -44,7 +42,7 @@ def test_content_from_file():
     print("")
     for file in DATA_FILES:
         print("Testing content_from_file(%s)" % (file))
-        content = content_from_file(join(DATA_DIR, file))
+        content = bml.content_from_file(join(DATA_DIR, file))
         _check(content=content)
     return
 
@@ -53,14 +51,11 @@ def test_bml2bss():
     print("")
     for file in DATA_FILES:
         print("Testing bml2bss(%s)" % (file))
-        if file == "example.bml":
-            logger.setLevel(logging.DEBUG)
         output_filename = file[0:len(file) - 4] + '.bss'
         output_filename_expected = join(EXPECTED_DIR, output_filename)
         output_filename = join(TMP_DIR, output_filename)
         content = bml2bss(join(DATA_DIR, file), output_filename)
         _check(output_filename, output_filename_expected, content)
-    logger.setLevel(logging.INFO)
     return
 
 
@@ -71,8 +66,18 @@ def test_bml2html():
         output_filename = file[0:len(file) - 4] + '.htm'
         output_filename_expected = join(EXPECTED_DIR, output_filename)
         output_filename = join(TMP_DIR, output_filename)
+        bml.args = bml.Args(tree=False)
         content = bml2html(join(DATA_DIR, file), output_filename)
         _check(output_filename, output_filename_expected, content)
+        # test tree
+        if file in ["example.bml", "test.bml"]:
+            print("Testing bml2html(%s) (tree)" % (file))
+            output_filename = file[0:len(file) - 4] + '-tree.htm'
+            output_filename_expected = join(EXPECTED_DIR, output_filename)
+            output_filename = join(TMP_DIR, output_filename)
+            bml.args = bml.Args(tree=True)
+            content = bml2html(join(DATA_DIR, file), output_filename)
+            _check(output_filename, output_filename_expected, content)
     return
 
 
@@ -83,8 +88,18 @@ def test_bml2latex():
         output_filename = file[0:len(file) - 4] + '.tex'
         output_filename_expected = join(EXPECTED_DIR, output_filename)
         output_filename = join(TMP_DIR, output_filename)
+        bml.args = bml.Args(tree=False)
         content = bml2latex(join(DATA_DIR, file), output_filename)
         _check(output_filename, output_filename_expected, content)
+        # test tree
+        if file in ["example.bml", "test.bml"]:
+            print("Testing bml2latex(%s) (tree)" % (file))
+            output_filename = file[0:len(file) - 4] + '-tree.tex'
+            output_filename_expected = join(EXPECTED_DIR, output_filename)
+            output_filename = join(TMP_DIR, output_filename)
+            bml.args = bml.Args(tree=True)
+            content = bml2latex(join(DATA_DIR, file), output_filename)
+            _check(output_filename, output_filename_expected, content)
     return
 
 
@@ -93,8 +108,6 @@ def test_bss2bml():
     for file in DATA_FILES:
         try:
             print("Testing bss.bss2bml(%s)" % (file))
-            if file in ["example.bml"]:
-                logger.setLevel(logging.DEBUG)
             input_filename = join(DATA_DIR, file)
             output_filename = file[0:len(file) - 4] + '.bss'
             output_filename_expected = join(EXPECTED_DIR, output_filename)
@@ -110,13 +123,11 @@ def test_bss2bml():
         except Exception as e:
             print("ERROR for input file %s" % (input_filename))
             raise e
-    logger.setLevel(logging.INFO)
     return
 
 
 if __name__ == '__main__':
-    from bml.bml import args
-    args.verbose = 1
+    bml.args.verbose = 1
     test_content_from_file()
     test_bml2bss()
     test_bml2html()

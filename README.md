@@ -1,9 +1,5 @@
 - [BML - Bridge Bidding Markup Language](#org115d667)
 - [Using the BML converters](#org89d0d39)
-  - [Installation using PyPI](#installation_using_pypi)
-  - [Installation from source](#installation_from_source)
-    - [Download and install](#download_and_install)
-    - [Test](#test)
   - [Help](#help)
     - [bml2bss](#bml2bss)
     - [bml2html](#bml2html)
@@ -76,49 +72,12 @@ create a first draft of a .bml file.
 
 # Using the BML converters
 
-You need Python version 3 or higher in order to use the BML converters. Get it
-from <http://www.python.org> or, even better, use
-[Miniconda](https://docs.conda.io/en/latest/miniconda.html) so you can have
-easily several versions of a Python environment.
+See the [BML Installation
+Guide](https://gpaulissen.github.io/blog/bml-installation) for how to install
+the converters of BML.
 
-<a id="installation_using_pypi"></a>
-
-## Installation using PyPI
-
-To install the BML converters, issue this command from a command line:
-
-```
-$ pip install bridge-markup
-```
-
-<a id="installation_from_source"></a>
-
-## Installation from source
-
-<a id="download_and_install"></a>
-
-### Download and install
-
-```
-$ git clone https://github.com/gpaulissen/bml.git
-$ pip install -e .
-```
-
-<a id="test"></a>
-
-### Test
-
-To run the tests from the development version you can use the py.test command:
-
-```
-$ py.test
-```
-
-You may need to install the required test packages first:
-
-```
-$ pip install -r test_requirements.txt
-```
+After the installation the BML converters are available on your system and you
+can use them most easily using a command prompt.
 
 <a id="help"></a>
 
@@ -130,8 +89,10 @@ $ pip install -r test_requirements.txt
 
 Convert to Bridge Base Online BSS format. See **Full Disclosure** above.
 
+Open a command prompt and issue:
+
 ```
-$ bml2bss -h
+bml2bss -h
 ```
 
 You should see at least:
@@ -157,8 +118,10 @@ optional arguments:
 
 Convert to HTML format. See **HTML** above.
 
+Open a command prompt and issue:
+
 ```
-$ bml2html -h
+bml2html -h
 ```
 
 You should see at least:
@@ -199,8 +162,10 @@ sheet should be present.
 
 Convert to LaTeX format. See **LaTeX** above.
 
+Open a command prompt and issue:
+
 ```
-$ bml2latex -h
+bml2latex -h
 ```
 
 You should see at least:
@@ -238,8 +203,10 @@ the bml.tex at some point where LaTeX can find it.
 
 Convert BSS to BML format. See **BML** above.
 
+Open a command prompt and issue:
+
 ```
-$ bss2bml -h
+bss2bml -h
 ```
 
 You should see at least:
