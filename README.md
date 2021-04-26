@@ -5,6 +5,7 @@
     - [bml2html](#bml2html)
     - [bml2latex](#bml2latex)
     - [bss2bml](#bss2bml)
+    - [latexmk](#latexmk)
 - [BML Syntax](#orgb7edaf0)
   - [Editor](#editor)
   - [Bidding tables](#org7d04bc7)
@@ -225,6 +226,33 @@ optional arguments:
                         the output file (- is stdout)
   -v, --verbose         increase output verbosity
 ```
+
+<a id="latexmk"></a>
+
+### latexmk
+
+This program (not part of BML) lets you convert LaTeX (.tex) file to a PDF (or other file types).
+
+Open a command prompt and issue this command to get help:
+
+```
+latexmk -h
+```
+
+To generate PDFs from every .tex files found in the current directory you just issue:
+
+```
+latexmk -pdf
+```
+
+To generate file /tmp/test.pdf from file test.tex, you just issue:
+
+```
+latexmk -pdf -output-directory=/tmp test.tex
+```
+
+The installation of this program that belongs to LaTeX is covered by the [BML Installation
+Guide](https://gpaulissen.github.io/blog/bml-installation).
 
 <a id="orgb7edaf0"></a>
 

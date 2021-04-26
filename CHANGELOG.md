@@ -10,8 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.4.0] - 2021-04-26
 
 ### Changed
-  - Installation removed from README.
+  - Installation moved from README to my blog site.
   - Testing tree generation for HTML and LaTeX.
+  - Added latexmk to README.
   
 ## [2.3.0] - 2021-04-20
 
