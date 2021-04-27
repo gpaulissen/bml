@@ -307,7 +307,7 @@ def systemdata_bidtable(children, systemdata, vars, last_bids_by_strain, depth):
                     if bid and bid['level']:
                         level = bid['level']
                         strain = bid['strain']
-                        bml.logger.warning('Could not find a bid (%s%s) (seq=%s; vars=%s)' % (level, strain, Sequence(c), vars))
+                        bml.logger.info('Could not find a bid (%s%s) (seq=%s; vars=%s)' % (level, strain, Sequence(c), vars))
 
             else:
                 assert c.all_bids()[-1] == bml.EMPTY, 'Bid (%s) must be empty' % (c.bid)

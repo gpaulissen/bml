@@ -126,6 +126,19 @@ def test_bss2bml():
     return
 
 
+def test_makedepend():
+    print("")
+    for file in ['example.bml', 'test.bml']:
+        print("Testing bml.makedepend(%s)" % (file))
+        input_filename = join(DATA_DIR, file)
+        output_filename = file[0:len(file) - 4] + '.mk'
+        output_filename_expected = join(EXPECTED_DIR, output_filename)
+        output_filename = join(TMP_DIR, output_filename)
+        bml.makedepend(input_filename, output_filename)
+        _check(output_filename, output_filename_expected)
+    return
+
+
 if __name__ == '__main__':
     bml.args.verbose = 1
     test_content_from_file()
@@ -133,3 +146,4 @@ if __name__ == '__main__':
     test_bml2html()
     test_bml2latex()
     test_bss2bml()
+    test_makedepend()

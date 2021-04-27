@@ -91,6 +91,7 @@ if __name__ == '__main__':
             ['bml2bss = bml.bml2bss:main',
              'bml2html = bml.bml2html:main',
              'bml2latex = bml.bml2latex:main',
+             'bml_makedepend = bml.bml_makedepend:main',
              'bss2bml = bss.bss2bml:main'],
         },
     )
