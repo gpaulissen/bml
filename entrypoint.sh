@@ -3,7 +3,7 @@ if [ -z "${UID}" ]; then
     exec "$@"
 else
     GID=${GID:-${UID}}
-    groupadd -g $GID -o host_user
-    useradd --shell /bin/bash -u $UID -g $GID -o -c "" -Md /host_user host_user
+    addgroup --gid $GID host_user
+    adduser --disabled-password --gecos "" --ingroup host_user --no-create-home --uid $UID host_user
     exec su-exec host_user "$@"
 fi

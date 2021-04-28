@@ -24,12 +24,12 @@ COPY . .
 # 2) install BML and test that the executables are there
 # 3) test that they are there
 # 4) generate some PDFs to test a complete LaTeX installation
+# 5) modify permissions for entrypoint.sh
 RUN tlmgr install dirtree listliketab parskip pbox txfonts &&\
-		pip3 install -e . &&\
-		which bml2bss bml2html bml2latex bss2bml bml_makedepend &&\
-		cd /bml/test/expected && ls -1 example*.tex && touch example*.tex && make -f /bml/bml.mk example.pdf example-tree.pdf
-
-RUN chmod 755 /bml/entrypoint.sh && ls -l /bml/entrypoint.sh
+    pip3 install -e . &&\
+    which bml2bss bml2html bml2latex bss2bml bml_makedepend &&\
+    cd /bml/test/expected && ls -1 example*.tex && touch example*.tex && make -f /bml/bml.mk example.pdf example-tree.pdf && rm example*.pdf &&\
+    chmod -R 755 /bml/entrypoint.sh
 
 ENTRYPOINT ["/bml/entrypoint.sh"]
 
