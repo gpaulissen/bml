@@ -19,7 +19,7 @@ ENV PATH="${PATH}:/root/bin"
 WORKDIR /bml
 
 COPY . .
-
+    
 # 1) install missing LaTeX packages
 # 2) install BML and test that the executables are there
 # 3) test that they are there
@@ -29,10 +29,12 @@ RUN tlmgr install dirtree listliketab parskip pbox txfonts &&\
 		which bml2bss bml2html bml2latex bss2bml bml_makedepend &&\
 		cd /bml/test/expected && ls -1 example*.tex && touch example*.tex && make -f /bml/bml.mk example.pdf example-tree.pdf
 
+RUN chmod 755 /bml/entrypoint.sh && ls -l /bml/entrypoint.sh
+
 ENTRYPOINT ["/bml/entrypoint.sh"]
 
 # This is the place where input files are expected and where we run make from
 WORKDIR /bml/files
 
-# Default target
+# Default command
 CMD ["make", "-f", "/bml/bml.mk", "help"]

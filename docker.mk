@@ -17,7 +17,7 @@ PYTHON = python
 VERSION = $(shell $(PYTHON) __about__.py)
 
 # docker CMD arguments
-CMD = all
+CMD = make -f /bml/bml.mk help
 
 # Where can we find the BML files? 
 BML_FILES = $(shell perl -MFile::Spec -e 'print File::Spec->canonpath(File::Spec->rel2abs(q(test/data)))')
