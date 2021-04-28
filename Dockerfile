@@ -1,48 +1,38 @@
-FROM miktex/miktex:latest
+#FROM miktex/miktex:latest
 #FROM ubuntu:latest
-#FROM node:alpine
+FROM node:alpine
 
 LABEL Description="Dockerized BML" Vendor="Gert-Jan Paulissen"
 
-RUN    apt-get update &&\ 
-    	 apt-get install -y --no-install-recommends \ 
-							 python3 \
-							 python3-pip \
-							 python3-setuptools \
-			 # smoke tests
-  		 && make --version \
-  		 && perl --version \
-  		 && python3 --version \
-  		 && pip3 --version \
-  		 && mpm --version
+# Install perl, wget and libraries needed for TinyTeX (https://yihui.org/tinytex/)
+# Install python3
+RUN apk update &&\
+    apk upgrade &&\
+    apk add --no-cache perl wget fontconfig freetype gnupg make python3 py3-pip py3-setuptools su-exec
+
+# Install TinyTex in a separate RUN due to the 'wget ... | sh' construction
+RUN wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" | sh
+
+ENV PATH="${PATH}:/root/bin"
 
 # This is bml root directory
 WORKDIR /bml
 
 COPY . .
 
-# install BML and test that the executables are there
-RUN pip3 install -e . && \
-		which bml2bss bml2html bml2latex bss2bml bml_makedepend
+# 1) install missing LaTeX packages
+# 2) install BML and test that the executables are there
+# 3) test that they are there
+# 4) generate some PDFs to test a complete LaTeX installation
+RUN tlmgr install dirtree listliketab parskip pbox txfonts &&\
+		pip3 install -e . &&\
+		which bml2bss bml2html bml2latex bss2bml bml_makedepend &&\
+		cd /bml/test/expected && ls -1 example*.tex && touch example*.tex && make -f /bml/bml.mk example.pdf example-tree.pdf
 
-RUN    miktexsetup finish \
-    && initexmf --admin --set-config-value=[MPM]AutoInstall=1
-
-RUN    mpm --admin --install=expl3 || true
-
-RUN    mpm --admin --update-db \
-    && initexmf --admin --update-fndb
-		
-# generate some PDFs to have a complete MiKTeX installation
-RUN cd /bml/test/expected && \
-		make -i -f /bml/bml.mk example.pdf example-tree.pdf && \
-		make -f /bml/bml.mk clean && \
-		find / \( -name dirtree.sty -o -name pdflatex.log \) -ls
-
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/bml/entrypoint.sh"]
 
 # This is the place where input files are expected and where we run make from
-WORKDIR /miktex/work
+WORKDIR /bml/files
 
 # Default target
-CMD ["help"]
+CMD ["make", "-f", "/bml/bml.mk", "help"]

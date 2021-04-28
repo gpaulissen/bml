@@ -63,11 +63,11 @@ all: .depend $(OUTPUT_FILES) ## Build all output files.
 help: ## This help.
 	@perl -ne 'printf(qq(%-30s  %s\n), $$1, $$2) if (m/^([a-zA-Z_-]+):.*##\s*(.*)$$/)' $(MAKEFILE_LIST)
 
-docker-info: ## Show various Docker container information like current directory, contents of /miktext/work and /miktex/.miktext, environment variables.
+docker-info: ## Show various Docker container information like current directory, contents of /bml, environment variables.
 	@echo "Current directory: `pwd`"
-	@echo "Contents of /miktex: `find /miktex -print`"
+	@echo "Contents of /bml: `find /bml -print`"
 	@echo "Location of latexmk.pl: `find / -name latexmk.pl -print 2>$(NOWHERE)`"
-	@for e in mpm latexmk initexmf; do echo "Executable $$e: `which $$e`"; done
+	@for e in latexmk; do echo "Executable $$e: `which $$e`"; done
 	@set
 
 depend: .depend ## Generate dependency include file.

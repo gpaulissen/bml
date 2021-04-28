@@ -19,24 +19,22 @@ VERSION = $(shell $(PYTHON) __about__.py)
 # docker CMD arguments
 CMD = all
 
-# MiKTeX settings
-MIKTEX_WORK = $(shell perl -MFile::Spec -e 'print File::Spec->canonpath(File::Spec->rel2abs(q(test/data)))')
+# Where can we find the BML files? 
+BML_FILES = $(shell perl -MFile::Spec -e 'print File::Spec->canonpath(File::Spec->rel2abs(q(test/data)))')
 
 ifeq '$(USERPROFILE)' ''
 
 # Linux / Mac OS X
 
-MIKTEX_LOCAL = $(HOME)/.miktex
-MIKTEX_GID = $(shell id -g)
-MIKTEX_UID = $(shell id -u)
+GID = $(shell id -g)
+UID = $(shell id -u)
 
 else
 
 # Windows
 
-MIKTEX_LOCAL = $(shell perl -MFile::Spec -e 'print File::Spec->catfile($$ENV{LOCALAPPDATA}, q(MiKTeX))')
-MIKTEX_GID = 1000
-MIKTEX_UID = 1000
+GID = 1000
+UID = 1000
 
 endif
 
@@ -67,13 +65,12 @@ build-nc: ## Build the container without caching.
 
 DOCKER_RUN_FLAGS := -i -t --rm
 
-run: ## Run container on port configured in `config.env` using CMD variable as the make command line and MIKTEX_WORK as the work directory and MIKTEX_LOCAL as local MiKTeX package directory.
+run: ## Run container on port configured in `config.env` using CMD variable as the make command line and BML_FILES as the BML files directory.
 	$(DOCKER) run $(DOCKER_RUN_FLAGS) \
 --env-file=./config.env \
--v$(MIKTEX_WORK):/miktex/work \
--v$(MIKTEX_LOCAL):/miktex/.miktex \
--e MIKTEX_GID=$(MIKTEX_GID) \
--e MIKTEX_UID=$(MIKTEX_UID) \
+-v$(BML_FILES):/bml/files \
+-e GID=$(GID) \
+-e UID=$(UID) \
 -p=$(PORT):$(PORT) \
 --name="$(APP_NAME)" \
 $(APP_NAME) \
