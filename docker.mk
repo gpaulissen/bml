@@ -26,15 +26,15 @@ ifeq '$(USERPROFILE)' ''
 
 # Linux / Mac OS X
 
-GID = $(shell id -g)
 UID = $(shell id -u)
+GID = $(shell id -g)
 
 else
 
 # Windows
 
-GID = 1000
 UID = 1000
+GID = 1000
 
 endif
 
@@ -69,11 +69,11 @@ run: ## Run container on port configured in `config.env` using CMD variable as t
 	$(DOCKER) run $(DOCKER_RUN_FLAGS) \
 --env-file=./config.env \
 -v$(BML_FILES):/bml/files \
--e GID=$(GID) \
 -e UID=$(UID) \
+-e GID=$(GID) \
 -p=$(PORT):$(PORT) \
 --name="$(APP_NAME)" \
-$(APP_NAME) \
+"$(APP_NAME)" \
 $(CMD)
 
 up: build run ## Run container on port configured in `config.env` (Alias to run).
