@@ -42,7 +42,8 @@ BML_MAKEDEPEND_FLAGS = $(BML_FLAGS)
 
 # LaTeX executable/flags
 LATEXMK := latexmk
-LATEXMK_FLAGS := -pdf
+LATEXMK_FLAGS := -pdf -verbose -latexoption=-verbose
+#LATEXMK_FLAGS := -pdf
 
 # Input files
 INPUT_FILES := $(wildcard *.bml)
@@ -61,6 +62,13 @@ all: .depend $(OUTPUT_FILES) ## Build all output files.
 
 help: ## This help.
 	@perl -ne 'printf(qq(%-30s  %s\n), $$1, $$2) if (m/^([a-zA-Z_-]+):.*##\s*(.*)$$/)' $(MAKEFILE_LIST)
+
+docker-info: ## Show various Docker container information like current directory, contents of /miktext/work and /miktex/.miktext, environment variables.
+	@echo "Current directory: `pwd`"
+	@echo "Contents of /miktex: `find /miktex -print`"
+	@echo "Location of latexmk.pl: `find / -name latexmk.pl -print 2>$(NOWHERE)`"
+	@for e in mpm latexmk initexmf; do echo "Executable $$e: `which $$e`"; done
+	@set
 
 depend: .depend ## Generate dependency include file.
 
@@ -87,8 +95,12 @@ depend: .depend ## Generate dependency include file.
 %.mk: %.bml
 	@$(BML_MAKEDEPEND) $(BML_MAKEDEPEND_FLAGS) -o $@ $< 
 
-clean: ## Cleanup output files and dependency include file.
-	@$(RM_F) .depend $(OUTPUT_FILES) $(MK_FILES)
-	@-$(LATEXMK) -C -f $(LATEX_FILES) 2>$(NOWHERE)
+clean: ## Cleanup output files.
+	@-$(LATEXMK) -C -f -verbose -latexoption=-verbose $(wildcard *.tex) # 2>$(NOWHERE)
+	@$(RM_F) $(wildcard *.pdf)
+
+realclean: ## Cleanup (temporary) output files and dependency include files.
+	@-$(LATEXMK) -C -f -verbose -latexoption=-verbose $(wildcard *.tex) # 2>$(NOWHERE)
+	@$(RM_F) .depend $(wildcard *.bss *.htm *.tex *.pdf *.mk)
 
 .PHONY: all help depend clean

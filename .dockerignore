@@ -1,6 +1,7 @@
 *.env
 docker.mk
 README-docker.md
+.git
 
 # From .gitignore
 auto/*
@@ -24,3 +25,5 @@ htmlcov
 .miktex
 .depend
 *.fdb_latexmk
+test/data/*.mk
+test/expected/*.mk

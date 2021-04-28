@@ -22,3 +22,5 @@ htmlcov
 .miktex
 .depend
 *.fdb_latexmk
+test/data/*.mk
+test/expected/*.mk

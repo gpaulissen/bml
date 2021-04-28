@@ -12,7 +12,7 @@ from distutils.core import setup
 # To prevent importing about and thereby breaking the coverage info we use this
 # exec hack
 about = {}
-with open('__about__.py') as fp:
+with open('__about__.py', mode='r', encoding="utf-8") as fp:
     exec(fp.read(), about)
 
 
@@ -47,10 +47,10 @@ if sys.argv[-1] == 'info':
 
 
 if __name__ == '__main__':
-    with open('README.md') as f:
+    with open('README.md', mode='r', encoding="utf-8") as f:
         readme = f.read()
 
-    with open('CHANGELOG.md') as f:
+    with open('CHANGELOG.md', mode='r', encoding="utf-8") as f:
         changes = f.read()
 
     setup(
