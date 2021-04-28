@@ -1,15 +1,17 @@
-*.pdf
-*.pyc
+*.env
+docker.mk
+README-docker.md
+
+# From .gitignore
 auto/*
-.cache/v/cache/lastfailed
-test/.cache/v/cache/lastfailed
+.cache
+test/.cache
 *.aux
 *.log
 *.out
 *.toc
-test/tmp/*
+test/tmp
 *~
-src/bml/auto/bml.el
 develop-eggs
 dist
 src/*.egg-info

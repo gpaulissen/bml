@@ -17,7 +17,7 @@ else
 endif
 
 ifeq ($(detected_OS),Windows)
-    RM_EGGS = pushd $(CONDA_PREFIX) && del /s/p $(PROJECT).egg-link $(PROJECT)-nspkg.pth
+    RM_EGGS = pushd $(CONDA_PREFIX) && del /s/q $(PROJECT).egg-link $(PROJECT)-nspkg.pth
 else
     RM_EGGS = cd $(CONDA_PREFIX) && find . \( -name $(PROJECT).egg-link -o -name $(PROJECT)-nspkg.pth \) -exec rm -i {} \;
 endif

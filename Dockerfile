@@ -43,25 +43,22 @@ RUN    apt-get update \
   		 && pip3 --version \
   		 && mpm --version
 
-RUN pip3 install bridge-markup
-
 WORKDIR /bml
 
-# Note: copy bml.mk and test/expected/*.tex first to this docker directory
-COPY bml.mk *.tex .
+COPY . .
 
-# Let latexmk do its work.
-RUN make -f bml.mk BML2LATEX_FILES=`ls -1 *.tex` all
+# 1) install BML and test that the executables are there
+# 2) Let latexmk do its work.
+# 3) Unset AutoInstall for MiKTeX
+RUN pip3 install -e . && which bml2bss bml2html bml2latex bss2bml bml_makedepend && \
+    make -f bml.mk BML2LATEX_FILES="`ls -1 test/expected/*.tex`" all && \
+		initexmf --admin --set-config-value=[MPM]AutoInstall=0
 
-ENTRYPOINT ["make", "-f", "/bml/bml.mk"]
-
-RUN groupadd bml && useradd bml -g bml
+ENTRYPOINT ["entrypoint.sh", "echo", "make", "-f", "/bml/bml.mk"]
 
 WORKDIR /bml/files
 
-RUN chown -R bml:bml /bml
-
-RUN chmod 755 /bml
+RUN groupadd bml && useradd bml -g bml && chown -R bml:bml /bml && chmod -R 755 /bml
 
 USER bml:bml
 

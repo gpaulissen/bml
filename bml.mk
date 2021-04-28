@@ -57,15 +57,12 @@ OUTPUT_FILES := $(BSS_FILES) $(HTM_FILES) $(LATEX_FILES) $(PDF_FILES)
 # Dependency files
 MK_FILES  := $(patsubst %.bml, %.mk, $(INPUT_FILES))
 
-# target: all - Build all output files.
-all: .depend $(OUTPUT_FILES)
+all: .depend $(OUTPUT_FILES) ## Build all output files.
 
-# target: help - Display callable targets.
-help:
-	@perl -ne "foreach (m/^# target: (.+)/) { print; print qq(\n) }" $(MAKEFILE_LIST)
+help: ## This help.
+	@perl -ne 'printf(qq(%-30s  %s\n), $$1, $$2) if (m/^([a-zA-Z_-]+):.*##\s*(.*)$$/)' $(MAKEFILE_LIST)
 
-# target: depend - Generate dependency include file.
-depend: .depend
+depend: .depend ## Generate dependency include file.
 
 .depend:  $(MK_FILES)
 	@$(CAT) $? 1>$@ 2>$(NOWHERE)
@@ -90,8 +87,7 @@ depend: .depend
 %.mk: %.bml
 	@$(BML_MAKEDEPEND) $(BML_MAKEDEPEND_FLAGS) -o $@ $< 
 
-# target: clean - Cleanup output files and dependency include file.
-clean:
+clean: ## Cleanup output files and dependency include file.
 	@$(RM_F) .depend $(OUTPUT_FILES) $(MK_FILES)
 	@-$(LATEXMK) -C -f $(LATEX_FILES) 2>$(NOWHERE)
 
