@@ -39,7 +39,7 @@ USER bml
 # 1) Install missing LaTeX packages (by looking at errors from next statement)
 # 2) Generate some PDFs to test a complete LaTeX installation
 RUN tlmgr install dirtree listliketab parskip pbox txfonts &&\
-    latexmk -pdf -output-directory=/tmp /bml/test/expected/example*.tex
+    latexmk -pdf -output-directory=/tmp /bml/test/expected/example.tex /bml/test/expected/example-tree.tex
 
 ENTRYPOINT ["/bml/entrypoint.sh"]
 
