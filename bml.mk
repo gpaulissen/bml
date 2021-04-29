@@ -52,13 +52,13 @@ INPUT_FILES := $(wildcard *.bml)
 BSS_FILES    := $(patsubst %.bml, %.bss, $(INPUT_FILES))
 HTM_FILES 	 := $(patsubst %.bml, %.htm, $(INPUT_FILES))
 LATEX_FILES  := $(patsubst %.bml, %.tex, $(INPUT_FILES))
-PDF_FILES    := $(patsubst %.bml, %.pdf, $(LATEX_FILES))
+PDF_FILES    := $(patsubst %.tex, %.pdf, $(LATEX_FILES))
 OUTPUT_FILES := $(BSS_FILES) $(HTM_FILES) $(LATEX_FILES) $(PDF_FILES)
 
 # Dependency files
 MK_FILES     := $(patsubst %.bml, %.mk, $(INPUT_FILES))
 
-all: .depend $(OUTPUT_FILES) ## Build all output files.
+all: $(OUTPUT_FILES) ## Build all output files.
 
 help: ## This help.
 	@perl -ne 'printf(qq(%-30s  %s\n), $$1, $$2) if (m/^([a-zA-Z_-]+):.*##\s*(.*)$$/)' $(MAKEFILE_LIST)
@@ -70,12 +70,12 @@ docker-info: ## Show various Docker container information like current directory
 	@for e in latexmk; do echo "Executable $$e: `which $$e`"; done
 	@set
 
-depend: .depend ## Generate dependency include file.
+depend: bml_includes.mk ## Generate dependency include file.
 
-.depend:  $(MK_FILES)
+bml_includes.mk:  $(MK_FILES)
 	@$(CAT) $? 1>$@ 2>$(NOWHERE)
 
--include .depend
+-include bml_includes.mk
 
 # These are the pattern matching rules. In addition to the automatic
 # variables used here, the variable $* that matches whatever % stands for
@@ -100,6 +100,6 @@ clean: ## Cleanup output files.
 	@$(RM_F) $(wildcard *.bss *.htm *.tex *.pdf)
 
 distclean: clean ## Runs clean first and then cleans up dependency include files. 
-	@$(RM_F) .depend $(wildcard *.mk)
+	@$(RM_F) bml_includes.mk $(wildcard *.mk)
 
 .PHONY: all help depend clean

@@ -9,6 +9,7 @@ PROJECT = bridge-markup
 # OS specific section
 ifeq '$(findstring ;,$(PATH))' ';'
     detected_OS := Windows
+    HOME = $(USERPROFILE)
 else
     detected_OS := $(shell uname 2>/dev/null || echo Unknown)
     detected_OS := $(patsubst CYGWIN%,Cygwin,$(detected_OS))
@@ -16,17 +17,23 @@ else
     detected_OS := $(patsubst MINGW%,MSYS,$(detected_OS))
 endif
 
-ifeq ($(detected_OS),Windows)
-    RM_EGGS = pushd $(CONDA_PREFIX) && del /s/q $(PROJECT).egg-link $(PROJECT)-nspkg.pth
+ifdef CONDA_PREFIX
+    home = $(CONDA_PREFIX)
 else
-    RM_EGGS = cd $(CONDA_PREFIX) && find . \( -name $(PROJECT).egg-link -o -name $(PROJECT)-nspkg.pth \) -exec rm -i {} \;
+    home = $(HOME)
+endif
+
+ifeq ($(detected_OS),Windows)
+    RM_EGGS = pushd $(home) && del /s/q $(PROJECT).egg-link $(PROJECT)-nspkg.pth
+else
+    RM_EGGS = { cd $(home) && find . \( -name $(PROJECT).egg-link -o -name $(PROJECT)-nspkg.pth \) -print -exec rm -i "{}" \; ; } 2>/dev/null
 endif
 
 .PHONY: clean install test dist distclean upload
 
 clean:
 	$(PYTHON) setup.py clean --all
-	$(RM_EGGS)
+	-$(RM_EGGS)
 	$(PYTHON) -Bc "import pathlib; [p.unlink() for p in pathlib.Path('.').rglob('*.py[co]')]"
 	$(PYTHON) -Bc "import pathlib; [p.rmdir() for p in pathlib.Path('.').rglob('__pycache__')]"
 	$(PYTHON) -Bc "import shutil; import os; [shutil.rmtree(d) for d in ['.pytest_cache', '.mypy_cache', 'dist', 'htmlcov', '.coverage'] if os.path.isdir(d)]"
