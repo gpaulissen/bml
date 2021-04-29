@@ -21,20 +21,22 @@ WORKDIR /bml
 COPY . .
     
 # 1) install missing LaTeX packages
-# 2) install BML and test that the executables are there
-# 3) test that they are there
-# 4) generate some PDFs to test a complete LaTeX installation
-# 5) modify permissions for entrypoint.sh
+# 2) generate some PDFs to test a complete LaTeX installation
+# 3) install BML and test that the executables are there
+# 4) test that they are there
+# 5) create user bml and modify permissions for /bml
 RUN tlmgr install dirtree listliketab parskip pbox txfonts &&\
+    latexmk -pdf -output-directory=/tmp /bml/test/expected/*.tex &&\
     pip3 install -e . &&\
     which bml2bss bml2html bml2latex bss2bml bml_makedepend &&\
-    cd /bml/test/expected && ls -1 example*.tex && touch example*.tex && make -f /bml/bml.mk example.pdf example-tree.pdf && rm example*.pdf &&\
-    chmod -R 755 /bml/entrypoint.sh
+    addgroup -S bml && adduser -S -G bml bml && chown -R bml:bml /bml && chmod -R 755 /bml
 
 ENTRYPOINT ["/bml/entrypoint.sh"]
 
 # This is the place where input files are expected and where we run make from
 WORKDIR /bml/files
+
+USER bml:bml
 
 # Default command
 CMD ["make", "-f", "/bml/bml.mk", "help"]

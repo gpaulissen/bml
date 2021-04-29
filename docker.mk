@@ -33,8 +33,8 @@ else
 
 # Windows
 
-UID = 1000
-GID = 1000
+UID = 9001
+GID = 9001
 
 endif
 
@@ -53,22 +53,41 @@ help: ## This help.
 DOCKER_FLAGS := --log-level "info"
 DOCKER := docker $(DOCKER_FLAGS)
 
+DEBUG =
+
 build: ## Build the container.
 	@-$(DOCKER) rmi $(APP_NAME)
-	$(DOCKER) build -t $(APP_NAME) .
+	@$(DOCKER) build -t $(APP_NAME) .
 
 lint: ## Verify the container.
-	$(DOCKER) scan $(APP_NAME)
+	@$(DOCKER) scan $(APP_NAME)
 
 build-nc: ## Build the container without caching.
-	$(DOCKER) build --no-cache -t $(APP_NAME) .
+	@$(DOCKER) build --no-cache -t $(APP_NAME) .
 
 DOCKER_RUN_FLAGS := -i -t --rm
 
-run: ## Run container on port configured in `config.env` using CMD variable as the make command line and BML_FILES as the BML files directory.
-	$(DOCKER) run $(DOCKER_RUN_FLAGS) \
+run: run-as-user  ## Is the same as run-as-user.
+
+run-as-user: ## Run container on port configured in `config.env` using CMD variable as the make command line and BML_FILES as the BML files directory.
+	@$(DOCKER) run $(DOCKER_RUN_FLAGS) \
 --env-file=./config.env \
 -v$(BML_FILES):/bml/files \
+-e DEBUG=$(DEBUG) \
+-p=$(PORT):$(PORT) \
+--name="$(APP_NAME)" \
+"$(APP_NAME)" \
+$(CMD)
+
+run-as-root: UID = 0
+run-as-root: GID = 0
+
+run-as-root: ## Run container as root (using UID and GID to change to another user after login). See also run-as-user.
+	@$(DOCKER) run $(DOCKER_RUN_FLAGS) \
+--env-file=./config.env \
+-v$(BML_FILES):/bml/files \
+-e DEBUG=$(DEBUG) \
+-u 0:0 \
 -e UID=$(UID) \
 -e GID=$(GID) \
 -p=$(PORT):$(PORT) \
@@ -79,7 +98,7 @@ $(CMD)
 up: build run ## Run container on port configured in `config.env` (Alias to run).
 
 stop: ## Stop and remove a running container.
-	$(DOCKER) stop $(APP_NAME); $(DOCKER) rm $(APP_NAME)
+	@$(DOCKER) stop $(APP_NAME); $(DOCKER) rm $(APP_NAME)
 
 release: build-nc publish ## Make a release by building and publishing the `{version}` and `latest` tagged containers to ECR.
 
@@ -88,22 +107,22 @@ publish: repo-login publish-latest publish-version ## Publish the `{version}` an
 
 publish-latest: tag-latest ## Publish the `latest` tagged container to ECR.
 	@echo 'publish latest to $(DOCKER_REPO)'
-	$(DOCKER) push $(DOCKER_REPO)/$(APP_NAME):latest
+	@$(DOCKER) push $(DOCKER_REPO)/$(APP_NAME):latest
 
 publish-version: tag-version ## Publish the `{version}` tagged container to ECR.
 	@echo 'publish $(VERSION) to $(DOCKER_REPO)'
-	$(DOCKER) push $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
+	@$(DOCKER) push $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
 
 # Docker tagging
 tag: tag-latest tag-version ## Generate container tags for the `{version}` and `latest` tags.
 
 tag-latest: ## Generate container `{version}` tag.
 	@echo 'create tag latest'
-	$(DOCKER) tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):latest
+	@$(DOCKER) tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):latest
 
 tag-version: ## Generate container `latest` tag.
 	@echo 'create tag $(VERSION)'
-	$(DOCKER) tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
+	@$(DOCKER) tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
 
 # HELPERS
 
