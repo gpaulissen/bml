@@ -20,7 +20,7 @@ htmlcov
 .coverage
 .mypy_cache
 .miktex
-bml_includes.mk
+.depend
 *.fdb_latexmk
 test/data/*.mk
 test/data/*.fls

@@ -70,12 +70,12 @@ docker-info: ## Show various Docker container information like current directory
 	@for e in latexmk; do echo "Executable $$e: `which $$e`"; done
 	@set
 
-depend: bml_includes.mk ## Generate dependency include file.
+depend: .depend ## Generate dependency include file.
 
-bml_includes.mk:  $(MK_FILES)
+.depend:  $(MK_FILES)
 	@$(CAT) $? 1>$@ 2>$(NOWHERE)
 
--include bml_includes.mk
+-include .depend
 
 # These are the pattern matching rules. In addition to the automatic
 # variables used here, the variable $* that matches whatever % stands for
@@ -100,6 +100,6 @@ clean: ## Cleanup output files.
 	@$(RM_F) $(wildcard *.bss *.htm *.tex *.pdf)
 
 distclean: clean ## Runs clean first and then cleans up dependency include files. 
-	@$(RM_F) bml_includes.mk $(wildcard *.mk)
+	@$(RM_F) .depend $(wildcard *.mk)
 
 .PHONY: all help depend clean
