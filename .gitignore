@@ -23,4 +23,6 @@ htmlcov
 .depend
 *.fdb_latexmk
 test/data/*.mk
+test/data/*.fls
+test/data/*.tex
 test/expected/*.mk

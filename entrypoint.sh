@@ -16,9 +16,10 @@ then
     # just spawn the command
     exec "$@"   
 else
-    # must create a host user and group and spawn if that succeeds
+    # must create a host user and group, add it to group bml (owner of software) and spawn if that succeeds
     addgroup --gid $GID host_user && \
         adduser --disabled-password --gecos "" --ingroup host_user --no-create-home --uid $UID host_user && \
+        adduser host_user bml && \
         exec su-exec host_user "$@"
 fi
 

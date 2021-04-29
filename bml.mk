@@ -52,11 +52,11 @@ INPUT_FILES := $(wildcard *.bml)
 BSS_FILES    := $(patsubst %.bml, %.bss, $(INPUT_FILES))
 HTM_FILES 	 := $(patsubst %.bml, %.htm, $(INPUT_FILES))
 LATEX_FILES  := $(patsubst %.bml, %.tex, $(INPUT_FILES))
-PDF_FILES  := $(patsubst %.tex, %.pdf, $(LATEX_FILES))
+PDF_FILES    := $(patsubst %.bml, %.pdf, $(LATEX_FILES))
 OUTPUT_FILES := $(BSS_FILES) $(HTM_FILES) $(LATEX_FILES) $(PDF_FILES)
 
 # Dependency files
-MK_FILES  := $(patsubst %.bml, %.mk, $(INPUT_FILES))
+MK_FILES     := $(patsubst %.bml, %.mk, $(INPUT_FILES))
 
 all: .depend $(OUTPUT_FILES) ## Build all output files.
 
@@ -97,10 +97,9 @@ depend: .depend ## Generate dependency include file.
 
 clean: ## Cleanup output files.
 	@-$(LATEXMK) -C -f -verbose -latexoption=-verbose $(wildcard *.tex) # 2>$(NOWHERE)
-	@$(RM_F) $(wildcard *.pdf)
+	@$(RM_F) $(wildcard *.bss *.htm *.tex *.pdf)
 
-realclean: ## Cleanup (temporary) output files and dependency include files.
-	@-$(LATEXMK) -C -f -verbose -latexoption=-verbose $(wildcard *.tex) # 2>$(NOWHERE)
-	@$(RM_F) .depend $(wildcard *.bss *.htm *.tex *.pdf *.mk)
+distclean: clean ## Runs clean first and then cleans up dependency include files. 
+	@$(RM_F) .depend $(wildcard *.mk)
 
 .PHONY: all help depend clean
