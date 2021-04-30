@@ -1,27 +1,36 @@
+# Dockerfile related
+.dockerignore
+Dockerfile
+
+# docker.mk related
 *.env
 docker.mk
 README-docker.md
+
+# Git related
 .git
+.gitignore
 
 # From .gitignore
+**/__pycache__
+**/*.egg-info
 auto/*
-.cache
-test/.cache
+**/.cache
 *.aux
 *.log
 *.out
 *.toc
-test/tmp
 *~
-develop-eggs
+**/develop-eggs
 dist
-src/*.egg-info
 tags
 build
 eggs
 htmlcov
 .coverage
 .mypy_cache
-*.fdb_latexmk
+**/*.fdb_latexmk
 test/data/*.mk
-test/expected/*.mk
+test/expected/example?.mk
+test/expected/include.mk
+

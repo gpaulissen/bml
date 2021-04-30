@@ -23,4 +23,5 @@ htmlcov
 test/data/*.mk
 test/data/*.fls
 test/data/*.tex
-test/expected/*.mk
+test/expected/example?.mk
+test/expected/include.mk

@@ -18,6 +18,9 @@ WORKDIR /bml
 	
 COPY . .
 
+# Show contents to verify .dockerignore
+# RUN find . -print
+
 # Install TinyTeX as bml
 USER bml
 
