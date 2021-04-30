@@ -18,6 +18,12 @@ D   Strength, ca 15+
 3X  Preemptive
 #ENDCOPY
 
+  Note that the above is only for a direct overcall over 1NT. To
+  define the above also when balancing we will use BML's
+  copy/cut/paste functionality in order to show that you do not
+  have to write it all over again. Take a look below (only visible in
+  the /example.txt/ or generated Full Disclosure file, not in HTML or LaTeX):
+
 #HIDE
 (1N)-P-(P)---
 #PASTE nt_defense

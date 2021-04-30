@@ -1,5 +1,6 @@
 from os import listdir
 from os.path import isfile, join, dirname
+from itertools import zip_longest
 
 from bml import bml
 from bml.bss import bml2bss
@@ -8,7 +9,7 @@ from bml.latex import bml2latex
 from bss.bss2bml import bss2bml
 
 DATA_DIR = join(dirname(__file__), 'data')
-DATA_FILES = [f for f in listdir(DATA_DIR) if isfile(join(DATA_DIR, f)) and f != 'test_include.bml']
+DATA_FILES = [f for f in listdir(DATA_DIR) if isfile(join(DATA_DIR, f)) and f[-4:] == '.bml' and f != 'test_include.bml']
 
 TMP_DIR = join(dirname(__file__), 'tmp')
 EXPECTED_DIR = join(dirname(__file__), 'expected')
@@ -16,9 +17,9 @@ EXPECTED_DIR = join(dirname(__file__), 'expected')
 
 def _filecmp(file1, file2):
     with open(file1) as f1, open(file2) as f2:
-        for line1, line2 in zip(f1, f2):
-            line1 = line1.rstrip()
-            line2 = line2.rstrip()
+        for line1, line2 in zip_longest(f1, f2):
+            line1 = line1.rstrip() if line1 else None
+            line2 = line2.rstrip() if line2 else None
 
             if (not line1 and not line2) or line1 == line2:
                 pass

@@ -8,10 +8,24 @@
 2N  Invitational
 #ENDCUT
 
+  We start by cutting our NT-module, since this will be used on all
+  NT-openings. =#CUT= is similar to the =#COPY= command, but using =#CUT=
+  means that it isn't parsed as a bidding table until it is pasted.
+  
 #VUL N0
 
+  The =#VUL= command is used to set the vulnerability. It takes an
+  argument of two characters, each can be Y, N or 0. The first
+  character asks if we are vulnerable and the second asks if our
+  opponents are vulnerable. Y is for Yes, N is for No and 0 means that
+  it doesn't matter.
+  
 #SEAT 12
 
+  The =#SEAT= command sets the seat in which the bid should be valid. 0
+  means that the seat doesn't matter (all seats), 12 means first or
+  second and 34 means third or fourth. 1--4 could also be used.
+  
 #HIDE
 1N 12--14
   #PASTE nt_module

@@ -3,4 +3,4 @@ pytest-cov
 pytest-flakes
 pytest-pycodestyle
 flake8
-
+mypy
