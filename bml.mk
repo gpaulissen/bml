@@ -6,8 +6,14 @@ ifneq (,)
 This makefile requires GNU Make.
 endif
 
-# OS specific section
-ifeq '$(findstring WINDOWS,$(ComSpec))' 'WINDOWS'
+# Disable built-in rules and variables plus clean the suffix rules
+MAKEFLAGS += --no-builtin-rules
+MAKEFLAGS += --no-builtin-variables
+
+.SUFFIXES:
+
+# OS specific section (see https://stackoverflow.com/questions/714100/os-detecting-makefile/52062069#52062069)
+ifeq '$(findstring ;,$(PATH))' ';'
     detected_OS := Windows
 else
     detected_OS := $(shell uname 2>/dev/null || echo Unknown)
@@ -26,6 +32,8 @@ else
     NOWHERE := /dev/null
 endif
 
+# BML_HOME := /bml
+
 # BML executables
 BML2BSS := bml2bss
 BML2HTML := bml2html
@@ -33,17 +41,17 @@ BML2LATEX := bml2latex
 BML_MAKEDEPEND := bml_makedepend
 
 # BML flags
-BML_FLAGS =
+BML_OPTIONS :=
 
-BML2BSS_FLAGS = $(BML_FLAGS)
-BML2HTML_FLAGS = $(BML_FLAGS)
-BML2LATEX_FLAGS = $(BML_FLAGS)
-BML_MAKEDEPEND_FLAGS = $(BML_FLAGS)
+BML2BSS_OPTIONS := $(BML_OPTIONS)
+BML2HTML_OPTIONS := $(BML_OPTIONS)
+BML2LATEX_OPTIONS := $(BML_OPTIONS)
+BML_MAKEDEPEND_OPTIONS := $(BML_OPTIONS)
 
 # LaTeX executable/flags
 LATEXMK := latexmk
-LATEXMK_FLAGS := -pdf -verbose -latexoption=-verbose
-#LATEXMK_FLAGS := -pdf
+LATEXMK_OPTIONS := -pdf -verbose -latexoption=-verbose
+#LATEXMK_OPTIONS := -pdf
 
 # Input files
 INPUT_FILES := $(wildcard *.bml)
@@ -58,48 +66,45 @@ OUTPUT_FILES := $(BSS_FILES) $(HTM_FILES) $(LATEX_FILES) $(PDF_FILES)
 # Dependency files
 MK_FILES     := $(patsubst %.bml, %.mk, $(INPUT_FILES))
 
+-include $(MK_FILES)
+
 all: $(OUTPUT_FILES) ## Build all output files.
 
 help: ## This help.
 	@perl -ne 'printf(qq(%-30s  %s\n), $$1, $$2) if (m/^([a-zA-Z_-]+):.*##\s*(.*)$$/)' $(MAKEFILE_LIST)
 
 docker-info: ## Show various Docker container information like current directory, contents of /bml, environment variables.
-	@echo "Current directory: `pwd`"
-	@echo "Contents of /bml: `find /bml -print`"
-	@echo "Location of latexmk.pl: `find / -name latexmk.pl -print 2>$(NOWHERE)`"
-	@for e in latexmk; do echo "Executable $$e: `which $$e`"; done
-	@set
-
-depend: .depend ## Generate dependency include file.
-
-.depend:  $(MK_FILES)
-	@$(CAT) $? 1>$@ 2>$(NOWHERE)
-
--include .depend
+	@echo "=== Docker info ==="
+	@echo "=== Current directory ==="; pwd
+	@echo "=== Contents of /bml ==="; find $(BML_HOME) -print
+	@for e in latexmk; do echo "=== Executable $$e ==="; which $$e; done
+	@echo "=== set ==="; set
+	@echo "=== The END ==="
 
 # These are the pattern matching rules. In addition to the automatic
 # variables used here, the variable $* that matches whatever % stands for
 # can be useful in special cases.
 %.bss: %.bml
-	$(BML2BSS) $(BML2BSS_FLAGS) -o $@ $< 
+	$(BML2BSS) $(BML2BSS_OPTIONS) -o $@ $< 
 
 %.htm: %.bml
-	$(BML2HTML) $(BML2HTML_FLAGS) -o $@ $< 
+	$(BML2HTML) $(BML2HTML_OPTIONS) -o $@ $< 
 
 %.tex: %.bml
-	$(BML2LATEX) $(BML2LATEX_FLAGS) -o $@ $< 
+	$(BML2LATEX) $(BML2LATEX_OPTIONS) -o $@ $< 
 
 %.pdf: %.tex
-	$(LATEXMK) $(LATEXMK_FLAGS) $< 
+	$(LATEXMK) $(LATEXMK_OPTIONS) $< 
 
 %.mk: %.bml
-	@$(BML_MAKEDEPEND) $(BML_MAKEDEPEND_FLAGS) -o $@ $< 
+	$(BML_MAKEDEPEND) $(BML_MAKEDEPEND_OPTIONS) -o $@ $< 
 
 clean: ## Cleanup output files.
-	@-$(LATEXMK) -C -f -verbose -latexoption=-verbose $(wildcard *.tex) # 2>$(NOWHERE)
-	@$(RM_F) $(wildcard *.bss *.htm *.tex *.pdf)
+	-$(LATEXMK) -C -f $(wildcard *.tex) 2>$(NOWHERE)
+	$(RM_F) $(wildcard *.bss *.htm *.tex *.pdf)
 
 distclean: clean ## Runs clean first and then cleans up dependency include files. 
-	@$(RM_F) .depend $(wildcard *.mk)
+	$(RM_F) $(wildcard *.mk)
 
-.PHONY: all help depend clean
+.PHONY: all help docker-info clean distclean
+
