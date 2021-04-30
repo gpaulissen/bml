@@ -37,8 +37,7 @@ clean:
 	$(PYTHON) -Bc "import pathlib; [p.unlink() for p in pathlib.Path('.').rglob('*.py[co]')]"
 	$(PYTHON) -Bc "import pathlib; [p.rmdir() for p in pathlib.Path('.').rglob('__pycache__')]"
 	$(PYTHON) -Bc "import shutil; import os; [shutil.rmtree(d) for d in ['.pytest_cache', '.mypy_cache', 'dist', 'htmlcov', '.coverage'] if os.path.isdir(d)]"
-	cd test/data && $(MAKE) -f ../../bml.mk clean
-	cd test/expected && $(MAKE) -f ../../bml.mk clean
+	$(MAKE) --directory=test/data -f ../../bml.mk distclean
 
 install: clean
 	$(PIP) install -e .

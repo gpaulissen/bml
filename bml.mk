@@ -101,10 +101,10 @@ docker-info: ## Show various Docker container information like current directory
 
 clean: ## Cleanup output files.
 	-$(LATEXMK) -C -f $(wildcard *.tex) 2>$(NOWHERE)
-	$(RM_F) $(wildcard *.bss *.htm *.tex *.pdf)
+	-$(RM_F) $(wildcard *.bss *.htm *.tex *.pdf) 2>$(NOWHERE)
 
 distclean: clean ## Runs clean first and then cleans up dependency include files. 
-	$(RM_F) $(wildcard *.mk)
+	-$(RM_F) $(wildcard *.mk) 2>$(NOWHERE)
 
 .PHONY: all help docker-info clean distclean
 

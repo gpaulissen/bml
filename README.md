@@ -48,15 +48,15 @@ Programs have been written in order to export BML files to the following formats
 
 -   **Full Disclosure**: Outputs a .bss file to be used on the popular bridge website [Bridge Base Online](http://www.bridgebase.com) (BBO) where the players are able to submit their own systems in order to have their bids alerted automatically when bidding. Use bml2bss.
 
-Please note that this option is obsolete now. The BBO web version does not
+Please note that the latest option is obsolete now. The BBO web version does not
 support it anymore. An alternative may be
 [BBOalert](https://github.com/stanmaz/BBOalert) that allows you to upload these
 .bss files. In the past you could use the BBO desktop Windows client to upload
 .bss files.
 
-Checkout example.txt for an example of how BML looks. Also be sure to check
-out example.htm, example.tex (and example.pdf) and example.bss to see how BML
-converts to different formats.
+Checkout example.txt in directory test/data for an example of how BML looks. Also be sure to check
+out example.htm, example.tex (and example.pdf) and example.bss in directory
+test/expected to see how BML converts to different formats.
 
 There is also a program to convert back to BML format:
 
@@ -99,19 +99,20 @@ bml2bss -h
 You should see at least:
 
 ```
-usage: Convert BML to BSS. [-h] [-i {1,2,3,4,5,6,7,8,9}] [-o OUTPUTFILE] [-v] inputfile
+usage: Convert BML to BSS. [-h] [-o OUTPUTFILE] [-v] inputfile
 
 positional arguments:
   inputfile             the input file (- is stdin)
 
 optional arguments:
   -h, --help            show this help message and exit
-  -i {1,2,3,4,5,6,7,8,9}, --indentation {1,2,3,4,5,6,7,8,9}
-                        the indentation of a bidtable
   -o OUTPUTFILE, --outputfile OUTPUTFILE
                         the output file (- is stdout)
   -v, --verbose         increase output verbosity
 ```
+
+When no output file is supplied, it is constructed from the input file by
+replacing that extension by `.bss` (except of course when the input is `-`).
 
 <a id="bml2html"></a>
 
@@ -146,7 +147,7 @@ optional arguments:
   --no-include-external-files
 ```
 
-If no output file is supplied, it is constructed from the input file by
+When no output file is supplied, it is constructed from the input file by
 replacing that extension by `.htm` (except of course when the input is `-`).
 
 The `--tree` command line option creates nice looking bidtable trees (this is the
@@ -190,6 +191,9 @@ optional arguments:
   --no-include-external-files
 ```
 
+When no output file is supplied, it is constructed from the input file by
+replacing that extension by `.tex` (except of course when the input is `-`).
+
 The `--tree` command line option creates nice looking bidtable trees (this is the
 default). The `--no-tree` does not create such trees.
 
@@ -213,25 +217,26 @@ bss2bml -h
 You should see at least:
 
 ```
-usage: Convert BSS to BML. [-h] [-i {1,2,3,4,5,6,7,8,9}] [-o OUTPUTFILE] [-v] inputfile
+usage: Convert BSS to BML. [-h] [-o OUTPUTFILE] [-v] inputfile
 
 positional arguments:
   inputfile             the input file (- is stdin)
 
 optional arguments:
   -h, --help            show this help message and exit
-  -i {1,2,3,4,5,6,7,8,9}, --indentation {1,2,3,4,5,6,7,8,9}
-                        the indentation of a bidtable
   -o OUTPUTFILE, --outputfile OUTPUTFILE
                         the output file (- is stdout)
   -v, --verbose         increase output verbosity
 ```
 
+When no output file is supplied, it is constructed from the input file by
+replacing that extension by `.bml` (except of course when the input is `-`).
+
 <a id="latexmk"></a>
 
 ### latexmk
 
-This program (not part of BML) lets you convert LaTeX (.tex) file to a PDF (or other file types).
+This program that belongs to LaTeX (hence not part of BML) lets you convert a LaTeX (.tex) file to a PDF (or other file types).
 
 Open a command prompt and issue this command to get help:
 
@@ -251,7 +256,7 @@ To generate file /tmp/test.pdf from file test.tex, you just issue:
 latexmk -pdf -output-directory=/tmp test.tex
 ```
 
-The installation of this program that belongs to LaTeX is covered by the [BML Installation
+The installation of this program is covered by the [BML Installation
 Guide](https://gpaulissen.github.io/blog/bml-installation).
 
 <a id="orgb7edaf0"></a>
@@ -571,7 +576,17 @@ If you want to write text which shouldn't be shown in the export, use `//comment
 
 ## Including other files
 
-It is possible to split your system notes into different files. To include another file in a document, use #INCLUDE &lt;filename&gt;. The filename may be a relative path. Let's say you have made a BML file for a multi opening, and placed it into a subfolder called "modules". You could now write #INCLUDE modules/multi.txt where you want the file to be inserted.
+It is possible to split your system notes into different files. To include
+another file in a document, use:
+
+```
+#INCLUDE <filename>
+```
+
+The filename may be a relative path. Let's say you have made a BML file for a
+multi opening, and placed it into a subfolder called "modules". You could now
+write #INCLUDE modules/multi.txt where you want the file to be inserted. And
+you can reuse that file in other systems.
 
 
 <a id="org52b95c3"></a>

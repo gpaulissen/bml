@@ -601,7 +601,7 @@ def bss2bml(input_spec: FileSpec, output_spec: FileSpec) -> None:
 
 
 def main():
-    bml.args = bml.parse_arguments(description='Convert BSS to BML.', option_tree=False, option_include_external_files=False, output_extension='.bml')
+    bml.args = bml.parse_arguments(description='Convert BSS to BML.', option_tree=False, option_include_external_files=False, option_indentation=False, output_extension='.bml')
     bss2bml(bml.args.inputfile, bml.args.outputfile)
 
 

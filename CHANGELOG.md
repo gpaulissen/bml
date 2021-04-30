@@ -7,17 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.4.0] - 2021-04-27
+## [2.4.0] - 2021-04-30
 
 ### Added
 
   - Added latexmk to README.
   - Added bml_makedepend utility.
   - Added tests for bml_makedepend utility.
-  - Added Make file bml.mk
-  - Added Docker files (/docker)
+  - Added Make file bml.mk.
+  - Added Docker files.
   - BML utility modules (bml2bss, bml2html, bml2latex, bss2bml, bml_makedepend) can now be run from Python as a script.
-  - Indentation option can be suppressed for a utility.
+  - Indentation option is suppressed for bml2bss, bss2bml and bml_makedepend.
 
 ### Changed
 
