@@ -1,3 +1,27 @@
+# Docker Makefile
+
+# Just a snippet to stop executing under other make(1) commands
+# that won't understand these lines
+ifneq (,)
+This makefile requires GNU Make.
+endif
+
+# Disable built-in rules and variables plus clean the suffix rules
+MAKEFLAGS += --no-builtin-rules
+MAKEFLAGS += --no-builtin-variables
+
+.SUFFIXES:
+
+# OS specific section (see https://stackoverflow.com/questions/714100/os-detecting-makefile/52062069#52062069)
+ifeq '$(findstring ;,$(PATH))' ';'
+    detected_OS := Windows
+else
+    detected_OS := $(shell uname 2>/dev/null || echo Unknown)
+    detected_OS := $(patsubst CYGWIN%,Cygwin,$(detected_OS))
+    detected_OS := $(patsubst MSYS%,MSYS,$(detected_OS))
+    detected_OS := $(patsubst MINGW%,MSYS,$(detected_OS))
+endif
+
 # import config.
 # You can change the default config with `make cnf="config_special.env" build`
 cnf ?= config.env
@@ -22,7 +46,7 @@ CMD = make -f /bml/bml.mk help
 # Where can we find the BML files? 
 BML_FILES = $(shell perl -MFile::Spec -e 'print File::Spec->canonpath(File::Spec->rel2abs(q(test/data)))')
 
-ifeq '$(USERPROFILE)' ''
+ifneq ($(detected_OS),Windows)
 
 # Linux / Mac OS X
 
@@ -57,20 +81,20 @@ DEBUG =
 
 build: ## Build the container.
 	@-$(DOCKER) rmi $(APP_NAME)
-	@$(DOCKER) build -t $(APP_NAME) .
+	$(DOCKER) build -t $(APP_NAME) .
 
 lint: ## Verify the container.
-	@$(DOCKER) scan $(APP_NAME)
+	$(DOCKER) scan $(APP_NAME)
 
 build-nc: ## Build the container without caching.
-	@$(DOCKER) build --no-cache -t $(APP_NAME) .
+	$(DOCKER) build --no-cache -t $(APP_NAME) .
 
 DOCKER_RUN_FLAGS := -i -t --rm
 
 run: run-as-user  ## Is the same as run-as-user.
 
 run-as-user: ## Run container on port configured in `config.env` using CMD variable as the make command line and BML_FILES as the BML files directory.
-	@$(DOCKER) run $(DOCKER_RUN_FLAGS) \
+	$(DOCKER) run $(DOCKER_RUN_FLAGS) \
 --env-file=./config.env \
 -v$(BML_FILES):/bml/files \
 -e DEBUG=$(DEBUG) \
@@ -83,7 +107,7 @@ run-as-root: UID = 0
 run-as-root: GID = 0
 
 run-as-root: ## Run container as root (using UID and GID to change to another user after login). See also run-as-user.
-	@$(DOCKER) run $(DOCKER_RUN_FLAGS) \
+	$(DOCKER) run $(DOCKER_RUN_FLAGS) \
 --env-file=./config.env \
 -v$(BML_FILES):/bml/files \
 -e DEBUG=$(DEBUG) \
@@ -98,7 +122,7 @@ $(CMD)
 up: build run ## Run container on port configured in `config.env` (Alias to run).
 
 stop: ## Stop and remove a running container.
-	@$(DOCKER) stop $(APP_NAME); $(DOCKER) rm $(APP_NAME)
+	$(DOCKER) stop $(APP_NAME); $(DOCKER) rm $(APP_NAME)
 
 release: build-nc publish ## Make a release by building and publishing the `{version}` and `latest` tagged containers to ECR.
 
@@ -107,22 +131,22 @@ publish: repo-login publish-latest publish-version ## Publish the `{version}` an
 
 publish-latest: tag-latest ## Publish the `latest` tagged container to ECR.
 	@echo 'publish latest to $(DOCKER_REPO)'
-	@$(DOCKER) push $(DOCKER_REPO)/$(APP_NAME):latest
+	$(DOCKER) push $(DOCKER_REPO)/$(APP_NAME):latest
 
 publish-version: tag-version ## Publish the `{version}` tagged container to ECR.
 	@echo 'publish $(VERSION) to $(DOCKER_REPO)'
-	@$(DOCKER) push $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
+	$(DOCKER) push $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
 
 # Docker tagging
 tag: tag-latest tag-version ## Generate container tags for the `{version}` and `latest` tags.
 
 tag-latest: ## Generate container `{version}` tag.
 	@echo 'create tag latest'
-	@$(DOCKER) tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):latest
+	$(DOCKER) tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):latest
 
 tag-version: ## Generate container `latest` tag.
 	@echo 'create tag $(VERSION)'
-	@$(DOCKER) tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
+	$(DOCKER) tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
 
 # HELPERS
 
@@ -138,7 +162,7 @@ CMD_REPOLOGIN += " get-login --no-include-email \)"
 
 # login to AWS-ECR
 repo-login: ## Auto login to AWS-ECR unsing aws-cli.
-	@eval $(CMD_REPOLOGIN)
+	eval $(CMD_REPOLOGIN)
 
 version: ## Output the current version.
 	@echo $(VERSION)

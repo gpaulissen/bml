@@ -19,8 +19,6 @@ eggs
 htmlcov
 .coverage
 .mypy_cache
-.miktex
-.depend
 *.fdb_latexmk
 test/data/*.mk
 test/data/*.fls
