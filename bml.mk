@@ -32,7 +32,7 @@ else
     NOWHERE := /dev/null
 endif
 
-# BML_HOME := /bml
+BML_HOME := /bml
 
 # BML executables
 BML2BSS := bml2bss
