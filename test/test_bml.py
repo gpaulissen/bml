@@ -71,7 +71,7 @@ def test_bml2html():
         content = bml2html(join(DATA_DIR, file), output_filename)
         _check(output_filename, output_filename_expected, content)
         # test tree
-        if file in ["example.bml", "test.bml"]:
+        if file in ["example8.bml", "example.bml", "test.bml"]:
             print("Testing bml2html(%s) (tree)" % (file))
             output_filename = file[0:len(file) - 4] + '-tree.htm'
             output_filename_expected = join(EXPECTED_DIR, output_filename)

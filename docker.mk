@@ -36,9 +36,9 @@ include $(dpl)
 DEPLOY_VARS = $(shell perl -ne 'print $$1, qq(\n) if m/^\s*(\w+)\s*=/' $(dpl))
 export $(DEPLOY_VARS)
 
-# grep the version from the __about__.py file
+# grep the version from the src/about.py file
 PYTHON = python
-VERSION = $(shell $(PYTHON) __about__.py)
+VERSION = $(shell $(PYTHON) src/about.py)
 
 # docker CMD arguments
 CMD = make -f /bml/bml.mk help

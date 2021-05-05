@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+  - Added --version option to command line.
+	- Added pretty printing HTML.
+
+### Changed
+
+  - Issue [Bold description	#4](https://github.com/gpaulissen/bml/issues/4)	  
+	- Issue [Printing a bidding table in HTML loses the tree decoration.](https://github.com/gpaulissen/bml/issues/10)
+
 ## [2.4.0] - 2021-04-30
 
 ### Added

@@ -40,6 +40,7 @@ clean:
 	$(MAKE) --directory=test/data -f ../../bml.mk distclean
 
 install: clean
+	$(PIP) install -r install_requirements.txt
 	$(PIP) install -e .
 	$(PIP) install -r test_requirements.txt
 
@@ -58,7 +59,7 @@ upload: dist
 	$(PYTHON) -m twine upload dist/*
 
 # This is GNU specific I guess
-VERSION = $(shell $(PYTHON) __about__.py)
+VERSION = $(shell $(PYTHON) src/about.py)
 
 TAG = v$(VERSION)
 

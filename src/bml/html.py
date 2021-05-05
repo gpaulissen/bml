@@ -2,6 +2,7 @@ import sys
 import re
 import xml.etree.ElementTree as ET
 import os.path
+from bs4 import BeautifulSoup
 
 from bml import bml
 
@@ -146,9 +147,12 @@ def to_html(content):
     # Replace "empty bid"
     bodystring = bodystring.replace(bml.EMPTY, '&empty;')
 
-    bodystring = re.sub(r'(?<=\s)\*(\S[^*<>]*)\*', replace_strong, bodystring, flags=re.DOTALL)
-    bodystring = re.sub(r'(?<=\s)/(\S[^/<>]*)/', replace_italics, bodystring, flags=re.DOTALL)
-    bodystring = re.sub(r'(?<=\s)=(\S[^=<>]*)=', replace_truetype, bodystring, flags=re.DOTALL)
+    # GJP 2021-05-05 https://github.com/gpaulissen/bml/issues/4
+    # If you use a font style like '/', '*' or '=' at the beginning of a bid description, the generated HTML does not translate it.
+    # This was due to the fact that the parser expects whitespace before it. But a closing tag (>) should also be accepted.
+    bodystring = re.sub(r'(?<=\s|>)\*(\S[^*<>]*)\*', replace_strong, bodystring, flags=re.DOTALL)
+    bodystring = re.sub(r'(?<=\s|>)/(\S[^/<>]*)/', replace_italics, bodystring, flags=re.DOTALL)
+    bodystring = re.sub(r'(?<=\s|>)=(\S[^=<>]*)=', replace_truetype, bodystring, flags=re.DOTALL)
 
     # Replaces !c!d!h!s with suit symbols
     bodystring = bodystring.replace('!c', '<span class="ccolor">&clubs;</span>')
@@ -162,9 +166,9 @@ def to_html(content):
 
     bodystring = re.sub(r'\d([CDHS]|N(?!T))+', html_replace_suits, bodystring)
 
-    return """<?xml version="1.0" encoding="utf-8"?>
+    return BeautifulSoup("""<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
-<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>""" + str(ET.tostring(head), 'UTF8') + bodystring + '</html>'
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>""" + str(ET.tostring(head), 'UTF8') + bodystring + '</html>', 'html.parser').prettify()
 
 
 def bml2html(input_filename, output_filename):

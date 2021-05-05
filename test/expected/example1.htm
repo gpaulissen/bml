@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
-<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>No title supplied</title><style type="text/css">div.start {
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   No title supplied
+  </title>
+  <style type="text/css">
+   div.start {
     display: inline-block;
     vertical-align: top;
     width: 60px;
@@ -33,7 +40,9 @@ div.tree {
 div.tree ul {
     list-style-type: none;
     /* vline.png */
-    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAKAQMAAABPHKYJAAAAA1BMVEWIiIhYZW6zAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH1ggGExMZBky19AAAAAtJREFUCNdjYMAEAAAUAAHlhrBKAAAAAElFTkSuQmCC) repeat-y;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAKAQMAAABPHKYJAAAAA1BMVEWIiIhYZW6zAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH1ggGExMZBky19AAAAAtJREFUCNdjYMAEAAAUAAHlhrBKAAAAAElFTkSuQmCC);
+    background-size: 2px;
+    background-repeat: repeat-y;
     margin: 0;
     padding: 0;
     margin-left: 10px;
@@ -44,7 +53,9 @@ div.tree li.node {
     padding: 0 12px;
     line-height: 20px;
     /* node.png */
-    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAUAQMAAACK1e4oAAAABlBMVEUAAwCIiIgd2JB2AAAAAXRSTlMAQObYZgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9YIBhQIJYVaFGwAAAARSURBVAjXY2hgQIf/GTDFGgDSkwqATqpCHAAAAABJRU5ErkJggg==) no-repeat;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAUAQMAAACK1e4oAAAABlBMVEUAAwCIiIgd2JB2AAAAAXRSTlMAQObYZgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9YIBhQIJYVaFGwAAAARSURBVAjXY2hgQIf/GTDFGgDSkwqATqpCHAAAAABJRU5ErkJggg==);
+    background-size: 12px;
+    background-repeat: no-repeat;
 }
 
 div.tree td.node {
@@ -54,15 +65,129 @@ div.tree td.node {
 
 div.tree li.last {
     /* lastnode.png */
-    background: #fff url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAUAQMAAACK1e4oAAAABlBMVEUAAwCIiIgd2JB2AAAAAXRSTlMAQObYZgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9YIBhQIIhs+gc8AAAAQSURBVAjXY2hgQIf/GbAAAKCTBYBUjWvCAAAAAElFTkSuQmCC) no-repeat;
+    background-color: #fff;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAUAQMAAACK1e4oAAAABlBMVEUAAwCIiIgd2JB2AAAAAXRSTlMAQObYZgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9YIBhQIIhs+gc8AAAAQSURBVAjXY2hgQIf/GbAAAKCTBYBUjWvCAAAAAElFTkSuQmCC) ;
+    background-size: 12px;
+    backrgound-repeat: no-repeat;
 }
 
 div.tree li.root {
-    background: #fff none no-repeat;
+    background-color: #fff;
+    background-image: none;
+    backrgound-repeat: no-repeat;
 }
 
 .ccolor{color:Green}
 .dcolor{color:Orange}
 .hcolor{color:Red}
 .scolor{color:Black}
-</style></head><body><div class="bidtable"><ul><li><div class="start">&empty;</div><ul><li><div class="start">1<span class="ccolor">&clubs;</span></div>2+<span class="ccolor">&clubs;</span>. Natural or balanced</li><li><div class="start">1<span class="dcolor">&diams;</span></div>4+ suit, unbalanced</li><li><div class="start">1M</div>5+ M, showing a Major</li><li><div class="start">2<span class="ccolor">&clubs;</span></div>20&ndash;21 bal / Any game force</li><li><div class="start">2<span class="dcolor">&diams;</span></div>6+<span class="hcolor">&hearts;</span> or 6+<span class="scolor">&spades;</span>, 5&ndash;9 hcp</li><li><div class="start">2<span class="hcolor">&hearts;</span><span class="scolor">&spades;</span></div>6+ suit, 10&ndash;13 hcp</li><li><div class="start">2NT</div>22&ndash;24</li><li><div class="start">3X</div>6+X, Preemptive</li><li><div class="start">3NT</div>Gambling</li></ul></li></ul></div></body></html>
+
+@media print {
+    * {
+        -webkit-print-color-adjust: exact !important;   /* Chrome, Safari */
+				color-adjust: exact !important;                 /* Firefox */
+		}
+    div.tree ul {
+        background-size: 1px;
+    }
+}
+  </style>
+ </head>
+ <body>
+  <div class="bidtable">
+   <ul>
+    <li>
+     <div class="start">
+      ∅
+     </div>
+     <ul>
+      <li>
+       <div class="start">
+        1
+        <span class="ccolor">
+         ♣
+        </span>
+       </div>
+       2+
+       <span class="ccolor">
+        ♣
+       </span>
+       . Natural or balanced
+      </li>
+      <li>
+       <div class="start">
+        1
+        <span class="dcolor">
+         ♦
+        </span>
+       </div>
+       4+ suit, unbalanced
+      </li>
+      <li>
+       <div class="start">
+        1M
+       </div>
+       5+ M, showing a Major
+      </li>
+      <li>
+       <div class="start">
+        2
+        <span class="ccolor">
+         ♣
+        </span>
+       </div>
+       20–21 bal / Any game force
+      </li>
+      <li>
+       <div class="start">
+        2
+        <span class="dcolor">
+         ♦
+        </span>
+       </div>
+       6+
+       <span class="hcolor">
+        ♥
+       </span>
+       or 6+
+       <span class="scolor">
+        ♠
+       </span>
+       , 5–9 hcp
+      </li>
+      <li>
+       <div class="start">
+        2
+        <span class="hcolor">
+         ♥
+        </span>
+        <span class="scolor">
+         ♠
+        </span>
+       </div>
+       6+ suit, 10–13 hcp
+      </li>
+      <li>
+       <div class="start">
+        2NT
+       </div>
+       22–24
+      </li>
+      <li>
+       <div class="start">
+        3X
+       </div>
+       6+X, Preemptive
+      </li>
+      <li>
+       <div class="start">
+        3NT
+       </div>
+       Gambling
+      </li>
+     </ul>
+    </li>
+   </ul>
+  </div>
+ </body>
+</html>
