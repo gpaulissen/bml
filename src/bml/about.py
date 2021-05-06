@@ -6,7 +6,7 @@ __description__ = ' '.join('''
 Bridge Markup Language for creating bridge (card game) bidding documents.
 '''.strip().split())
 __email__ = "gert.jan.paulissen@gmail.com"
-__version_info__ = ('2', '5', '1')
+__version_info__ = ('2', '6', '0')
 __version__ = '.'.join(__version_info__)
 __license__ = "MIT License"
 __copyright__ = 'Copyright (c) 2013 Erik Sjöstrand, 2018 Gert-Jan Paulissen'

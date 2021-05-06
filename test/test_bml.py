@@ -55,7 +55,8 @@ def test_bml2bss():
         output_filename = file[0:len(file) - 4] + '.bss'
         output_filename_expected = join(EXPECTED_DIR, output_filename)
         output_filename = join(TMP_DIR, output_filename)
-        content = bml2bss(join(DATA_DIR, file), output_filename)
+        # content = bml2bss(join(DATA_DIR, file), output_filename)
+        content = bml2bss(join(DATA_DIR, file), EXPECTED_DIR)
         _check(output_filename, output_filename_expected, content)
     return
 
@@ -68,7 +69,8 @@ def test_bml2html():
         output_filename_expected = join(EXPECTED_DIR, output_filename)
         output_filename = join(TMP_DIR, output_filename)
         bml.args = bml.Args(tree=False)
-        content = bml2html(join(DATA_DIR, file), output_filename)
+        # content = bml2html(join(DATA_DIR, file), output_filename)
+        content = bml2html(join(DATA_DIR, file), EXPECTED_DIR)
         _check(output_filename, output_filename_expected, content)
         # test tree
         if file in ["example8.bml", "example.bml", "test.bml"]:
@@ -90,7 +92,8 @@ def test_bml2latex():
         output_filename_expected = join(EXPECTED_DIR, output_filename)
         output_filename = join(TMP_DIR, output_filename)
         bml.args = bml.Args(tree=False)
-        content = bml2latex(join(DATA_DIR, file), output_filename)
+        # content = bml2latex(join(DATA_DIR, file), output_filename)
+        content = bml2latex(join(DATA_DIR, file), EXPECTED_DIR)
         _check(output_filename, output_filename_expected, content)
         # test tree
         if file in ["example.bml", "test.bml"]:
@@ -119,7 +122,7 @@ def test_bss2bml():
             output_filename = file
             output_filename_expected = join(EXPECTED_DIR, output_filename)
             output_filename = join(TMP_DIR, output_filename)
-            bss2bml(input_filename, output_filename)
+            bss2bml(input_filename, EXPECTED_DIR if file in ["example.bml", "test.bml"] else output_filename)
             _check(output_filename, output_filename_expected)
         except Exception as e:
             print("ERROR for input file %s" % (input_filename))
@@ -140,6 +143,11 @@ def test_makedepend():
     return
 
 
+def test_args():
+    args = bml.Args()
+    assert str(args) == '{"verbose": 0, "indentation": 2, "tree": true, "include_external_files": true, "inputfile": "-", "outputfile": null}', str(args)
+
+
 if __name__ == '__main__':
     bml.args.verbose = 1
     test_content_from_file()
@@ -148,3 +156,4 @@ if __name__ == '__main__':
     test_bml2latex()
     test_bss2bml()
     test_makedepend()
+    test_args()

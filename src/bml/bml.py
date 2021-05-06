@@ -6,6 +6,7 @@ from collections import defaultdict
 import argparse
 from contextlib import contextmanager
 import logging
+import json
 
 from bml import about
 
@@ -61,6 +62,9 @@ class Args:
             return logging.INFO
         elif self._verbose > 1:
             return logging.DEBUG
+
+    def __repr__(self):
+        return json.dumps({('verbose' if k == '_verbose' else k): self.__dict__[k] for k in self.__dict__ if k != '_logger'})
 
 
 logging.basicConfig(format='%(levelname)s:%(message)s')
@@ -672,6 +676,7 @@ def parse_arguments(description, option_tree=True, option_include_external_files
     if not args.outputfile:
         assert args.inputfile == '-' or output_extension is not None
         args.outputfile = '-' if args.inputfile == '-' else re.sub(r'\..+\Z', output_extension, args.inputfile)
+
     logger.info("Output file:", args.outputfile)
     return args
 

@@ -351,6 +351,8 @@ def bml2latex(input_filename, output_filename):
     if output_filename == '-':
         to_latex(content, sys.stdout)
     else:
+        if os.path.isdir(output_filename):
+            output_filename = os.path.join(output_filename, os.path.basename(re.sub(r'\..+\Z', '.tex', input_filename)))
         with open(output_filename, mode='w', encoding="utf-8") as f:
             to_latex(content, f)
     return content

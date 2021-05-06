@@ -177,6 +177,8 @@ def bml2html(input_filename, output_filename):
     if output_filename == '-':
         sys.stdout.write(h)
     else:
+        if os.path.isdir(output_filename):
+            output_filename = os.path.join(output_filename, os.path.basename(re.sub(r'\..+\Z', '.htm', input_filename)))
         with open(output_filename, mode='w', encoding="utf-8") as f:
             f.write(h)
     return content

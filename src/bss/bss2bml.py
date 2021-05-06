@@ -3,6 +3,7 @@ from typing import Dict, IO, Any, AnyStr, Union
 from pathlib import Path
 import sys
 import re
+import os
 
 from bml import bss
 from bml import bml
@@ -584,6 +585,8 @@ def bss2bml(input_spec: FileSpec, output_spec: FileSpec) -> None:
         if output_spec == '-':
             output = sys.stdout
         elif isinstance(output_spec, (str, bytes, Path)):
+            if os.path.isdir(str(output_spec)):
+                output_spec = os.path.join(str(output_spec), os.path.basename(re.sub(r'\..+\Z', '.bml', str(input_spec))))
             output = open(output_spec, mode='w', encoding="utf-8")
         else:
             assert "ERROR: unknown file type for %r" % (output_spec)

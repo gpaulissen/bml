@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+  - Added string representation of class Args
+	- The output file may also be a directory
+
 ## [2.5.1] - 2021-05-06
 
 ### Changed

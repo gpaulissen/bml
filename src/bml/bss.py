@@ -1,5 +1,6 @@
 from typing import List
 
+import os
 import re
 import sys
 import copy
@@ -432,6 +433,8 @@ def bml2bss(input_filename, output_filename):
     if output_filename == '-':
         systemdata_to_bss(content, systemdata, sys.stdout)
     else:
+        if os.path.isdir(output_filename):
+            output_filename = os.path.join(output_filename, os.path.basename(re.sub(r'\..+\Z', '.bss', input_filename)))
         with open(output_filename, mode='w', encoding="utf-8") as f:
             systemdata_to_bss(content, systemdata, f)
     return content
