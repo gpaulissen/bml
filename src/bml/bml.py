@@ -7,7 +7,7 @@ import argparse
 from contextlib import contextmanager
 import logging
 
-from about import __version__
+from bml import about
 
 __all__ = ['parse_arguments', 'content_from_file', 'Node', 'ContentType',
            'args', 'Args', 'EMPTY', 'ROOT', 'logger', 'makedepend']
@@ -660,7 +660,7 @@ def parse_arguments(description, option_tree=True, option_include_external_files
         include_external_files_parser.add_argument('--no-include-external-files', dest='include_external_files', action='store_false')
         parser.set_defaults(include_external_files=args.include_external_files)  # BML 1.0
 
-    parser.add_argument('--version', action='version', version="%(prog)s (" + __version__ + ")")
+    parser.add_argument('--version', action='version', version="%(prog)s (" + about.__version__ + ")")
     # modify the original arguments so it stays the same class object
     parser.parse_args(namespace=args)
 

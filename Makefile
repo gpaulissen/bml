@@ -59,7 +59,7 @@ upload: dist
 	$(PYTHON) -m twine upload dist/*
 
 # This is GNU specific I guess
-VERSION = $(shell $(PYTHON) src/about.py)
+VERSION = $(shell $(PYTHON) src/bml/about.py)
 
 TAG = v$(VERSION)
 

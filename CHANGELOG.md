@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.1] - 2021-05-06
+
+### Changed
+
+  - Moved module about.py to the src/bml directory because it was missing in the distribution.
+
+### Changed
+
+  - Issue [Bold description	#4](https://github.com/gpaulissen/bml/issues/4)	  
+	- Issue [Printing a bidding table in HTML loses the tree
+	- decoration.](https://github.com/gpaulissen/bml/issues/10
+
 ## [2.5.0] - 2021-05-05
 
 ### Added
