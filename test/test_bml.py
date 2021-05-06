@@ -56,7 +56,7 @@ def test_bml2bss():
         output_filename_expected = join(EXPECTED_DIR, output_filename)
         output_filename = join(TMP_DIR, output_filename)
         # content = bml2bss(join(DATA_DIR, file), output_filename)
-        content = bml2bss(join(DATA_DIR, file), EXPECTED_DIR)
+        content = bml2bss(join(DATA_DIR, file), TMP_DIR)
         _check(output_filename, output_filename_expected, content)
     return
 
@@ -70,7 +70,7 @@ def test_bml2html():
         output_filename = join(TMP_DIR, output_filename)
         bml.args = bml.Args(tree=False)
         # content = bml2html(join(DATA_DIR, file), output_filename)
-        content = bml2html(join(DATA_DIR, file), EXPECTED_DIR)
+        content = bml2html(join(DATA_DIR, file), TMP_DIR)
         _check(output_filename, output_filename_expected, content)
         # test tree
         if file in ["example8.bml", "example.bml", "test.bml"]:
@@ -93,7 +93,7 @@ def test_bml2latex():
         output_filename = join(TMP_DIR, output_filename)
         bml.args = bml.Args(tree=False)
         # content = bml2latex(join(DATA_DIR, file), output_filename)
-        content = bml2latex(join(DATA_DIR, file), EXPECTED_DIR)
+        content = bml2latex(join(DATA_DIR, file), TMP_DIR)
         _check(output_filename, output_filename_expected, content)
         # test tree
         if file in ["example.bml", "test.bml"]:
@@ -122,7 +122,7 @@ def test_bss2bml():
             output_filename = file
             output_filename_expected = join(EXPECTED_DIR, output_filename)
             output_filename = join(TMP_DIR, output_filename)
-            bss2bml(input_filename, EXPECTED_DIR if file in ["example.bml", "test.bml"] else output_filename)
+            bss2bml(input_filename, TMP_DIR if file in ["example.bml", "test.bml"] else output_filename)
             _check(output_filename, output_filename_expected)
         except Exception as e:
             print("ERROR for input file %s" % (input_filename))
