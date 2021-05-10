@@ -18,6 +18,8 @@ __all__ = ['bss2bml', 'main']
 SEAT_DICT = {v: k for k, v in bss.SEAT_DICT.items()}
 VUL_DICT = {v: k for k, v in bss.VUL_DICT.items()}
 
+EXTENSION = '.bml'
+
 
 class BssFile:
     # Class variable
@@ -604,7 +606,7 @@ def bss2bml(input_spec: FileSpec, output_spec: FileSpec) -> None:
 
 
 def main():
-    bml.args = bml.parse_arguments(description='Convert BSS to BML.', option_tree=False, option_include_external_files=False, option_indentation=False, output_extension='.bml')
+    bml.args = bml.parse_arguments(description='Convert BSS to BML.', option_tree=False, option_include_external_files=False, option_indentation=False, output_extension=EXTENSION)
     bss2bml(bml.args.inputfile, bml.args.outputfile)
 
 

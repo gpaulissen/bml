@@ -7,10 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.0] - 2021-05-10
+
 ### Added
 
-  - Added string representation of class Args
-	- The output file may also be a directory
+  - Added string representation of class Args so the default arguments can be tested
+  - The output file may also be a directory
+  - A bidding table line with a single point is ignored, see issue [Blank & Comment Line](https://github.com/gpaulissen/bml/issues/7)
+  - Extra logging will help in detecting this [Puzzling indentation error](https://github.com/gpaulissen/bml/issues/12)
 
 ## [2.5.1] - 2021-05-06
 
@@ -20,21 +24,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-  - Issue [Bold description	#4](https://github.com/gpaulissen/bml/issues/4)	  
-	- Issue [Printing a bidding table in HTML loses the tree
-	- decoration.](https://github.com/gpaulissen/bml/issues/10
+  - Issue [Bold description #4](https://github.com/gpaulissen/bml/issues/4)   
+  - Issue [Printing a bidding table in HTML loses the tree
+  - decoration.](https://github.com/gpaulissen/bml/issues/10
 
 ## [2.5.0] - 2021-05-05
 
 ### Added
 
   - Added --version option to command line.
-	- Added pretty printing HTML.
+  - Added pretty printing HTML.
 
 ### Changed
 
-  - Issue [Bold description	#4](https://github.com/gpaulissen/bml/issues/4)	  
-	- Issue [Printing a bidding table in HTML loses the tree decoration.](https://github.com/gpaulissen/bml/issues/10)
+  - Issue [Bold description #4](https://github.com/gpaulissen/bml/issues/4)   
+  - Issue [Printing a bidding table in HTML loses the tree decoration.](https://github.com/gpaulissen/bml/issues/10)
 
 ## [2.4.0] - 2021-04-30
 

@@ -40,7 +40,7 @@ clean:
 	$(MAKE) --directory=test/data -f ../../bml.mk distclean
 
 install: clean
-	$(PIP) install -r install_requirements.txt
+	$(PIP) install -r requirements.txt
 	$(PIP) install -e .
 	$(PIP) install -r test_requirements.txt
 

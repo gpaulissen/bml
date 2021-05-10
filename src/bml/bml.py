@@ -437,8 +437,11 @@ def create_bidtree(text, content):
         return None
 
     for row in text.split('\n'):
+        logger.debug("row: %s" % (row))
         original_row = row
-        if row.strip() == '':
+        # GJP 2021-05-09 a single point in a line is also considered empty.
+        # See also https://github.com/gpaulissen/bml/issues/7.
+        if row.strip() in ['', '.']:
             continue  # could perhaps be nicer by stripping spaces resulting from copy/paste
         indentation = len(row) - len(row.lstrip())
 
@@ -463,6 +466,7 @@ def create_bidtree(text, content):
             lastnode = lastnode.add_child(bid, desc, indentation, desc_indentation)
         elif indentation == lastnode.indentation():
             lastnode = lastnode.parent.add_child(bid, desc, indentation, desc_indentation)
+        logger.info("%s%s = %s" % ("." * indentation, bid, desc))
         # Only first line may contain a bidding history
         assert prev_lastnode == root or (bid.find('-') < 0 and bid.find(';') < 0)
 
@@ -636,7 +640,7 @@ def content_from_string(text):
                 content.nodes.append(content_type)
                 logger.debug("[%d] Content type: %s; # nodes: %s\n%s\n" % (nr, ContentTypeStr(content_type[0]), len(content.nodes), c))
         except Exception:
-            logger.error("Content type error in paragraph %d:\n\n%s\n" % (nr + 1, c))
+            logger.error("Content type error in paragraph %d:\n\n%s\n" % (nr, c))
             raise
     return content
 
@@ -668,7 +672,7 @@ def parse_arguments(description, option_tree=True, option_include_external_files
     # modify the original arguments so it stays the same class object
     parser.parse_args(namespace=args)
 
-    logger.info("Input file:", args.inputfile)
+    logger.info("Input file: %s" % (args.inputfile))
     if args.inputfile != '-':
         args.inputfile = os.path.realpath(args.inputfile)
         if not os.path.exists(args.inputfile):
@@ -677,7 +681,7 @@ def parse_arguments(description, option_tree=True, option_include_external_files
         assert args.inputfile == '-' or output_extension is not None
         args.outputfile = '-' if args.inputfile == '-' else re.sub(r'\..+\Z', output_extension, args.inputfile)
 
-    logger.info("Output file:", args.outputfile)
+    logger.info("Output file: %s" % (args.outputfile))
     return args
 
 

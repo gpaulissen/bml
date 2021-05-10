@@ -9,6 +9,9 @@ from bml import bml
 __all__ = ['bml2html']  # only thing to export
 
 
+EXTENSION = '.htm'
+
+
 def html_bidtable(et_element, children, root=False):
     if len(children) > 0:
         ul = ET.SubElement(et_element, 'ul')
@@ -171,14 +174,15 @@ def to_html(content):
 <html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>""" + str(ET.tostring(head), 'UTF8') + bodystring + '</html>', 'html.parser').prettify()
 
 
-def bml2html(input_filename, output_filename):
-    content = bml.content_from_file(input_filename)
+def bml2html(input_filename, output_filename, content=None):
+    if content is None:
+        content = bml.content_from_file(input_filename)
     h = to_html(content)
     if output_filename == '-':
         sys.stdout.write(h)
     else:
         if os.path.isdir(output_filename):
-            output_filename = os.path.join(output_filename, os.path.basename(re.sub(r'\..+\Z', '.htm', input_filename)))
+            output_filename = os.path.join(output_filename, os.path.basename(re.sub(r'\..+\Z', EXTENSION, input_filename)))
         with open(output_filename, mode='w', encoding="utf-8") as f:
             f.write(h)
     return content

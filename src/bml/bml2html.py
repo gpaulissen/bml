@@ -3,7 +3,7 @@ from bml import html
 
 
 def main():
-    bml.args = bml.parse_arguments(description='Convert BML to HTML.', output_extension='.htm')
+    bml.args = bml.parse_arguments(description='Convert BML to HTML.', output_extension=html.EXTENSION)
     html.bml2html(bml.args.inputfile, bml.args.outputfile)
 
 

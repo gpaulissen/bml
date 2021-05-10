@@ -35,6 +35,8 @@ SEAT_DICT = {
     '34': '6'
 }
 
+EXTENSION = '.bss'
+
 
 class Bid:
     """Numeric representation of a bid"""
@@ -427,14 +429,15 @@ def systemdata_to_bss(content, systemdata, f):
     return
 
 
-def bml2bss(input_filename, output_filename):
-    content = bml.content_from_file(input_filename)
+def bml2bss(input_filename, output_filename, content=None):
+    if content is None:
+        content = bml.content_from_file(input_filename)
     systemdata = to_systemdata(content)
     if output_filename == '-':
         systemdata_to_bss(content, systemdata, sys.stdout)
     else:
         if os.path.isdir(output_filename):
-            output_filename = os.path.join(output_filename, os.path.basename(re.sub(r'\..+\Z', '.bss', input_filename)))
+            output_filename = os.path.join(output_filename, os.path.basename(re.sub(r'\..+\Z', EXTENSION, input_filename)))
         with open(output_filename, mode='w', encoding="utf-8") as f:
             systemdata_to_bss(content, systemdata, f)
     return content
