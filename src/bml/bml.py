@@ -11,12 +11,14 @@ import json
 from bml import about
 
 __all__ = ['parse_arguments', 'content_from_file', 'Node', 'ContentType',
-           'args', 'Args', 'EMPTY', 'ROOT', 'logger', 'makedepend']
+           'args', 'Args', 'EMPTY', 'ROOT', 'logger', 'makedepend',
+           'replace_last_empty_line']
 
 # constants
 ROOT = 'root'
 EMPTY = '{}'
 INCLUDE_PATTERN = r'^\s*#\s*INCLUDE\s*(\S+)\s*\n?'
+EMPTY_LINE = '\\n.'
 
 
 class Args:
@@ -439,9 +441,7 @@ def create_bidtree(text, content):
     for row in text.split('\n'):
         logger.debug("row: %s" % (row))
         original_row = row
-        # GJP 2021-05-09 a single point in a line is also considered empty.
-        # See also https://github.com/gpaulissen/bml/issues/7.
-        if row.strip() in ['', '.']:
+        if row.strip() == '':
             continue  # could perhaps be nicer by stripping spaces resulting from copy/paste
         indentation = len(row) - len(row.lstrip())
 
@@ -451,6 +451,12 @@ def create_bidtree(text, content):
         if indentation > 0 and indentation == lastnode.desc_indentation:
             lastnode.desc += '\\n' + row.lstrip()
             continue
+        # GJP 2021-05-09 a line with a single point is also considered empty.
+        # See also https://github.com/gpaulissen/bml/issues/7.
+        elif row.strip() == '.':
+            lastnode.desc += EMPTY_LINE
+            continue
+
         row = row.strip()
         bid = row.split(' ')[0]
         desc = ' '.join(row.split(' ')[1:]).strip()
@@ -739,6 +745,12 @@ def makedepend(input_filename, output_filename):
             write_dependencies(input_filename, includes, f)
 
     return
+
+
+def replace_last_empty_line(desc, replacement):
+    new_desc = re.sub(r'\\n\.\Z', replacement, desc, flags=re.MULTILINE)  # empty line at the end
+    logger.debug('replace_last_empty_line("%s", "%s") = "%s"' % (desc, replacement, new_desc))
+    return new_desc
 
 
 if __name__ == '__main__':

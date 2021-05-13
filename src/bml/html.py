@@ -13,6 +13,8 @@ EXTENSION = '.htm'
 
 
 def html_bidtable(et_element, children, root=False):
+    NBSP = u'\xa0'
+
     if len(children) > 0:
         ul = ET.SubElement(et_element, 'ul')
         for i in range(len(children)):
@@ -40,19 +42,21 @@ def html_bidtable(et_element, children, root=False):
                 div.text = bid
                 div.tail = desc_rows[0]
                 desc_rows = desc_rows[1:]
-                for dr in desc_rows:
+                for r, dr in enumerate(desc_rows):
                     li = ET.SubElement(ul, 'li')
                     div = ET.SubElement(li, 'div')
                     div.attrib['class'] = 'start'
                     div.text = ' '
-                    div.tail = dr
+                    # GJP 2021-05-09 a single point in a line is also considered empty.
+                    # See also https://github.com/gpaulissen/bml/issues/7.
+                    div.tail = NBSP if dr == '.' and r == len(desc_rows) - 1 else dr
             elif len(desc_rows) == 1 and (not desc_rows[0] or desc_rows[0].isspace()):
                 # empty description: just store the bid
                 li.text = bid
             else:
                 # use a table to store the bid (one column) and description lines (each line a row)
                 table = ET.SubElement(li, 'table')
-                for r in range(len(desc_rows)):
+                for r, dr in enumerate(desc_rows):
                     tr = ET.SubElement(table, 'tr')
                     # bid only first time
                     if r == 0:
@@ -62,7 +66,9 @@ def html_bidtable(et_element, children, root=False):
                         td.attrib['class'] = 'node'
                     # description
                     td = ET.SubElement(tr, 'td')
-                    td.text = desc_rows[r]
+                    # GJP 2021-05-09 a single point in a line is also considered empty.
+                    # See also https://github.com/gpaulissen/bml/issues/7.
+                    td.text = NBSP if dr == '.' and r == len(desc_rows) - 1 else dr
             html_bidtable(li, c.children)
 
 
@@ -171,7 +177,7 @@ def to_html(content):
 
     return BeautifulSoup("""<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
-<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>""" + str(ET.tostring(head), 'UTF8') + bodystring + '</html>', 'html.parser').prettify()
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>""" + str(ET.tostring(head), 'UTF8') + bodystring + '</html>', 'html.parser').prettify(formatter="html")
 
 
 def bml2html(input_filename, output_filename, content=None):

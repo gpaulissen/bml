@@ -48,6 +48,7 @@ def latex_bidtable(children, file, first=False):
     bid = None
     desc = None
     EOL = '\n'
+    EMPTY_LINE = '<EMPTYLINE>'  # do not use an underscore since that will be escaped later on
 
     for i in range(len(children)):
         c = children[i]
@@ -68,10 +69,13 @@ def latex_bidtable(children, file, first=False):
             bid = re.sub(r';(?=\S)', '; ', bid)
             bid = bid.replace('->', '$\\rightarrow$')
             dots = "........"[:-1 * len(bid.replace('\\B', ''))]
+            # GJP 2021-05-09 a single point in a line is also considered empty.
+            # See also https://github.com/gpaulissen/bml/issues/7.
+            desc = bml.replace_last_empty_line(c.desc, '\\n' + EMPTY_LINE).split('\\n')  # can be more than one line
             # Some characters have a special meaning for LaTeX (issue #8).
             # Replace the backslash first otherwise it interferes with other LaTeX constructions.
             # But before that we need to replace the \n (backslash and n) by another substring that later will be replace by a line feed
-            desc = latex_replace_characters(c.desc.replace('\\n', EOL))
+            desc = latex_replace_characters(EOL.join(desc))
         else:
             bid = "\\O"
             desc = None
@@ -86,10 +90,14 @@ def latex_bidtable(children, file, first=False):
             # Replace the backslash first otherwise it interferes with other LaTeX constructions.
             # Now replace string EOL by a line feed
             if bml.args.tree:
-                desc = desc.replace(EOL, '\\\\\n')
-                file.write(dots + '\\begin{minipage}[t]{0.8\\textwidth}\n' + desc.replace('.', '{.}') + '\n\\end{minipage}')
+                # GJP 2021-05-09 a single point in a line is also considered empty.
+                # See also https://github.com/gpaulissen/bml/issues/7.
+                desc = desc.replace(EOL, '\\\\\n').replace('.', '{.}').replace(EMPTY_LINE, '\\vspace{\\baselineskip}')
+                file.write(dots + '\\begin{minipage}[t]{0.8\\textwidth}\n' + desc + '\n\\end{minipage}')
             else:
-                desc = desc.replace(EOL, '\\\\\n\\>')
+                # GJP 2021-05-09 a single point in a line is also considered empty.
+                # See also https://github.com/gpaulissen/bml/issues/7.
+                desc = desc.replace(EOL, '\\\\\n\\>').replace(EMPTY_LINE, '\\vspace{\\baselineskip}')
                 file.write(' \\> ' + desc)
 
         if bml.args.tree:
