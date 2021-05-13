@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.1] - 2021-05-13
+
+### Changed
+
+  - A bidding table where a bid has more than one description line and
+    the last description line is just a point, will convert that last
+    description line into an empty line, see issue [Blank & Comment Line](https://github.com/gpaulissen/bml/issues/7)
+
 ## [2.6.0] - 2021-05-10
 
 ### Added

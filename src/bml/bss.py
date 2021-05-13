@@ -425,6 +425,9 @@ def systemdata_to_bss(content, systemdata, f):
         if bid[0] in "1234567" and bid[1] in "CDHS":
             # least/most amount of cards in suit
             f.write('08')
+        # GJP 2021-05-09 a line with a single point is also considered empty.
+        # See also https://github.com/gpaulissen/bml/issues/7.
+        i.desc = bml.replace_last_empty_line(i.desc, '')
         f.write(i.desc + '\n')
     return
 
