@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.0] - 2021-07-08
+
+### Changed
+
+  - Issue [Bold doesn't work in bml2latex #14](https://github.com/gpaulissen/bml/issues/14)
+
 ## [2.6.1] - 2021-05-13
 
 ### Changed
@@ -32,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-  - Issue [Bold description #4](https://github.com/gpaulissen/bml/issues/4)   
+  - Issue [Bold description #4](https://github.com/gpaulissen/bml/issues/4)
   - Issue [Printing a bidding table in HTML loses the tree
   - decoration.](https://github.com/gpaulissen/bml/issues/10
 
@@ -45,7 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-  - Issue [Bold description #4](https://github.com/gpaulissen/bml/issues/4)   
+  - Issue [Bold description #4](https://github.com/gpaulissen/bml/issues/4)
   - Issue [Printing a bidding table in HTML loses the tree decoration.](https://github.com/gpaulissen/bml/issues/10)
 
 ## [2.4.0] - 2021-04-30

@@ -210,9 +210,13 @@ def latex_replace_characters(text):
     text = text.replace('~', '\\textasciitilde')
     text = text.replace('^', '\\textasciicircum')
     text = re.sub(r'(?<=\s)"(\S[^"]*)"', replace_quotes, text, flags=re.DOTALL)
-    text = re.sub(r'(?<=\s)\*(\S[^*]*)\*', replace_strong, text, flags=re.DOTALL)
-    text = re.sub(r'(?<=\s)/(\S[^/]*)/', replace_italics, text, flags=re.DOTALL)
-    text = re.sub(r'(?<=\s)=(\S[^=]*)=', replace_truetype, text, flags=re.DOTALL)
+    # GJP 2021-07-08 https://github.com/gpaulissen/bml/issues/4
+    # Turn a line like
+    # *Gerber - 1430*
+    # into a bold expression by changing positive lookahead r'(?<=\s) into a negative lookahead r'(?<!\S)
+    text = re.sub(r'(?<!\S)\*(\S[^*]*)\*', replace_strong, text, flags=re.DOTALL)
+    text = re.sub(r'(?<!\S)/(\S[^/]*)/', replace_italics, text, flags=re.DOTALL)
+    text = re.sub(r'(?<!\S)=(\S[^=]*)=', replace_truetype, text, flags=re.DOTALL)
     return text
 
 
