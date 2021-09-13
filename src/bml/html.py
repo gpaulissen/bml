@@ -2,7 +2,6 @@ import sys
 import re
 import xml.etree.ElementTree as ET
 import os.path
-from bs4 import BeautifulSoup
 
 from bml import bml
 
@@ -175,9 +174,7 @@ def to_html(content):
 
     bodystring = re.sub(r'\d([CDHS]|N(?!T))+', html_replace_suits, bodystring)
 
-    return BeautifulSoup("""<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
-<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>""" + str(ET.tostring(head), 'UTF8') + bodystring + '</html>', 'html.parser').prettify(formatter="html")
+    return '<!DOCTYPE html><html lang="en">' + str(ET.tostring(head), 'UTF8') + bodystring + '</html>'
 
 
 def bml2html(input_filename, output_filename, content=None):
