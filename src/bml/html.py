@@ -12,6 +12,17 @@ __all__ = ['bml2html']  # only thing to export
 EXTENSION = '.htm'
 
 
+def html_replace_suits(matchobj):
+    text = matchobj.group(0)
+    # We have to use numeric character references to avoid choking the XML parser
+    text = text.replace('C', '<span class="ccolor">&#x2663;</span>')
+    text = text.replace('D', '<span class="dcolor">&#x2666;</span>')
+    text = text.replace('H', '<span class="hcolor">&#x2665;</span>')
+    text = text.replace('S', '<span class="scolor">&#x2660;</span>')
+    text = text.replace('N', 'NT')
+    return text
+
+
 def html_bidtable(et_element, children, root=False):
     NBSP = u'\xa0'
 
@@ -20,15 +31,14 @@ def html_bidtable(et_element, children, root=False):
         for i in range(len(children)):
             c = children[i]
             li = ET.SubElement(ul, 'li')
-            if not bml.args.tree:
-                div = ET.SubElement(li, 'div')
-                div.attrib['class'] = 'start'
-            elif root:
-                li.attrib['class'] = 'root'
-            elif i == len(children) - 1:
-                li.attrib['class'] = 'last node'
-            else:
-                li.attrib['class'] = 'node'
+
+            if bml.args.tree:
+                if root:
+                    li.attrib['class'] = 'root'
+                elif i == len(children) - 1:
+                    li.attrib['class'] = 'last node'
+                else:
+                    li.attrib['class'] = 'node'
 
             root = False
 
@@ -36,10 +46,13 @@ def html_bidtable(et_element, children, root=False):
             bid = re.sub(r'^P$', 'Pass', c.bid)
             bid = re.sub(r'^R$', 'Rdbl', bid)
             bid = re.sub(r'^D$', 'Dbl', bid)
+            bid = re.sub(r'\d([CDHS]|N(?!T))+', html_replace_suits, bid)
             bml.logger.debug("bid: %s; description line 1: %s" % (bid, desc_rows[0]))
 
             if not bml.args.tree:
-                div.text = bid
+                div = ET.XML(f'<div>{ bid }</div>')
+                li.append(div)
+                div.attrib['class'] = 'start'
                 div.tail = desc_rows[0]
                 desc_rows = desc_rows[1:]
                 for r, dr in enumerate(desc_rows):
@@ -52,7 +65,7 @@ def html_bidtable(et_element, children, root=False):
                     div.tail = NBSP if dr == '.' and r == len(desc_rows) - 1 else dr
             elif len(desc_rows) == 1 and (not desc_rows[0] or desc_rows[0].isspace()):
                 # empty description: just store the bid
-                li.text = bid
+                li.append(ET.XML(f'<div>{ bid }</div>'))
             else:
                 # use a table to store the bid (one column) and description lines (each line a row)
                 table = ET.SubElement(li, 'table')
@@ -60,8 +73,8 @@ def html_bidtable(et_element, children, root=False):
                     tr = ET.SubElement(table, 'tr')
                     # bid only first time
                     if r == 0:
-                        td = ET.SubElement(tr, 'td')
-                        td.text = bid
+                        td = ET.XML(f'<td>{ bid }</td>')
+                        tr.append(td)
                         td.attrib['rowspan'] = str(len(desc_rows))
                         td.attrib['class'] = 'node'
                     # description
@@ -70,16 +83,6 @@ def html_bidtable(et_element, children, root=False):
                     # See also https://github.com/gpaulissen/bml/issues/7.
                     td.text = NBSP if dr == '.' and r == len(desc_rows) - 1 else dr
             html_bidtable(li, c.children)
-
-
-def html_replace_suits(matchobj):
-    text = matchobj.group(0)
-    text = text.replace('C', '<span class="ccolor">&clubs;</span>')
-    text = text.replace('D', '<span class="dcolor">&diams;</span>')
-    text = text.replace('H', '<span class="hcolor">&hearts;</span>')
-    text = text.replace('S', '<span class="scolor">&spades;</span>')
-    text = text.replace('N', 'NT')
-    return text
 
 
 def replace_strong(matchobj):
@@ -172,8 +175,6 @@ def to_html(content):
     # Replace "long dashes"
     bodystring = bodystring.replace('---', '&mdash;')
     bodystring = bodystring.replace('--', '&ndash;')
-
-    bodystring = re.sub(r'\d([CDHS]|N(?!T))+', html_replace_suits, bodystring)
 
     return BeautifulSoup("""<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
