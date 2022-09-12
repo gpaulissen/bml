@@ -43,10 +43,10 @@ def html_bidtable(et_element, children, root=False):
             root = False
 
             desc_rows = c.desc.split('\\n')  # can be more than one line
-            bid = re.sub(r'^P$', 'Pass', c.bid)
-            bid = re.sub(r'^R$', 'Rdbl', bid)
-            bid = re.sub(r'^D$', 'Dbl', bid)
-            bid = re.sub(r'\d([CDHS]|N(?!T))+', html_replace_suits, bid)
+            bid = re.sub(r'\d([CDHS]|N(?!T))+', html_replace_suits, c.bid)
+            bid = re.sub('P', 'Pass', bid)
+            bid = re.sub('R', 'Rdbl', bid)
+            bid = re.sub('D', 'Dbl', bid)
             bml.logger.debug("bid: %s; description line 1: %s" % (bid, desc_rows[0]))
 
             if not bml.args.tree:
