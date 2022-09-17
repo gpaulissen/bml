@@ -102,6 +102,10 @@ def to_html(content):
     meta.attrib['http-equiv'] = "Content-Type"
     meta.attrib['content'] = "text/html; charset=utf-8"
 
+    viewport = ET.SubElement(head, 'meta')
+    viewport.attrib['name'] = 'viewport'
+    viewport.attrib['content'] = 'width=device-width, initial-scale=1'
+
     title = ET.SubElement(head, 'title')
     title.text = content.meta['TITLE'] if content.meta['TITLE'] else 'No title supplied'
 
