@@ -12,6 +12,16 @@ __all__ = ['bml2html']  # only thing to export
 EXTENSION = '.htm'
 
 
+def html_replace_suits(matchobj):
+    text = matchobj.group(0)
+    text = text.replace('C', '!c')
+    text = text.replace('D', '!d')
+    text = text.replace('H', '!h')
+    text = text.replace('S', '!s')
+    text = text.replace('N', 'NT')
+    return text
+
+
 def html_bidtable(et_element, children, root=False):
     NBSP = u'\xa0'
 
@@ -33,9 +43,10 @@ def html_bidtable(et_element, children, root=False):
             root = False
 
             desc_rows = c.desc.split('\\n')  # can be more than one line
-            bid = re.sub(r'^P$', 'Pass', c.bid)
-            bid = re.sub(r'^R$', 'Rdbl', bid)
-            bid = re.sub(r'^D$', 'Dbl', bid)
+            bid = re.sub(r'\d([CDHS]|N(?!T))+', html_replace_suits, c.bid)
+            bid = re.sub('P', 'Pass', bid)
+            bid = re.sub('R', 'Rdbl', bid)
+            bid = re.sub('D', 'Dbl', bid)
             bml.logger.debug("bid: %s; description line 1: %s" % (bid, desc_rows[0]))
 
             if not bml.args.tree:
@@ -72,16 +83,6 @@ def html_bidtable(et_element, children, root=False):
             html_bidtable(li, c.children)
 
 
-def html_replace_suits(matchobj):
-    text = matchobj.group(0)
-    text = text.replace('C', '<span class="ccolor">&clubs;</span>')
-    text = text.replace('D', '<span class="dcolor">&diams;</span>')
-    text = text.replace('H', '<span class="hcolor">&hearts;</span>')
-    text = text.replace('S', '<span class="scolor">&spades;</span>')
-    text = text.replace('N', 'NT')
-    return text
-
-
 def replace_strong(matchobj):
     return '<strong>' + matchobj.group(1) + '</strong>'
 
@@ -100,6 +101,10 @@ def to_html(content):
     meta = ET.SubElement(head, 'meta')
     meta.attrib['http-equiv'] = "Content-Type"
     meta.attrib['content'] = "text/html; charset=utf-8"
+
+    viewport = ET.SubElement(head, 'meta')
+    viewport.attrib['name'] = 'viewport'
+    viewport.attrib['content'] = 'width=device-width, initial-scale=1'
 
     title = ET.SubElement(head, 'title')
     title.text = content.meta['TITLE'] if content.meta['TITLE'] else 'No title supplied'
@@ -172,8 +177,6 @@ def to_html(content):
     # Replace "long dashes"
     bodystring = bodystring.replace('---', '&mdash;')
     bodystring = bodystring.replace('--', '&ndash;')
-
-    bodystring = re.sub(r'\d([CDHS]|N(?!T))+', html_replace_suits, bodystring)
 
     return BeautifulSoup("""<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
